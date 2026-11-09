@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RaportFirmy.pl pilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,500;7..72,650&display=swap" rel="stylesheet">
+<style>
+/* Układ: wąski pas rejestru (nagłówek z firmą i placówką) + karta robocza; dane jak w dokumentach urzędowych, akcent morski. */
+:root{
+  --paper:#f3f5f4; --surface:#ffffff; --ink:#16222c; --muted:#56646d; --line:#d6dedd; --accent:#0b6b63; --accent-soft:#e0efec; --on-accent:#ffffff;
+  --good:#2e7533; --good-soft:#e3f1e3; --warn:#94580a; --warn-soft:#fbefd9; --bad:#ad2a20; --bad-soft:#f8e2df; --info:#2d5b8a; --info-soft:#e2ebf5; --test:#6345a8; --test-soft:#ece6f7;
+  --display:"Literata", Georgia, "Times New Roman", serif; --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --r:10px; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#111a1f; --surface:#18232a; --ink:#e4ebec; --muted:#9aa9ae; --line:#2c3a41; --accent:#43b3a6; --accent-soft:#163633; --on-accent:#06201d;
+  --good:#78c27c; --good-soft:#1b3320; --warn:#e2ad5a; --warn-soft:#3a2c14; --bad:#f08a80; --bad-soft:#3d1d1a; --info:#8ab6e3; --info-soft:#1a2b3d; --test:#b9a2ee; --test-soft:#2a2240; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --paper:#111a1f; --surface:#18232a; --ink:#e4ebec; --muted:#9aa9ae; --line:#2c3a41; --accent:#43b3a6; --accent-soft:#163633; --on-accent:#06201d;
+  --good:#78c27c; --good-soft:#1b3320; --warn:#e2ad5a; --warn-soft:#3a2c14; --bad:#f08a80; --bad-soft:#3d1d1a; --info:#8ab6e3; --info-soft:#1a2b3d; --test:#b9a2ee; --test-soft:#2a2240; color-scheme:dark; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+h1,h2,h3{font-family:var(--display);font-weight:650;line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:1.75rem} h2{font-size:1.3rem} h3{font-size:1.05rem;font-family:var(--body);font-weight:600}
+p{margin:0} a{color:var(--accent)}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)} .small{font-size:.875rem}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+.testbar{background:var(--test-soft);color:var(--test);font-size:.82rem;padding:6px 16px;display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;border-bottom:1px solid var(--line)}
+.testbar button{font-size:.82rem}
+header.top{background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;gap:12px 20px;align-items:center;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:650;font-size:1.2rem;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand span{color:var(--accent)}
+.ctx{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;font-size:.875rem;line-height:1.35}
+.ctx b{font-weight:600;overflow-wrap:anywhere}
+.acct{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.875rem}
+nav.areas{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;gap:4px;overflow-x:auto}
+nav.areas a{padding:10px 12px;text-decoration:none;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;font-weight:500}
+nav.areas a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+.count{display:inline-block;min-width:1.4em;padding:0 5px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:.72rem;text-align:center;margin-left:4px;font-family:var(--mono)}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 96px;display:flex;flex-direction:column;gap:20px;outline:none}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card.accent{border-left:5px solid var(--accent)}
+.card.warn{border-left:5px solid var(--warn)}
+.card.bad{border-left:5px solid var(--bad)}
+.card.good{border-left:5px solid var(--good)}
+.lead{font-size:1.08rem;max-width:62ch}
+.hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:760px){.hero{grid-template-columns:1fr}}
+.btn{font:inherit;font-weight:500;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;line-height:1.2}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.link{border:none;background:none;color:var(--accent);padding:4px 2px;text-decoration:underline}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn.sm{padding:5px 10px;font-size:.875rem}
+label{font-weight:500;font-size:.92rem}
+.field{display:flex;flex-direction:column;gap:5px}
+input[type=text],input[type=email],input[type=date],input[type=number],select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%;max-width:100%}
+textarea{min-height:90px;resize:vertical}
+input.nip{font-family:var(--mono);font-size:1.25rem;letter-spacing:.05em;max-width:260px}
+.hint{font-size:.84rem;color:var(--muted)}
+.err{color:var(--bad);font-size:.9rem;font-weight:500}
+.check{display:flex;gap:8px;align-items:flex-start;font-weight:400}
+.check input{margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap;background:var(--paper);color:var(--muted);border:1px solid var(--line)}
+.pill.good{background:var(--good-soft);color:var(--good);border-color:transparent}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.pill.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.pill.info{background:var(--info-soft);color:var(--info);border-color:transparent}
+.pill.test{background:var(--test-soft);color:var(--test);border-color:transparent}
+.pill.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+dl.kv{display:grid;grid-template-columns:minmax(120px,max-content) 1fr;gap:6px 16px;margin:0}
+dl.kv dt{color:var(--muted);font-size:.9rem}
+dl.kv dd{margin:0;overflow-wrap:anywhere}
+@media (max-width:480px){dl.kv{grid-template-columns:1fr}dl.kv dd{margin-bottom:6px}}
+.items{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px;padding:10px 0;border-bottom:1px solid var(--line)}
+.item .src{grid-column:1/-1;font-size:.82rem;color:var(--muted)}
+.tile{text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:6px}
+.tile:hover,.tile[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.tile .sid{font-family:var(--mono);font-size:.78rem;color:var(--accent)}
+.next dl{display:grid;grid-template-columns:minmax(150px,max-content) 1fr;gap:6px 18px;margin:0}
+.next dt{color:var(--muted);font-size:.88rem}
+.next dd{margin:0}
+@media (max-width:520px){.next dl{grid-template-columns:1fr}.next dd{margin-bottom:6px}}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);background:var(--paper)}
+td.r,th.r{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+pre.material{white-space:pre-wrap;font-family:var(--body);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px;margin:0;overflow-wrap:anywhere}
+.flash{padding:10px 14px;border-radius:8px;font-weight:500}
+.flash.good{background:var(--good-soft);color:var(--good)} .flash.bad{background:var(--bad-soft);color:var(--bad)} .flash.info{background:var(--info-soft);color:var(--info)}
+.subtabs{display:flex;gap:6px;flex-wrap:wrap}
+.subtabs .btn[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.steps{display:flex;gap:6px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.steps span{padding:2px 8px;border-radius:999px;border:1px solid var(--line)}
+.steps span.on{border-color:var(--accent);color:var(--accent);font-weight:600}
+.axes{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.axes div{border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--muted)}
+.modal-bg{position:fixed;inset:0;background:rgba(10,18,22,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{background:var(--surface);border-radius:12px;max-width:520px;width:100%;padding:22px;display:flex;flex-direction:column;gap:14px;max-height:90vh;overflow:auto}
+footer{max-width:1100px;margin:0 auto;padding:0 16px 40px;font-size:.82rem;color:var(--muted)}
+@media (max-width:700px){
+  nav.areas{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--line);z-index:40;padding:0;justify-content:space-around;gap:0}
+  nav.areas a{flex:1;text-align:center;font-size:.72rem;padding:9px 2px 11px;border-bottom:none;border-top:3px solid transparent;white-space:normal;line-height:1.2}
+  nav.areas a[aria-current="page"]{border-top-color:var(--accent)}
+  h1{font-size:1.45rem}
+  footer{padding-bottom:90px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+/* ============ Narzędzia ============ */
+const LS_KEY = "rf-pilot-v1";
+let NIP_MEM = null; // surowy NIP żyje tylko w pamięci na czas wywołania adaptera; nie trafia do URL, localStorage ani logów
+const UI = { flash:null, err:{}, loading:false, runToken:null, modal:null, goalDraft:null, goalId:null, zTab:"abonament", importDraft:null, importCheck:null, loginStep:null, loginEmail:"", corrOpen:false, planEdit:false, opTab:"dostawy" };
+const now = () => new Date().toISOString();
+const addDays = (iso, d) => { const t = new Date(iso); t.setDate(t.getDate() + d); return t.toISOString(); };
+const addMonth = iso => { const t = new Date(iso); t.setMonth(t.getMonth() + 1); return t.toISOString(); };
+const fmtD = iso => iso ? new Date(iso).toLocaleDateString("pl-PL") : "—";
+const fmtDT = iso => iso ? new Date(iso).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" }) : "—";
+const zl = n => n.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " zł";
+const int = n => n.toLocaleString("pl-PL");
+function rid(n = 8){ try { const a = new Uint8Array(n); crypto.getRandomValues(a); return Array.from(a, b => b.toString(16).padStart(2, "0")).join(""); } catch (e) { return Math.random().toString(16).slice(2) + Date.now().toString(16); } }
+const uid = p => p + "-" + rid(3);
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c])); }
+function fnv(str){ let h = 0x811c9dc5; for (let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, "0"); }
+
+/* ============ Walidacja NIP (ta sama reguła po stronie klienta i adaptera) ============ */
+function checkNip(raw){
+  const s = String(raw || "").trim();
+  if (!s) return { ok:false, err:"Wpisz NIP firmy." };
+  if (!/^[0-9 \-]+$/.test(s)) return { ok:false, err:"NIP może zawierać tylko cyfry, spacje i myślniki." };
+  const d = s.replace(/[ \-]/g, "");
+  if (d.length !== 10) return { ok:false, err:`NIP ma 10 cyfr, a wpisano ${d.length}.` };
+  const w = [6,5,7,2,3,4,5,6,7];
+  const sum = w.reduce((a, x, i) => a + x * Number(d[i]), 0) % 11;
+  if (sum === 10 || sum !== Number(d[9])) return { ok:false, err:"Ten numer nie przechodzi kontroli sumy NIP. Sprawdź cyfry." };
+  return { ok:true, d };
+}
+const maskNip = d => "•••-•••-" + d.slice(6, 8) + "-" + d.slice(8);
+
+/* ============ Adapter testowy rejestru (GUS/CEIDG nieskonfigurowane) ============ */
+const FIXTURES = {
+  "0000000017": { status:"ok",
+    entity:{ name:"Testowa Spółka Handlowa „Kwadrat” sp. z o.o.", form:"Spółka z ograniczoną odpowiedzialnością", regon:"000000017", seat:"ul. Biurowa 4, 00-001 Warszawa", pkd:"47.11.Z Sprzedaż detaliczna w niewyspecjalizowanych sklepach z przewagą żywności", since:"2019-03-01" },
+    candidates:[
+      { id:"E1", sign:"Sklep Kwadrat", addr:"ul. Lipowa 12, 00-002 Warszawa", basis:"Miejsce wykonywania działalności wpisane w rejestrze (dane testowe)" },
+      { id:"E2", sign:"Kwadrat Express", addr:"ul. Dworcowa 1, 00-003 Warszawa", basis:"Dodatkowe miejsce działalności (dane testowe)" } ],
+    channels:{
+      E1:[ { name:"Strona WWW sklepu", hours:"pn–pt 8:00–18:00, sob 9:00–14:00", phone:"+48 22 000 00 01", seen:"2026-11-02" },
+           { name:"Facebook sklepu", hours:"pn–pt 8:00–20:00, sob 9:00–14:00", phone:"+48 22 000 00 01", seen:"2026-10-28" } ],
+      E2:[ { name:"Strona WWW sklepu", hours:"pn–nd 6:00–22:00", phone:"", seen:"2026-11-02" } ] } },
+  "0000000023": { status:"ok",
+    entity:{ name:"Jan Testowy — działalność gospodarcza", form:"Jednoosobowa działalność gospodarcza", regon:"000000023", seat:"Rynek 5, 30-001 Kraków", pkd:"47.61.Z Sprzedaż detaliczna książek prowadzona w wyspecjalizowanych sklepach", since:"2015-06-15" },
+    candidates:[ { id:"E1", sign:"Księgarnia pod Testem", addr:"Rynek 5, 30-001 Kraków", basis:"Adres siedziby jest jednocześnie miejscem działalności (dane testowe)" } ],
+    channels:{ E1:[ { name:"Strona WWW sklepu", hours:"pn–sob 10:00–18:00", phone:"+48 12 000 00 23", seen:"2026-11-03" },
+                    { name:"Facebook sklepu", hours:"pn–sob 10:00–18:00", phone:"+48 12 000 00 23", seen:"2026-11-01" } ] } },
+  "0000000046": { status:"no_match" },
+  "0000000052": { status:"source_unavailable" },
+  "0000000069": { status:"ok",
+    entity:{ name:"Anna Próba — działalność gospodarcza", form:"Jednoosobowa działalność gospodarcza", regon:"000000069", seat:"ul. Księgowa 2, 60-001 Poznań (biuro rachunkowe)", pkd:"47.11.Z Sprzedaż detaliczna w niewyspecjalizowanych sklepach z przewagą żywności", since:"2021-01-04" },
+    candidates:[
+      { id:"E1", sign:"Sieć Testowa — sklep partnerski", addr:"os. Zielone 7, 60-002 Poznań", basis:"Miejsce działalności (dane testowe); szyld sieci franczyzowej" },
+      { id:"E2", sign:"Sieć Testowa — sklep partnerski", addr:"ul. Polna 30, 60-003 Poznań", basis:"Ten sam szyld sieci. Rejestr nie wskazuje tego adresu dla tego podmiotu; możliwy inny operator" },
+      { id:"E3", sign:"(adres siedziby)", addr:"ul. Księgowa 2, 60-001 Poznań", basis:"Siedziba formalna; wygląda na adres biura, nie sklepu" } ],
+    channels:{ E1:[ { name:"Strona sieci — wyszukiwarka sklepów", hours:"pn–sob 6:00–22:00, nd 9:00–20:00", phone:"+48 61 000 00 69", seen:"2026-11-04" },
+                    { name:"Facebook sklepu", hours:"pn–sob 6:00–22:00, nd zamknięte", phone:"", seen:"2026-09-12" } ],
+               E2:[], E3:[] } }
+};
+const TEST_NIPS = [
+  { nip:"000-000-00-17", what:"spółka: siedziba poza sklepem, 2 placówki, rozbieżne godziny" },
+  { nip:"000-000-00-23", what:"jedna placówka, wszystko spójne" },
+  { nip:"000-000-00-69", what:"sklep sieci, wspólny szyld, siedziba w biurze" },
+  { nip:"000-000-00-46", what:"rejestr nie zwraca podmiotu" },
+  { nip:"000-000-00-52", what:"źródło chwilowo niedostępne" } ];
+function registryAdapter(nip){ // zwraca kopię danych, nigdy NIP
+  const f = FIXTURES[nip];
+  if (!f) return { status:"no_coverage" };
+  return JSON.parse(JSON.stringify(f));
+}
+
+/* ============ Słowniki ============ */
+const SITUATIONS = {
+  S1:{ label:"Klient ma znaleźć i zrozumieć mój sklep", variant:"V1" },
+  S2:{ label:"Chcę uporządkować Google lub odpowiedzieć klientom", variant:null },
+  S3:{ label:"Wprowadzam zmianę i chcę ją jasno zakomunikować", variant:"V2" },
+  S4:{ label:"Chcę sprawnie obsługiwać pytania i zamówienia", variant:"V2" },
+  S5:{ label:"Chcę zrozumieć sprzedaż i podjąć decyzję o ofercie", variant:"V5" },
+  S6:{ label:"Chcę sprawdzić pomysł albo wynik działania", variant:"V3" },
+  S7:{ label:"Potrzebuję kontroli nad kanałami i ciągłości działania", variant:null } };
+const VARIANTS = {
+  V1:{ title:"Informacje potrzebne klientowi", caps:["P02","P03"], sit:"S1", desc:"Jedna placówka, do trzech Twoich kanałów. Przygotujemy pakiet korekt godzin, telefonu i adresu do Twojej akceptacji.", result:"Pakiet korekt dla każdego kanału: pole, obecna wartość, właściwa wartość." },
+  V2:{ title:"Czytelna oferta i odpowiedzi", caps:["P25","P35","P36"], sit:"S4", desc:"Jeden fragment oferty i do pięciu odpowiedzi na prawdziwe pytania, które zadają Twoi klienci.", result:"Poprawiony fragment oferty i do 5 odpowiedzi gotowych do wklejenia." },
+  V3:{ title:"Sprawdzenie pomysłu lub wyniku", caps:["P56","P46","P58"], sit:"S6", desc:"Karta jednej ograniczonej próby albo ocena próby, która już się zakończyła.", result:"Karta próby (hipoteza, do 3 kroków, miara, termin) albo ocena z oddzieleniem wykonania od efektu." },
+  V5:{ title:"Składniki zmiany sprzedaży", caps:["P47"], sit:"S5", desc:"Rozkład zmiany sprzedaży między dwoma okresami na liczbę transakcji i średnią wartość transakcji.", result:"Wyliczenie z zatwierdzonej wersji danych, ograniczenia i do 3 działań do rozważenia." } };
+const GOAL_ST = { draft:["Szkic",""], needs_data:["Potrzebne dane","warn"], plan_review:["Plan do sprawdzenia","info"], ready:["Gotowe do realizacji","acc"], running:["W realizacji","info"], acceptance:["Do odbioru","acc"], correction:["Poprawka","warn"], outcome_review:["Ocena wyniku","info"], closed:["Zakończone","good"], cancelled:["Anulowane",""], blocked:["Niedostępne w pilocie","bad"] };
+const DEL_ST = { queued:["W kolejce operatora","info"], needs_data:["Potrzebne dane","warn"], ready_for_acceptance:["Gotowe do odbioru","acc"], correction_requested:["Poprawka zgłoszona","warn"], accepted:["Odebrane","good"], failed:["Błąd","bad"] };
+const ORD_ST = { awaiting_payment:["Oczekuje na płatność","warn"], payment_pending:["Płatność w toku","info"], paid:["Opłacone","good"], failed:["Płatność nieudana","bad"], cancelled:["Anulowane",""] };
+const QUAL = { eligible:["Gotowe do planu","good"], needs_data:["Potrzebne dane","warn"], needs_authorization:["Potrzebna autoryzacja","warn"], not_supported:["Metoda niedostępna w pilocie","bad"], temporarily_unavailable:["Chwilowo niedostępne","bad"], not_needed:["Brak potrzeby działania","good"], already_included:["Już w Twoim zakresie","acc"] };
+const pill = (map, k) => { const [t, c] = map[k] || [k, ""]; return `<span class="pill ${c}">${esc(t)}</span>`; };
+const SERVICES = [
+  { id:"R1", title:"Raport jednorazowy", caps:"P01, P47", stage:"Na zapytanie", desc:"Jedno pytanie, jeden wynik w Wynikach z dowodami, metodą i ograniczeniami. Bez abonamentu." },
+  { id:"U1", title:"Uporządkowanie Profilu Firmy w Google", caps:"P06–P07", stage:"Zależne", desc:"Wymaga zatwierdzonego dostępu do API i Twojej roli menedżera na profilu. Wycena możliwa teraz, realizacja po spełnieniu warunków." },
+  { id:"U2", title:"Strona wizytówkowa sklepu", caps:"P22", stage:"Zależne", desc:"Uzgodniony zakres, dostęp do domeny i hostingu oraz osoba zatwierdzająca treść." },
+  { id:"U3", title:"Kontrola dostępów, poczty i kopii", caps:"P70–P73", stage:"Zależne", desc:"Uporządkowanie własności kont, poczty w domenie i sprawdzonej kopii strony." } ];
+const SUB_OFFER = { title:"RaportFirmy — plan i przegląd", price:99, currency:"PLN", version:"2026-11-06",
+  scope:["Jeden workspace, jedna wybrana placówka, jeden aktywny cel w cyklu","Jeden cykl na opłacony miesiąc; niewykorzystane cykle się nie kumulują","Uzasadniona odpowiedź, do trzech priorytetowych działań i jeden uzgodniony materiał albo ocena próby","Jedna runda uzupełnienia; poprawka błędu wykonawcy bez dopłaty i bez zużycia rundy","Wpisywanie statusów i czytanie wyników nie zużywa cyklu"],
+  out:["Publikacja na Twoich kontach","Budowa lub naprawa strony","Stałe odpowiadanie na wszystkie opinie i wiadomości","Kampanie reklamowe i ich budżet","Migracje i indywidualni asystenci"],
+  executor:"Obsługa sprawy: CEO RaportFirmy z regułami i narzędziami; technika: CTO",
+  acceptance:"Odbiór w Wynikach. Poprawka błędu w tym samym zobowiązaniu.",
+  end:"Rezygnacja z odnowienia w każdej chwili. Odebrane wyniki zostają na koncie." };
+
+/* ============ Stan ============ */
+function fresh(){ return { v:1, sid:rid(16), createdAt:now(), mode:"client", view:"start", nipMasked:null, recog:null, estId:null, extraEsts:[], corrections:[],
+  goals:[], deliveries:[], orders:[], events:[], sub:null, quotes:[], tickets:[], imports:[], inbox:[], dismissed:[], snoozed:[], log:[], account:null, capacityPaused:false, incidents:[], finished:false }; }
+let S;
+try { S = JSON.parse(localStorage.getItem(LS_KEY) || "null"); } catch (e) { S = null; }
+if (!S || S.v !== 1) S = fresh();
+function save(){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { /* tryb bez pamięci przeglądarki */ } }
+function log(text){ S.log.unshift({ at:now(), text }); S.log = S.log.slice(0, 80); }
+function notify(text, view){ S.inbox.unshift({ id:uid("m"), at:now(), text, view, read:false }); }
+const est = () => S.recog?.candidates?.find(c => c.id === S.estId) || S.extraEsts.find(e => e.id === S.estId) || null;
+const goalsHere = () => S.goals.filter(g => g.estId === S.estId);
+const loggedIn = () => !!(S.account && S.account.loggedIn);
+const subActive = () => S.sub && (S.sub.status === "active" || S.sub.status === "cancel_at_period_end");
+
+/* ============ Portret (funkcja czysta: rejestr + kanały + deklaracje) ============ */
+function latestDecl(field){ const c = S.corrections.filter(x => x.estId === S.estId && x.field === field); return c.length ? c[c.length - 1] : null; }
+function portrait(){
+  const r = S.recog, e = est(); if (!r || !e) return null;
+  const facts = [], decl = [], conflicts = [], unknown = [];
+  const reg = r.declaredOnly ? null : "Rejestr przedsiębiorców — adapter testowy";
+  if (reg){
+    facts.push({ k:"Podmiot formalny", v:r.entity.name, src:reg, at:r.at });
+    facts.push({ k:"Forma prawna", v:r.entity.form, src:reg, at:r.at });
+    facts.push({ k:"Siedziba formalna", v:r.entity.seat, src:reg, at:r.at, note: r.entity.seat.split(",")[0] !== e.addr.split(",")[0] ? "Siedziba różni się od adresu sklepu. To normalne i nie jest błędem." : "" });
+    facts.push({ k:"Przeważająca działalność (PKD)", v:r.entity.pkd, src:reg, at:r.at });
+  } else unknown.push({ k:"Podmiot formalny", v:"Nie rozpoznano w rejestrze. Pracujemy na Twojej deklaracji placówki.", src:"Brak dopasowania" });
+  decl.push({ k:"Placówka i szyld", v:`${e.sign}, ${e.addr}`, src:"Potwierdzone przez Ciebie", at:S.recog.confirmedAt });
+  const ch = (r.channels && r.channels[e.id]) || [];
+  for (const field of [["hours","Godziny otwarcia"],["phone","Telefon"]]){
+    const [f, label] = field; const d = latestDecl(f);
+    if (d) decl.push({ k:label, v:d.value, src:"Twoja korekta", at:d.at });
+    const vals = ch.map(c => ({ name:c.name, v:c[f], seen:c.seen }));
+    const present = vals.filter(x => x.v);
+    const missing = vals.filter(x => !x.v);
+    if (missing.length) unknown.push({ k:label, v:`Brak w: ${missing.map(m => m.name).join(", ")}`, src:"Sprawdzone kanały (dane testowe)" });
+    if (!present.length){ if (!d) unknown.push({ k:label, v:"Nie występuje w sprawdzonych źródłach", src:"—" }); continue; }
+    const distinct = [...new Set(present.map(x => x.v))];
+    if (d){
+      const off = present.filter(x => x.v !== d.value);
+      if (off.length) conflicts.push({ f, k:label, v:`Twoja wartość: ${d.value}. Inaczej podaje: ` + off.map(x => `${x.name} (${x.v}, stan z ${fmtD(x.seen)})`).join("; "), src:"Porównanie Twojej deklaracji z kanałami" });
+      else facts.push({ k:label, v:d.value, src:`Zgodne we wszystkich kanałach i z Twoją deklaracją`, at:d.at });
+    } else if (distinct.length > 1){
+      conflicts.push({ f, k:label, v:present.map(x => `${x.name}: ${x.v} (stan z ${fmtD(x.seen)})`).join("; "), src:"Kanały podają różne wartości. Nie wiemy, która jest aktualna." });
+    } else facts.push({ k:label, v:distinct[0], src:present.map(x => `${x.name}, stan z ${fmtD(x.seen)}`).join("; ") });
+  }
+  if (!ch.length) unknown.push({ k:"Kanały sklepu", v:"Nie znaleźliśmy kanałów przypisanych do tej placówki", src:"Dane testowe" });
+  unknown.push({ k:"Profil Firmy w Google", v:"Nie sprawdzono: integracja nieskonfigurowana", src:"Stan integracji" });
+  unknown.push({ k:"Sprzedaż i oferta", v:"Dane prywatne. Możesz je dodać po zalogowaniu.", src:"—" });
+  return { version: 1 + S.corrections.filter(c => c.estId === S.estId).length, facts, decl, conflicts, unknown, channels:ch };
+}
+
+/* ============ Kwalifikacja (bez cen i bez katalogu ofert) ============ */
+function committedImport(){ const l = S.imports.filter(i => i.estId === S.estId); return l.length ? l[l.length - 1] : null; }
+function qualify(sit, variant, inp){
+  if (sit === "S2") return { code:"needs_authorization", reason:"Profil Firmy w Google wymaga zatwierdzonego dostępu do API oraz Twojej roli na profilu. Integracja nie jest jeszcze skonfigurowana.", next:"Możesz przygotować spójne informacje do samodzielnego wpisania (wariant „Informacje potrzebne klientowi”) albo poprosić o wycenę usługi." };
+  if (sit === "S7") return { code:"not_supported", reason:"Kompetencje P70–P75 są zależne od dostępu do Twoich systemów i nie wchodzą do cyklu pilota.", next:"Możesz poprosić o wycenę usługi „Kontrola dostępów, poczty i kopii”." };
+  const miss = [];
+  if (variant === "V5"){
+    const imp = committedImport();
+    if (!imp) return { code:"needs_data", reason:"Potrzebna zatwierdzona wersja danych sprzedaży tej placówki: data, kwota brutto w PLN i liczba transakcji.", next:"Dodaj dane w Moja firma → Import. Import wymaga konta.", miss:["Zatwierdzony import sprzedaży"] };
+    if (!imp.hasTx) return { code:"needs_data", reason:"Zatwierdzone dane nie mają liczby transakcji, więc nie rozłożymy zmiany na składniki. Sumy kwot pozostają dostępne.", next:"Zaimportuj wersję z kolumną liczby transakcji.", miss:["Liczba transakcji"] };
+    const p = splitPeriods(imp.rows); if (!p) return { code:"needs_data", reason:"Dane obejmują za mało dni, by porównać dwa okresy (potrzeba co najmniej 14 dni).", next:"Zaimportuj dłuższy okres.", miss:["Dłuższy okres danych"] };
+    return { code:"eligible", reason:"Dane pozwalają policzyć składniki zmiany metodą deterministyczną." };
+  }
+  if (variant === "V1"){
+    if (!inp.hours) miss.push("Aktualne godziny otwarcia");
+    if (!inp.channels.length) miss.push("Co najmniej jeden Twój kanał");
+    if (miss.length) return { code:"needs_data", reason:"Brakuje: " + miss.join(", ") + ".", next:"Uzupełnij brakujące pola.", miss };
+    const ch = portrait()?.channels || [];
+    const toFix = ch.filter(c => (c.hours && c.hours !== inp.hours) || (inp.phone && c.phone !== inp.phone));
+    const unknownCh = inp.channels.filter(n => !ch.find(c => c.name === n));
+    if (!toFix.length && !unknownCh.length) return { code:"not_needed", reason:"Wszystkie sprawdzone kanały podają te same godziny i telefon, które potwierdziłeś. Korekta nie jest potrzebna.", next:"Możesz zakończyć bez działania albo wybrać inny cel." };
+    return { code:"eligible", reason:`Do sprawdzenia lub korekty: ${toFix.length + unknownCh.length} z ${inp.channels.length} kanałów.` };
+  }
+  if (variant === "V2"){
+    if (!inp.fragment && !inp.questions.length) miss.push("Fragment oferty albo co najmniej jedno pytanie klienta");
+    if (inp.questions.length > 5) return { code:"needs_data", reason:`Podano ${inp.questions.length} pytań. Cykl obejmuje do 5 odpowiedzi.`, next:"Zostaw 5 najważniejszych; resztę możesz zostawić na kolejny cykl.", miss:["Maksymalnie 5 pytań"] };
+    if (miss.length) return { code:"needs_data", reason:"Brakuje: " + miss.join(", ") + ".", next:"Wklej fragment oferty lub prawdziwe pytania klientów.", miss };
+    return { code:"eligible", reason:`Fragment oferty: ${inp.fragment ? "tak" : "nie"}; pytania: ${inp.questions.length}.` };
+  }
+  if (variant === "V3"){
+    if (!inp.desc) miss.push("Opis pomysłu lub próby");
+    if (inp.mode === "ocena" && (!inp.start || !inp.end)) miss.push("Daty rozpoczęcia i zakończenia próby");
+    if (inp.mode === "ocena" && inp.end && new Date(inp.end) > new Date()) return { code:"needs_data", reason:"Próba jeszcze trwa. Ocenić można próbę zakończoną.", next:"Wybierz „Nowy pomysł” albo wróć po terminie zakończenia.", miss:["Zakończona próba"] };
+    if (miss.length) return { code:"needs_data", reason:"Brakuje: " + miss.join(", ") + ".", next:"Uzupełnij brakujące pola.", miss };
+    return { code:"eligible", reason: inp.mode === "ocena" ? "Ocenimy zakończoną próbę." : "Przygotujemy kartę ograniczonej próby." };
+  }
+  return { code:"not_supported", reason:"Ten zakres nie jest obsługiwany w pilocie.", next:"Wybierz inny cel." };
+}
+function makePlan(g){
+  const A = (t, o) => ({ id:uid("a"), title:t, owner:o, status:"todo" });
+  const m = { V1:[A("Potwierdź aktualne godziny, telefon i adres","Ty"), A(`Pakiet korekt dla ${g.inputs.channels?.length || 0} kanałów do akceptacji`,"RaportFirmy"), A("Wprowadź zaakceptowane zmiany w swoich kanałach","Ty")],
+    V2:[A("Poprawiony fragment oferty","RaportFirmy"), A(`Odpowiedzi na ${g.inputs.questions?.length || 0} pytań klientów`,"RaportFirmy"), A("Opublikuj materiał tam, gdzie klienci pytają","Ty")],
+    V3: g.inputs.mode === "ocena" ? [A("Ocena zakończonej próby: wykonanie osobno od efektu","RaportFirmy"), A("Decyzja: kontynuuj, zmień lub zakończ","Ty")]
+      : [A("Karta próby: hipoteza, do 3 kroków, miara i termin","RaportFirmy"), A("Przeprowadź próbę","Ty"), A("Ocena wyniku w uzgodnionym terminie","RaportFirmy")],
+    V5:[A("Wyliczenie składników zmiany sprzedaży","RaportFirmy"), A("Do 3 działań do rozważenia","RaportFirmy"), A("Przegląd po kolejnym okresie","Ty")] };
+  if (g.inputs.hours && g.variant === "V1") m.V1[0].status = "done";
+  return { version:1, actions:m[g.variant], reviewDate:addDays(now(), 14).slice(0, 10), acceptedAt:null, createdAt:now() };
+}
+const curPlan = g => g.plans[g.plans.length - 1];
+
+/* ============ Materiał (reguły; operator uzupełnia i zatwierdza) ============ */
+function draftMaterial(g){
+  const i = g.inputs;
+  if (g.variant === "V1"){
+    const ch = portrait()?.channels || [];
+    const lines = i.channels.map((n, k) => {
+      const c = ch.find(x => x.name === n);
+      if (!c) return `${k + 1}. ${n}\n   Nie mamy odczytu tego kanału. Sprawdź w nim: godziny „${i.hours}”${i.phone ? `, telefon „${i.phone}”` : ""}${i.addr ? `, adres „${i.addr}”` : ""}.`;
+      const rows = [];
+      if (c.hours !== i.hours) rows.push(`   Godziny: jest „${c.hours || "brak"}” → powinno być „${i.hours}”`);
+      if (i.phone && c.phone !== i.phone) rows.push(`   Telefon: jest „${c.phone || "brak"}” → powinno być „${i.phone}”`);
+      return `${k + 1}. ${n} (odczyt z ${fmtD(c.seen)})\n` + (rows.length ? rows.join("\n") : "   Bez zmian. Wartości zgodne.");
+    });
+    return `Pakiet korekt do akceptacji. Nie zapisujemy niczego na Twoich kontach.\n\nPotwierdzone wartości:\nGodziny: ${i.hours}${i.phone ? `\nTelefon: ${i.phone}` : ""}${i.addr ? `\nAdres: ${i.addr}` : ""}\n\n${lines.join("\n\n")}\n\nJak sprawdzić: po wprowadzeniu zmian oznacz działanie jako wykonane. Ponowny odczyt kanałów pokaże, czy wartości są zgodne.`;
+  }
+  if (g.variant === "V2"){
+    const qs = i.questions.map((q, k) => `${k + 1}. Pytanie: ${q}\n   Odpowiedź: [do uzupełnienia przez operatora na podstawie Twoich informacji]`).join("\n\n");
+    return `${i.fragment ? `Fragment oferty (propozycja):\n[do uzupełnienia przez operatora]\n\nTwoja wersja wyjściowa:\n${i.fragment}\n\n` : ""}${qs ? `Odpowiedzi na pytania klientów:\n\n${qs}\n\n` : ""}Ograniczenia: odpowiedzi opierają się wyłącznie na informacjach od Ciebie. Publikujesz je sam.`;
+  }
+  if (g.variant === "V3"){
+    if (i.mode === "ocena") return `Ocena zakończonej próby (${i.start} – ${i.end})\n\nCo zrobiono: ${i.desc}\nCo zaobserwowano: ${i.observed || "brak danych"}\n\nWykonanie: [do uzupełnienia]\nEfekt: [do uzupełnienia — jeśli dane nie pozwalają rozstrzygnąć, wpisz „wynik niepewny”]\nDecyzja do rozważenia: kontynuuj / zmień / zakończ\n\nOgraniczenia: mała próba nie dowodzi przyczyny zmiany sprzedaży.`;
+    return `Karta próby\n\nPomysł: ${i.desc}\nHipoteza: [do uzupełnienia]\nKroki (do 3):\n1. [do uzupełnienia]\nMiara: [do uzupełnienia]\nTermin oceny: ${curPlan(g).reviewDate}\n\nOgraniczenia: wynik próby ocenimy po terminie; brak zmiany też jest prawidłowym wynikiem.`;
+  }
+  if (g.variant === "V5"){ const imp = committedImport(); return imp ? decompText(imp) : "Brak zatwierdzonych danych."; }
+  return "";
+}
+
+/* ============ Import CSV / XLSX ============ */
+function parseCSV(text){
+  text = text.replace(/^\uFEFF/, "");
+  const first = text.split(/\r?\n/)[0] || "";
+  const counts = { ";":(first.match(/;/g) || []).length, ",":(first.match(/,/g) || []).length, "\t":(first.match(/\t/g) || []).length };
+  const delim = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][1] ? Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0] : ";";
+  const rows = []; let row = [], cell = "", q = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (q){ if (c === '"'){ if (text[i + 1] === '"'){ cell += '"'; i++; } else q = false; } else cell += c; continue; }
+    if (c === '"') q = true; else if (c === delim){ row.push(cell); cell = ""; }
+    else if (c === "\n" || c === "\r"){ if (c === "\r" && text[i + 1] === "\n") i++; row.push(cell); rows.push(row); row = []; cell = ""; }
+    else cell += c;
+  }
+  if (cell || row.length){ row.push(cell); rows.push(row); }
+  return rows.filter(r => r.some(x => String(x).trim() !== ""));
+}
+async function inflateRaw(bytes){
+  const ds = new DecompressionStream("deflate-raw");
+  const stream = new Blob([bytes]).stream().pipeThrough(ds);
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+async function readZip(buf){
+  const dv = new DataView(buf), u8 = new Uint8Array(buf); let eocd = -1;
+  for (let i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
+  if (eocd < 0) throw new Error("To nie jest poprawny plik XLSX.");
+  const n = dv.getUint16(eocd + 10, true); let p = dv.getUint32(eocd + 16, true); const files = {};
+  for (let k = 0; k < n; k++){
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true), nlen = dv.getUint16(p + 28, true), xlen = dv.getUint16(p + 30, true), clen = dv.getUint16(p + 32, true), off = dv.getUint32(p + 42, true);
+    const name = new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nlen));
+    files[name] = { method, csize, off }; p += 46 + nlen + xlen + clen;
+  }
+  return async name => {
+    const f = files[name]; if (!f) return null;
+    const lnl = dv.getUint16(f.off + 26, true), lxl = dv.getUint16(f.off + 28, true);
+    const data = u8.subarray(f.off + 30 + lnl + lxl, f.off + 30 + lnl + lxl + f.csize);
+    const out = f.method === 0 ? data : await inflateRaw(data);
+    return new TextDecoder().decode(out);
+  };
+}
+async function parseXLSX(buf){
+  const get = await readZip(buf);
+  const xml = s => new DOMParser().parseFromString(s, "application/xml");
+  const ssTxt = await get("xl/sharedStrings.xml"); const ss = [];
+  if (ssTxt) for (const si of xml(ssTxt).getElementsByTagName("si")) ss.push(Array.from(si.getElementsByTagName("t")).map(t => t.textContent).join(""));
+  const sheet = await get("xl/worksheets/sheet1.xml"); if (!sheet) throw new Error("Nie znaleziono pierwszego arkusza.");
+  const rows = []; let formulas = 0;
+  const colIdx = ref => { const L = ref.replace(/\d+/g, ""); let n = 0; for (const ch of L) n = n * 26 + ch.charCodeAt(0) - 64; return n - 1; };
+  for (const r of xml(sheet).getElementsByTagName("row")){
+    const row = [];
+    for (const c of r.getElementsByTagName("c")){
+      const t = c.getAttribute("t"), v = c.getElementsByTagName("v")[0]?.textContent ?? "";
+      if (c.getElementsByTagName("f").length) formulas++; // formuł nie wykonujemy; bierzemy zapisaną wartość
+      let val = v;
+      if (t === "s") val = ss[Number(v)] ?? ""; else if (t === "inlineStr") val = Array.from(c.getElementsByTagName("t")).map(x => x.textContent).join("");
+      row[colIdx(c.getAttribute("r") || "A1")] = val;
+    }
+    rows.push(Array.from(row, x => x ?? ""));
+  }
+  return { rows:rows.filter(r => r.some(x => String(x).trim() !== "")), formulas };
+}
+function parseAmount(s){
+  s = String(s ?? "").replace(/[\s\u00a0]/g, "").replace(/zł|PLN/gi, "");
+  if (s === "") return { err:"Brak kwoty" };
+  if (s.includes(",") && s.includes(".")) return { err:"Niejednoznaczny format kwoty (kropka i przecinek)" };
+  if (/^-?\d+(,\d{1,2})?$/.test(s)) s = s.replace(",", ".");
+  if (!/^-?\d+(\.\d{1,2})?$/.test(s)) return { err:`Nie rozpoznano kwoty „${s}”` };
+  const n = Number(s); if (n < 0) return { err:"Kwota ujemna. Zwroty wymagają osobnej reguły" };
+  return { v:n };
+}
+function parseDate(s){
+  s = String(s ?? "").trim(); let y, m, d;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) [y, m, d] = s.split("-").map(Number);
+  else if (/^\d{1,2}[.\-/]\d{1,2}[.\-/]\d{4}$/.test(s)) [d, m, y] = s.split(/[.\-/]/).map(Number);
+  else if (/^\d{5}(\.\d+)?$/.test(s)){ const t = new Date(Date.UTC(1899, 11, 30) + Math.floor(Number(s)) * 86400000); return { v:t.toISOString().slice(0, 10) }; }
+  else return { err:s ? `Nie rozpoznano daty „${s}”` : "Brak daty" };
+  const t = new Date(Date.UTC(y, m - 1, d));
+  if (t.getUTCMonth() !== m - 1 || t.getUTCDate() !== d) return { err:`Nieistniejąca data „${s}”` };
+  return { v:t.toISOString().slice(0, 10) };
+}
+function guessMap(headers){
+  const find = re => headers.findIndex(h => re.test(String(h).toLowerCase()));
+  return { date:find(/date|data|dzie/), gross:find(/gross|brutto|kwota|sprzeda|obr/), tx:find(/trans|parag|liczba|ilo/) };
+}
+function validateImport(draft, map, from, to){
+  const out = [], errors = [], seen = new Set();
+  draft.rows.slice(1).forEach((r, i) => {
+    const line = i + 2, reasons = [];
+    const d = parseDate(r[map.date]), a = parseAmount(r[map.gross]);
+    let tx = null;
+    if (d.err) reasons.push(d.err); if (a.err) reasons.push(a.err);
+    if (map.tx >= 0){ const t = String(r[map.tx] ?? "").trim(); if (!/^\d+$/.test(t)) reasons.push(t ? `Liczba transakcji „${t}” nie jest liczbą całkowitą` : "Brak liczby transakcji"); else tx = Number(t); }
+    if (d.v && from && d.v < from) reasons.push("Data przed wybranym okresem");
+    if (d.v && to && d.v > to) reasons.push("Data po wybranym okresie");
+    if (d.v && seen.has(d.v)) reasons.push("Powtórzona data (duplikat dnia)");
+    if (reasons.length){ errors.push({ line, reasons }); return; }
+    seen.add(d.v); out.push({ date:d.v, gross:a.v, tx });
+  });
+  out.sort((x, y) => x.date < y.date ? -1 : 1);
+  const sum = out.reduce((s, r) => s + r.gross, 0), txs = out.reduce((s, r) => s + (r.tx || 0), 0);
+  return { rows:out, errors, sum, txs, first:out[0]?.date, last:out[out.length - 1]?.date };
+}
+function sampleCSV(){
+  const lines = ["date;transactions;gross_pln"]; let seed = 7;
+  const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  for (let k = 0; k < 61; k++){
+    const t = new Date(Date.UTC(2026, 8, 1) + k * 86400000), dow = t.getUTCDay();
+    if (dow === 0) continue; const oct = t.getUTCMonth() === 9;
+    const tx = Math.round((dow === 6 ? 55 : 72) * (oct ? 0.93 : 1) + rnd() * 10);
+    const basket = (oct ? 27.4 : 24.9) + rnd() * 2;
+    lines.push(`${t.toISOString().slice(0, 10)};${tx};${(tx * basket).toFixed(2).replace(".", ",")}`);
+  }
+  lines.splice(20, 0, "2026-09-23;;1 0,50");
+  return lines.join("\n");
+}
+
+/* ============ Analiza P47: deterministyczny rozkład zmiany ============ */
+function splitPeriods(rows){
+  if (rows.length < 14) return null;
+  const months = [...new Set(rows.map(r => r.date.slice(0, 7)))];
+  let A, B, how;
+  if (months.length >= 2){
+    const [m1, m2] = months.slice(-2); A = rows.filter(r => r.date.startsWith(m1)); B = rows.filter(r => r.date.startsWith(m2)); how = "dwa ostatnie miesiące kalendarzowe";
+    const [y2, mo2] = m2.split("-").map(Number), daysInB = new Date(Date.UTC(y2, mo2, 0)).getUTCDate();
+    const maxB = Math.max(...B.map(r => Number(r.date.slice(8))));
+    if (maxB < daysInB){ A = A.filter(r => Number(r.date.slice(8)) <= maxB); how = `dni 1–${maxB} dwóch ostatnich miesięcy, bo miesiąc ${m2} jest niepełny`; }
+  }
+  else { const h = Math.floor(rows.length / 2); A = rows.slice(0, h); B = rows.slice(h); how = "dwie połowy okresu"; }
+  if (!A.length || !B.length) return null;
+  return { A, B, how };
+}
+function stats(rows){ const S_ = rows.reduce((s, r) => s + r.gross, 0), T = rows.reduce((s, r) => s + r.tx, 0); return { S:S_, T, A:T ? S_ / T : 0, days:rows.filter(r => r.gross > 0).length, from:rows[0].date, to:rows[rows.length - 1].date }; }
+function decompose(rows){
+  const p = splitPeriods(rows); if (!p) return null;
+  const a = stats(p.A), b = stats(p.B);
+  const dS = b.S - a.S, txEff = (b.T - a.T) * a.A, basketEff = (b.A - a.A) * b.T;
+  return { how:p.how, a, b, dS, txEff, basketEff, check:Math.abs(txEff + basketEff - dS) < 0.01 };
+}
+function decompText(imp){
+  const r = decompose(imp.rows); if (!r) return "Za mało danych.";
+  const pct = r.a.S ? (r.dS / r.a.S * 100) : 0; const sg = x => (x >= 0 ? "+" : "−") + zl(Math.abs(x));
+  const acts = [];
+  if (r.txEff < 0) acts.push("Sprawdź, czy w okresie B były dni zamknięcia, krótsze godziny lub rozbieżne informacje o godzinach w kanałach.");
+  if (r.basketEff > 0) acts.push("Średnia wartość transakcji wzrosła. Sprawdź, czy to zmiana cen, czy struktury koszyka (wymaga danych o asortymencie).");
+  if (r.basketEff < 0) acts.push("Średnia wartość transakcji spadła. Sprawdź promocje i dostępność droższych pozycji w okresie B.");
+  if (r.txEff >= 0 && acts.length < 3) acts.push("Liczba transakcji nie spadła. Ustal termin przeglądu po kolejnym miesiącu.");
+  return `Składniki zmiany sprzedaży — wersja danych v${imp.version} (${imp.filename})
+Metoda: deterministyczny rozkład na liczbę transakcji i średnią wartość transakcji; porównanie: ${r.how}.
+
+Okres A (${r.a.from} – ${r.a.to}): ${zl(r.a.S)} brutto, ${int(r.a.T)} transakcji, średnio ${zl(r.a.A)}, ${r.a.days} dni ze sprzedażą.
+Okres B (${r.b.from} – ${r.b.to}): ${zl(r.b.S)} brutto, ${int(r.b.T)} transakcji, średnio ${zl(r.b.A)}, ${r.b.days} dni ze sprzedażą.
+
+Zmiana sprzedaży: ${sg(r.dS)} (${pct >= 0 ? "+" : "−"}${Math.abs(pct).toFixed(1).replace(".", ",")}%).
+• efekt liczby transakcji (T_B − T_A) × średnia_A: ${sg(r.txEff)}
+• efekt średniej wartości transakcji (śr_B − śr_A) × T_B: ${sg(r.basketEff)}
+Kontrola: suma składników ${r.check ? "równa się" : "NIE równa się"} zmianie.
+
+Działania do rozważenia (do 3):
+${acts.slice(0, 3).map((x, i) => `${i + 1}. ${x}`).join("\n")}
+
+Ograniczenia: transakcja to nie klient; brak danych o asortymencie i cenach, więc nie rozstrzygamy przyczyny zmiany. ${r.a.days !== r.b.days ? `Okresy mają różną liczbę dni ze sprzedażą (${r.a.days} i ${r.b.days}).` : ""}`;
+}
+
+/* ============ Płatności testowe: zamówienie, zdarzenia, uprawnienie ============ */
+function createOrder(kind, ref, snapshot){
+  const key = kind + ":" + ref;
+  const existing = S.orders.find(o => o.idem === key && ["awaiting_payment","payment_pending"].includes(o.status));
+  if (existing) return existing; // idempotencja: ta sama intencja nie tworzy drugiego zamówienia
+  const o = { id:uid("Z"), idem:key, kind, ref, snapshot, amount:snapshot.price, currency:"PLN", status:"awaiting_payment", createdAt:now(), history:[{ at:now(), text:"Zamówienie utworzone" }] };
+  S.orders.unshift(o); log(`Zamówienie ${o.id} (${snapshot.title}) utworzone`); return o;
+}
+function paymentEvent(orderId, type, eventId, amount){
+  const o = S.orders.find(x => x.id === orderId); if (!o) return "Nieznane zamówienie";
+  if (S.events.includes(eventId)){ log(`Zdarzenie ${eventId} powtórzone — zignorowane`); return "Duplikat zdarzenia zignorowany. Stan bez zmian."; }
+  S.events.push(eventId);
+  if (o.status === "paid"){ log(`Zdarzenie ${type} po opłaceniu ${o.id} — zignorowane`); return "Zamówienie już opłacone. Zdarzenie spoza kolejności zignorowane."; }
+  if (type === "failed"){ o.status = "failed"; o.history.push({ at:now(), text:"Operator płatności: odmowa" }); notify(`Płatność za „${o.snapshot.title}” nie powiodła się. Możesz spróbować ponownie.`, "zlecenia"); return "Zapisano odmowę."; }
+  if (amount !== o.amount){ log(`Zdarzenie ${eventId}: kwota ${amount} ≠ ${o.amount} — odrzucone`); return "Kwota zdarzenia nie zgadza się z zamówieniem. Odrzucono."; }
+  o.status = "paid"; o.paidAt = now(); o.history.push({ at:now(), text:"Zweryfikowane zdarzenie płatności: opłacono" });
+  grant(o); log(`Opłacono ${o.id}; przyznano uprawnienie`); return "Opłacono i przyznano uprawnienie.";
+}
+function grant(o){
+  if (o.kind === "sub"){
+    S.sub = { status:"active", orderId:o.id, periodStart:now(), periodEnd:addMonth(now()), renew:true, cycle:{ goalId:null, refillUsed:false }, history:[{ at:now(), text:"Okres rozpoczęty" }] };
+    notify("Abonament aktywny. Twój cykl na ten miesiąc jest gotowy do przypisania celu.", "cele");
+    const g = S.goals.find(x => x.id === o.ref); if (g && g.status === "ready") assignToCycle(g);
+  } else {
+    const q = S.quotes.find(x => x.id === o.ref); if (q){ q.status = "paid"; createDelivery({ kind:"service", quoteId:q.id, title:q.offer.title, content:`Zakres: ${q.offer.scope}\n\n[do uzupełnienia przez operatora: rezultat usługi]`, goalId:q.goalId }); }
+    notify(`Usługa „${o.snapshot.title}” opłacona. Trafiła do realizacji.`, "zlecenia");
+  }
+}
+function assignToCycle(g){
+  S.sub.cycle.goalId = g.id; g.covered = "sub"; g.status = "running";
+  createDelivery({ kind:"goal", goalId:g.id, title:VARIANTS[g.variant].title, content:draftMaterial(g) });
+  log(`Cel ${g.id} przypisany do cyklu abonamentu`);
+}
+function createDelivery({ kind, goalId, quoteId, title, content }){
+  const d = { id:uid("D"), kind, goalId, quoteId, title, version:1, status:"queued", draft:content, content:"", createdAt:now(), history:[{ at:now(), text:"Przyjęte do realizacji" }], corrections:[] };
+  S.deliveries.unshift(d); return d;
+}
+
+/* ============ Następny krok ============ */
+function nextStep(){
+  const g = goalsHere().find(x => !["closed","cancelled"].includes(x.status));
+  const pend = S.orders.find(o => o.status === "payment_pending");
+  const del = S.deliveries.find(d => d.status === "ready_for_acceptance");
+  const p = portrait();
+  const base = { who:"—", how:"—", scope:"—", unknown:"—", needs:"—" };
+  if (pend) return { ...base, key:"pay", propose:"Poczekaj na potwierdzenie płatności", why:"Wróciłeś z płatności, ale operator nie potwierdził jeszcze transakcji.", basis:`Zamówienie ${pend.id}, ${fmtDT(pend.createdAt)}`, unknown:"Czy płatność została zaksięgowana", result:"Uprawnienie po zweryfikowanym zdarzeniu", needs:"Nic. Nie płać ponownie.", who:"Operator płatności (testowy)", how:"Stan zamówienia w Zleceniach", scope:pend.snapshot.title, cta:["Sprawdź stan","go","zlecenia"] };
+  if (del){ const dg = S.goals.find(x => x.id === del.goalId); return { ...base, key:"accept:" + del.id, propose:`Odbierz: ${del.title} (wersja ${del.version})`, why:"Materiał jest gotowy i czeka na Twój odbiór.", basis:`Przekazane ${fmtDT(del.readyAt)}`, unknown:"Czy materiał pasuje do Twojej sytuacji. Ty decydujesz.", result:"Odebrany materiał albo jedna poprawka", needs:"Twoja decyzja", who:"Ty", how:"Odbiór lub poprawka w Wynikach", scope: dg?.covered === "sub" ? "W Twoim abonamencie" : "W opłaconym zleceniu", cta:["Odbierz","go","wyniki"] }; }
+  if (g){
+    const v = VARIANTS[g.variant] || { title:SITUATIONS[g.situation].label };
+    const scope = g.covered === "sub" ? "W Twoim abonamencie" : g.covered === "self" ? "Wykonujesz samodzielnie" : subActive() && !S.sub.cycle.goalId ? "Może wejść do Twojego cyklu" : "Do wyboru: samodzielnie lub abonament";
+    if (g.status === "needs_data") return { ...base, key:"g:" + g.id, propose:`Uzupełnij dane: ${v.title}`, why:g.qual.reason, basis:`Sprawa z ${fmtD(g.createdAt)}`, unknown:(g.qual.miss || []).join(", ") || "—", result:v.result || "—", needs:(g.qual.miss || []).join(", "), who:"Ty", how:"Kwalifikacja ponowiona po uzupełnieniu", scope, cta:["Uzupełnij","goal-open",g.id] };
+    if (g.status === "plan_review") return { ...base, key:"g:" + g.id, propose:`Sprawdź plan: ${v.title}`, why:"Plan jest gotowy. Bez Twojej akceptacji nic nie wykonujemy.", basis:g.qual.reason, unknown:"Czy kolejność i termin przeglądu Ci odpowiadają", result:v.result, needs:"Akceptacja planu (to nie jest zakup)", who:"Ty, potem RaportFirmy", how:"Odbiór materiału w Wynikach", scope, cta:["Sprawdź plan","goal-open",g.id] };
+    if (g.status === "ready") return { ...base, key:"g:" + g.id, propose:"Wybierz sposób realizacji", why:"Plan zaakceptowany.", basis:`Plan v${curPlan(g).version}, ${fmtD(curPlan(g).acceptedAt)}`, unknown:"—", result:v.result, needs:"Wybór: samodzielnie albo w abonamencie", who:"Ty lub RaportFirmy", how:"Wyniki", scope, cta:["Wybierz","goal-open",g.id] };
+    if (g.status === "outcome_review" || (g.covered === "self" && g.status === "running" && curPlan(g)?.actions.every(a => a.status !== "todo"))) return { ...base, key:"g:" + g.id, propose:"Oceń wynik działania", why:"Działania są wykonane albo materiał odebrany.", basis:`Termin przeglądu: ${curPlan(g)?.reviewDate || "—"}`, unknown:"Czy zmiana wpłynęła na sprzedaż. Wykonanie tego nie dowodzi.", result:"Decyzja: kontynuuj, zmień, zakończ lub odłóż", needs:"Twoja obserwacja", who:"Ty", how:"Ocena w Celach", scope, cta:["Oceń wynik","goal-open",g.id] };
+    if (g.covered === "self" && g.status === "running") return { ...base, key:"self", propose:`Twój plan: ${v.title}`, why:"Wykonujesz działania samodzielnie. Oznacz je jako wykonane, gdy skończysz.", basis:`Plan v${curPlan(g).version}`, unknown:"—", result:v.result, needs:"—", who:"Ty", how:"Ocena wyniku po wykonaniu działań", scope, cta:["Otwórz plan","goal-open",g.id] };
+    if (g.status === "running" || g.status === "correction") return { ...base, key:"run", propose:`W realizacji: ${v.title}`, why:"Pracujemy nad materiałem. Nic nie wymaga teraz Twojej decyzji.", basis:`Od ${fmtD(g.createdAt)}`, unknown:"—", result:v.result, needs:"—", who:g.covered === "self" ? "Ty" : "RaportFirmy (CEO)", how:"Powiadomienie w aplikacji, gdy będzie gotowe", scope, cta:["Zobacz sprawę","goal-open",g.id], info:true };
+  }
+  if (p && p.conflicts.length){
+    const c = p.conflicts[0], key = "conf:" + S.estId + ":" + c.f;
+    if (!S.dismissed.includes(key) && !S.snoozed.includes(key)) return { ...base, key, propose:`Potwierdź aktualną wartość: ${c.k.toLowerCase()}`, why:"Twoje kanały podają różne informacje.", basis:c.v, unknown:"Która wartość jest aktualna. Nie szacujemy skutków.", result:"Jedna potwierdzona wartość; potem możliwy pakiet korekt", needs:"Twoja aktualna wartość", who:"Ty", how:"Portret pokaże zgodność", scope:"Bezpłatnie", cta:["Uzupełnij","correct",c.f], dismissable:true };
+  }
+  return null;
+}
+
+/* ============ Widoki ============ */
+const AREAS = [["dzisiaj","Dzisiaj"],["cele","Cele i działania"],["wyniki","Wyniki"],["firma","Moja firma"],["zlecenia","Zlecenia i pomoc"]];
+const ONBOARD = ["start","context","portrait","goal","account","finished"];
+function header(){
+  const e = est(), r = S.recog;
+  const ctx = e ? `<span class="muted">${esc(r.declaredOnly ? "Deklaracja właściciela" : r.entity.name)}</span><b>${esc(e.sign)} · ${esc(e.addr)}</b>` : `<span class="muted">Nie wybrano firmy</span>`;
+  const acct = loggedIn() ? `<span>${esc(S.account.email)}</span><button class="btn sm" data-act="logout">Wyloguj</button>` : `<span class="muted">Sesja anonimowa</span>${S.estId ? `<button class="btn sm" data-act="go" data-v="account">Zaloguj</button>` : ""}`;
+  const unread = S.inbox.filter(m => !m.read).length;
+  const nav = loggedIn() && S.mode === "client" ? `<nav class="areas" aria-label="Obszary">${AREAS.map(([k, l]) => `<a href="#${k}" ${S.view === k || (k === "firma" && S.view === "import") ? 'aria-current="page"' : ""}>${l}${k === "dzisiaj" && unread ? `<span class="count">${unread}</span>` : ""}</a>`).join("")}</nav>` : "";
+  return `<div class="testbar" role="note"><span>Środowisko testowe. Dane fikcyjne. Rejestr GUS/CEIDG, logowanie, płatności i poczta nie są podłączone.</span><span class="row">${loggedIn() ? `<button class="btn sm" data-act="mode">${S.mode === "client" ? "Panel operatora" : "Widok klienta"}</button>` : ""}<button class="btn sm" data-act="reset">Wyczyść dane testowe</button></span></div>
+  <header class="top"><div class="top-in"><a class="brand" href="#${loggedIn() ? "dzisiaj" : "start"}">Raport<span>Firmy</span>.pl</a><div class="ctx">${ctx}</div><div class="acct">${acct}</div></div>${nav}</header>`;
+}
+function flash(){ if (!UI.flash) return ""; const f = UI.flash; UI.flash = null; return `<div class="flash ${f.kind}" role="status">${esc(f.text)}</div>`; }
+const errFor = k => UI.err[k] ? `<p class="err" id="err-${k}">${esc(UI.err[k])}</p>` : "";
+const kv = rows => `<dl class="kv">${rows.filter(Boolean).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join("")}</dl>`;
+
+function vStart(){
+  if (UI.loading) return `<section class="card" aria-busy="true"><h1>Sprawdzamy rejestr…</h1><p class="muted">Adapter testowy. Bez płatnych wywołań i bez szukania konkurencji.</p><div><button class="btn" data-act="cancel-run">Anuluj</button></div></section>`;
+  const r = S.recog;
+  let result = "";
+  if (r && r.status === "no_match") result = `<section class="card warn"><h2>Rejestr nie zwrócił podmiotu dla tego numeru</h2><p>Sprawdź numer albo wskaż swoją placówkę. Twoja deklaracja pozostanie oznaczona jako deklaracja do potwierdzenia.</p><div class="row"><button class="btn primary" data-act="declare">Wskażę swoją placówkę</button></div></section>`;
+  if (r && r.status === "no_coverage") result = `<section class="card warn"><h2>Brak danych dla tego numeru</h2><p>Numer jest poprawny. Rejestr GUS/CEIDG nie jest jeszcze podłączony, a adapter testowy zna tylko numery z listy obok. Nie pokazujemy wymyślonych danych.</p><div class="row"><button class="btn primary" data-act="declare">Wskażę swoją placówkę</button></div></section>`;
+  if (r && r.status === "source_unavailable") result = `<section class="card bad"><h2>Źródło jest chwilowo niedostępne</h2><p>To nie znaczy, że firma nie istnieje. Spróbuj ponownie za chwilę. Numer nie został zapisany, więc wpisz go jeszcze raz.</p></section>`;
+  return `<section class="hero">
+    <div class="stack">
+      <h1>Sprawdź, co klienci wiedzą o Twoim sklepie</h1>
+      <p class="lead">Wpisz NIP. Rozpoznamy podmiot i Twoją placówkę, pokażemy źródła i to, czego nie wiemy. Bez zakładania konta i bez płatności.</p>
+      <form class="card" data-form="nip" novalidate>
+        <div class="field"><label for="nip">NIP firmy</label>
+          <input class="nip" id="nip" name="nip" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="000-000-00-00" aria-describedby="nip-hint${UI.err.nip ? " err-nip" : ""}" ${UI.err.nip ? 'aria-invalid="true"' : ""}>
+          <p class="hint" id="nip-hint">10 cyfr; spacje i myślniki są dozwolone. Numer nie trafia do adresu strony ani do pamięci przeglądarki.</p>${errFor("nip")}</div>
+        <div><button class="btn primary" type="submit">Sprawdź firmę</button></div>
+      </form>
+      ${result}
+      ${S.account && !loggedIn() ? `<p>Masz już konto testowe <b>${esc(S.account.email)}</b>. <button class="btn link" data-act="go" data-v="account">Zaloguj się ponownie</button></p>` : ""}
+    </div>
+    <aside class="card"><h3>Numery testowe</h3><p class="small muted">Adapter testowy zastępuje rejestr, dopóki dostęp do GUS/CEIDG nie zostanie przyznany.</p>
+      <div class="stack">${TEST_NIPS.map(t => `<button class="btn" data-act="fill-nip" data-nip="${t.nip}"><span class="mono">${t.nip}</span></button><p class="small muted" style="margin-top:-6px">${esc(t.what)}</p>`).join("")}</div></aside>
+  </section>`;
+}
+function vContext(){
+  const r = S.recog;
+  if (r.declaring) return `<section class="stack"><h1>Wskaż swoją placówkę</h1><p class="muted lead">Zapiszemy to jako Twoją deklarację, nie jako odpowiedź rejestru.</p>
+    <form class="card" data-form="declare">
+      <div class="field"><label for="d-sign">Szyld (nazwa na drzwiach)</label><input id="d-sign" name="sign" type="text" required></div>
+      <div class="field"><label for="d-addr">Adres sklepu</label><input id="d-addr" name="addr" type="text" required></div>
+      ${errFor("declare")}
+      <div class="row"><button class="btn primary" type="submit">Zapisz deklarację</button><button class="btn" type="button" data-act="go" data-v="start">Wróć</button></div></form></section>`;
+  return `<section class="stack"><div class="steps"><span>NIP</span><span class="on">Podmiot i placówka</span><span>Portret</span><span>Cel</span></div>
+    <h1>Który sklep prowadzisz?</h1>
+    <div class="card"><h3>Podmiot formalny <span class="pill test">dane testowe</span></h3>${kv([["Nazwa", esc(r.entity.name)],["Forma", esc(r.entity.form)],["NIP", `<span class="mono">${esc(S.nipMasked)}</span>`],["Siedziba", esc(r.entity.seat)],["PKD", esc(r.entity.pkd)]])}
+      <p class="small muted">Siedziba firmy to adres formalny. Sklep może działać gdzie indziej i pod innym szyldem.</p></div>
+    <form class="card" data-form="context"><fieldset style="border:none;padding:0;margin:0" class="stack"><legend style="font-weight:600;margin-bottom:8px">Kandydaci na placówkę (${r.candidates.length})</legend>
+      ${r.candidates.map(c => `<label class="check card" style="padding:12px"><input type="radio" name="est" value="${c.id}"><span><b>${esc(c.sign)}</b><br>${esc(c.addr)}<br><span class="small muted">${esc(c.basis)}</span></span></label>`).join("")}</fieldset>
+      <label class="check"><input type="checkbox" name="confirm" value="1"> Potwierdzam, że prowadzę wybraną placówkę pod tym szyldem.</label>
+      <p class="small muted">Nie wybieramy za Ciebie, nawet gdy kandydat jest jeden. Wspólny szyld sieci nie łączy placówek innych operatorów.</p>
+      ${errFor("context")}
+      <div class="row"><button class="btn primary" type="submit">Potwierdź placówkę</button><button class="btn" type="button" data-act="declare">Żadna nie pasuje</button></div></form></section>`;
+}
+function itemsList(list, kind){
+  if (!list.length) return `<p class="muted small">Brak pozycji.</p>`;
+  return `<div class="items">${list.map(i => `<div class="item"><div><b>${esc(i.k)}</b><br>${esc(i.v)}${i.note ? `<br><span class="small muted">${esc(i.note)}</span>` : ""}</div><div>${kind}</div><div class="src">Źródło: ${esc(i.src)}${i.at ? ` · ${fmtDT(i.at)}` : ""}</div></div>`).join("")}</div>`;
+}
+function correctionForm(field){
+  return `<form class="card accent" data-form="correct"><h3>Popraw informację</h3>
+    <div class="field"><label for="c-field">Co poprawiasz</label><select id="c-field" name="field">${[["hours","Godziny otwarcia"],["phone","Telefon"],["other","Inna informacja"]].map(([v, l]) => `<option value="${v}" ${v === field ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+    <div class="field"><label for="c-val">Aktualna wartość</label><input id="c-val" name="value" type="text" placeholder="np. pn–pt 8:00–18:00, sob 9:00–14:00" required></div>
+    ${errFor("correct")}<p class="small muted">Korekta jest bezpłatna. Zapiszemy ją jako Twoją deklarację i oznaczymy zależne wyniki do przeglądu.</p>
+    <div class="row"><button class="btn primary" type="submit">Zapisz korektę</button><button class="btn" type="button" data-act="corr-close">Anuluj</button></div></form>`;
+}
+function vPortrait(){
+  const p = portrait();
+  return `<section class="stack"><div class="steps"><span>NIP</span><span>Podmiot i placówka</span><span class="on">Portret</span><span>Cel</span></div>
+    <div class="row" style="justify-content:space-between"><h1>Portret placówki</h1><span class="pill">wersja ${p.version}</span></div>
+    <p class="lead">${p.conflicts.length ? `Znaleźliśmy ${p.conflicts.length === 1 ? "jedną rozbieżność" : p.conflicts.length + " rozbieżności"} w sprawdzonych źródłach. Nie szacujemy jej skutków.` : "W sprawdzonych źródłach nie znaleźliśmy rozbieżności. To pełnoprawny wynik."}</p>
+    ${UI.corrOpen ? correctionForm(UI.corrOpen) : ""}
+    <div class="grid2">
+      <div class="card ${p.conflicts.length ? "warn" : "good"}"><h2>Rozbieżności</h2>${itemsList(p.conflicts, '<span class="pill warn">konflikt</span>')}</div>
+      <div class="card"><h2>Czego nie wiemy</h2>${itemsList(p.unknown, '<span class="pill">brak danych</span>')}</div>
+      <div class="card"><h2>Fakty ze źródeł</h2>${itemsList(p.facts, '<span class="pill good">fakt</span>')}</div>
+      <div class="card"><h2>Twoje deklaracje</h2>${itemsList(p.decl, '<span class="pill info">deklaracja</span>')}</div>
+    </div>
+    <p class="small muted">Źródła i ograniczenia są widoczne bez zakupu. Nie oceniamy firmy za brak informacji w internecie.</p>
+    <div class="row"><button class="btn primary" data-act="go" data-v="goal">Wybierz następny krok</button><button class="btn" data-act="correct" data-f="hours">Popraw informację</button><button class="btn" data-act="not-mine">To nie mój sklep</button><button class="btn link" data-act="finish">Na razie nic więcej</button></div></section>`;
+}
+function variantForm(v){
+  const p = portrait(), d = UI.goalDraft?.inputs || {};
+  const hours = d.hours ?? latestDecl("hours")?.value ?? (p.facts.find(f => f.k === "Godziny otwarcia")?.v || "");
+  const phone = d.phone ?? latestDecl("phone")?.value ?? (p.facts.find(f => f.k === "Telefon")?.v || "");
+  if (v === "V1"){
+    const names = p.channels.map(c => c.name); const extra = d.extraCh || "";
+    return `<div class="field"><label for="i-hours">Aktualne godziny otwarcia</label><input id="i-hours" name="hours" type="text" value="${esc(hours)}" placeholder="pn–pt 8:00–18:00"></div>
+      <div class="field"><label for="i-phone">Telefon do sklepu</label><input id="i-phone" name="phone" type="text" value="${esc(phone)}"></div>
+      <div class="field"><label for="i-addr">Adres sklepu</label><input id="i-addr" name="addr" type="text" value="${esc(d.addr ?? est().addr)}"></div>
+      <fieldset class="stack" style="border:1px solid var(--line);border-radius:8px;padding:12px"><legend>Twoje kanały (do trzech)</legend>
+        ${names.map(n => `<label class="check"><input type="checkbox" name="ch" value="${esc(n)}" ${!d.channels || d.channels.includes(n) ? "checked" : ""}> ${esc(n)}</label>`).join("") || `<p class="small muted">Nie znaleźliśmy kanałów tej placówki. Dopisz własne.</p>`}
+        <div class="field"><label for="i-extra">Inne kanały (po jednym w linii)</label><textarea id="i-extra" name="extra" rows="2" placeholder="np. Instagram sklepu">${esc(extra)}</textarea></div></fieldset>`;
+  }
+  if (v === "V2") return `<div class="field"><label for="i-frag">Fragment oferty do poprawy</label><textarea id="i-frag" name="fragment" placeholder="Wklej opis oferty, który chcesz uprościć">${esc(d.fragment || "")}</textarea></div>
+      <div class="field"><label for="i-q">Prawdziwe pytania klientów (do pięciu, po jednym w linii)</label><textarea id="i-q" name="questions" placeholder="Czy można zamówić tort na sobotę?">${esc((d.questions || []).join("\n"))}</textarea><p class="hint">Tylko pytania, które naprawdę padły. Nie wymyślamy pytań za Ciebie.</p></div>`;
+  if (v === "V3") return `<fieldset class="row" style="border:none;padding:0"><legend class="small muted">Co chcesz zrobić</legend><label class="check"><input type="radio" name="mode" value="pomysl" ${d.mode !== "ocena" ? "checked" : ""}> Nowy pomysł do sprawdzenia</label><label class="check"><input type="radio" name="mode" value="ocena" ${d.mode === "ocena" ? "checked" : ""}> Ocena zakończonej próby</label></fieldset>
+      <div class="field"><label for="i-desc">Opis pomysłu lub próby</label><textarea id="i-desc" name="desc">${esc(d.desc || "")}</textarea></div>
+      <div class="grid2"><div class="field"><label for="i-start">Początek próby</label><input id="i-start" name="start" type="date" value="${esc(d.start || "")}"></div><div class="field"><label for="i-end">Koniec próby</label><input id="i-end" name="end" type="date" value="${esc(d.end || "")}"></div></div>
+      <div class="field"><label for="i-obs">Co zaobserwowałeś (opcjonalnie)</label><input id="i-obs" name="observed" type="text" value="${esc(d.observed || "")}"></div>`;
+  if (v === "V5"){ const imp = committedImport(); return `<p>${imp ? `Użyjemy zatwierdzonej wersji danych <b>v${imp.version}</b> (${esc(imp.filename)}, ${imp.rows.length} dni, ${imp.first} – ${imp.last}).` : "Brak zatwierdzonych danych sprzedaży dla tej placówki."}</p>`; }
+  return `<div class="field"><label for="i-own">Twoje pytanie</label><textarea id="i-own" name="own">${esc(d.own || "")}</textarea></div>`;
+}
+function vGoal(){
+  const dr = UI.goalDraft;
+  const tiles = ["V1","V2","V3"].map(k => { const v = VARIANTS[k]; return `<button class="tile" data-act="pick" data-v="${k}" data-s="${v.sit}" aria-pressed="${dr && dr.variant === k}"><span class="sid">${v.sit} · ${v.caps.join(", ")}</span><b>${esc(v.title)}</b><span class="small muted">${esc(v.desc)}</span></button>`; }).join("");
+  let form = "";
+  if (dr){
+    const q = dr.qual;
+    form = `<form class="card accent" data-form="goal"><h2>${esc(dr.variant ? VARIANTS[dr.variant].title : SITUATIONS[dr.situation].label)}</h2>
+      <p class="small muted">${esc(SITUATIONS[dr.situation].label)}</p>
+      <div class="field"><label for="g-q">Twoje pytanie lub cel (opcjonalnie)</label><input id="g-q" name="question" type="text" value="${esc(dr.question || "")}" placeholder="np. chcę, żeby klienci nie przychodzili po zamknięciu"></div>
+      ${variantForm(dr.variant)}
+      ${q ? `<div class="card ${q.code === "eligible" || q.code === "not_needed" ? "good" : "warn"}"><div class="row">${pill(QUAL, q.code)}</div><p>${esc(q.reason)}</p>${q.next ? `<p class="small muted">${esc(q.next)}</p>` : ""}</div>` : ""}
+      <div class="row"><button class="btn primary" type="submit" name="op" value="check">Sprawdź zakres i przygotuj plan</button>
+      ${q && ["needs_data","needs_authorization","not_supported"].includes(q.code) ? `<button class="btn" type="submit" name="op" value="save">Zapisz sprawę na później</button>` : ""}
+      ${q && ["needs_authorization","not_supported"].includes(q.code) ? `<button class="btn" type="button" data-act="quote-from-goal" data-s="${dr.situation}">Poproś o wycenę usługi</button>` : ""}
+      ${q && q.code === "not_needed" ? `<button class="btn" type="button" data-act="finish">Zakończ bez działania</button>` : ""}
+      ${dr.variant === "V5" && !committedImport() ? `<button class="btn" type="button" data-act="go" data-v="import">Dodaj dane sprzedaży</button>` : ""}
+      <button class="btn link" type="button" data-act="unpick">Wybierz inny cel</button></div></form>`;
+  }
+  return `<section class="stack">${loggedIn() ? "" : `<div class="steps"><span>NIP</span><span>Podmiot i placówka</span><span>Portret</span><span class="on">Cel</span></div>`}
+    <h1>Co chcesz teraz osiągnąć?</h1><p class="lead muted">Wybierasz Ty. Możesz też nic nie robić; to prawidłowy wybór.</p>
+    <div class="grid3">${tiles}</div>
+    <div class="card"><h3>Inna sytuacja</h3><div class="row">${["S2","S5","S7"].map(s => `<button class="btn" data-act="pick" data-s="${s}" data-v="${SITUATIONS[s].variant || ""}"><span class="mono small">${s}</span> ${esc(SITUATIONS[s].label)}</button>`).join("")}</div></div>
+    ${form}
+    ${loggedIn() ? "" : `<div><button class="btn link" data-act="go" data-v="portrait">Wróć do portretu</button></div>`}</section>`;
+}
+function vAccount(){
+  if (UI.loginStep === "code") return `<section class="stack"><h1>Wpisz kod z wiadomości</h1>
+    <form class="card" data-form="code"><p>Poczta nie jest podłączona, więc nie wysłaliśmy wiadomości do <b>${esc(UI.loginEmail)}</b>. W środowisku testowym kod to <span class="mono">000000</span>.</p>
+      <div class="field"><label for="code">Kod</label><input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" class="nip"></div>${errFor("code")}
+      <div class="row"><button class="btn primary" type="submit">Zaloguj</button><button class="btn" type="button" data-act="login-cancel">Anuluj</button></div></form></section>`;
+  return `<section class="stack"><h1>Zachowaj i pracuj dalej</h1><p class="lead muted">Konto zapisze portret, cel i plan w Twojej prywatnej przestrzeni. Wpisanie NIP nie daje dostępu do cudzych danych.</p>
+    <form class="card" data-form="login"><div class="field"><label for="email">Adres e-mail</label><input id="email" name="email" type="email" autocomplete="email" value="${esc(S.account?.email || "")}"></div>${errFor("login")}
+      <div class="row"><button class="btn primary" type="submit">Wyślij kod</button><button class="btn" type="button" data-act="login-cancel">Wróć do portretu</button></div>
+      <p class="small muted">Logowanie testowe: dostawca uwierzytelniania nie jest jeszcze wybrany.</p></form></section>`;
+}
+function nextCard(n){
+  if (!n) return `<section class="card good"><h2>Nie ma teraz działania wymagającego decyzji</h2><p>Możesz zacząć własną sprawę, kiedy zechcesz.</p><div><button class="btn primary" data-act="go" data-v="goal">Rozpocznij sprawę</button></div></section>`;
+  const f = [["Co proponujemy", n.propose],["Dlaczego teraz", n.why],["Podstawa i data", n.basis],["Czego nie wiemy", n.unknown],["Jaki rezultat", n.result],["Potrzebne dane lub zgoda", n.needs],["Kto wykona", n.who],["Jak odbierzemy", n.how],["Zakres", n.scope]];
+  return `<section class="card next ${n.info ? "" : "accent"}"><span class="small muted">Następny krok</span><h2>${esc(n.propose)}</h2><dl>${f.slice(1).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
+    <div class="row"><button class="btn primary" data-act="${n.cta[1]}" data-v="${esc(n.cta[2])}" data-f="${esc(n.cta[2])}" data-id="${esc(n.cta[2])}">${esc(n.cta[0])}</button>${n.dismissable ? `<button class="btn" data-act="snooze" data-k="${esc(n.key)}">Odłóż</button><button class="btn link" data-act="dismiss" data-k="${esc(n.key)}">To nie pasuje do mojej sytuacji</button>` : ""}</div></section>`;
+}
+function vDzisiaj(){
+  const inbox = S.inbox.slice(0, 8);
+  return `<section class="stack"><h1>Dzisiaj</h1>${nextCard(nextStep())}
+    <div class="card"><div class="row" style="justify-content:space-between"><h2>Skrzynka spraw</h2>${S.inbox.some(m => !m.read) ? `<button class="btn sm" data-act="read-all">Oznacz jako przeczytane</button>` : ""}</div>
+    ${inbox.length ? `<div class="items">${inbox.map(m => `<div class="item"><div>${m.read ? "" : '<span class="pill acc">nowe</span> '}${esc(m.text)}</div><div>${m.view ? `<a href="#${m.view}">Otwórz</a>` : ""}</div><div class="src">${fmtDT(m.at)}</div></div>`).join("")}</div>` : `<p class="muted">Brak wiadomości.</p>`}</div></section>`;
+}
+function goalDetail(g){
+  const v = VARIANTS[g.variant], pl = curPlan(g);
+  const del = S.deliveries.filter(d => d.goalId === g.id);
+  const own = pl ? pl.actions : [];
+  let realization = "";
+  if (g.status === "ready"){
+    const cycleFree = subActive() && !S.sub.cycle.goalId;
+    realization = `<div class="card accent"><h3>Sposób realizacji</h3>
+      <div class="grid2">
+        <div class="stack"><b>W abonamencie</b>${subActive() ? (cycleFree ? `<span class="pill acc">W Twoim zakresie</span><p class="small">Cel wejdzie do bieżącego cyklu (do ${fmtD(S.sub.periodEnd)}).</p><div><button class="btn primary" data-act="use-cycle" data-id="${g.id}">Zleć w ramach abonamentu</button></div>` : `<p class="small">Cykl tego okresu jest już przypisany do innego celu. Kolejny cel w następnym okresie lub jako usługa.</p>`) : `<p class="small">99 zł brutto/mies. Jeden cel, jeden cykl, materiał i przegląd.</p><div><button class="btn primary" data-act="buy-sub" data-id="${g.id}">Zobacz zakres i kup</button></div>`}</div>
+        <div class="stack"><b>Samodzielnie</b><p class="small">Wykonujesz działania z planu sam. Bezpłatnie, z oceną wyniku na końcu.</p><div><button class="btn" data-act="self" data-id="${g.id}">Wykonam samodzielnie</button></div></div>
+      </div></div>`;
+  }
+  const outcomeOpen = g.status === "outcome_review" || (g.covered === "self" && g.status === "running" && own.every(a => a.status !== "todo"));
+  return `<div class="card"><div class="row" style="justify-content:space-between"><h2>${esc(v ? v.title : SITUATIONS[g.situation].label)}</h2>${pill(GOAL_ST, g.status)}</div>
+    ${g.needsReview ? `<div class="flash info">Dane placówki zmieniły się po utworzeniu sprawy. Sprawdź, czy plan jest aktualny.<button class="btn sm" data-act="reviewed" data-id="${g.id}" style="margin-left:8px">Sprawdzone</button></div>` : ""}
+    ${kv([["Sytuacja", `<span class="mono small">${g.situation}</span> ${esc(SITUATIONS[g.situation].label)}`],["Pytanie", esc(g.question || "—")],["Kwalifikacja", pill(QUAL, g.qual.code) + " " + esc(g.qual.reason)],["Kompetencje", v ? `<span class="mono small">${v.caps.join(", ")}</span>` : "—"],["Sposób", g.covered === "sub" ? "W abonamencie" : g.covered === "self" ? "Samodzielnie" : "Nie wybrano"],["Utworzona", fmtDT(g.createdAt)]])}
+    ${g.status === "needs_data" ? `<div><button class="btn primary" data-act="goal-fill" data-id="${g.id}">Uzupełnij dane</button></div>` : ""}
+    ${g.status === "blocked" ? `<p class="small muted">${esc(g.qual.next || "")}</p><div class="row"><button class="btn primary" data-act="quote-from-goal" data-s="${g.situation}">Poproś o wycenę usługi</button></div>` : ""}
+    </div>
+    ${pl ? `<div class="card"><div class="row" style="justify-content:space-between"><h3>Plan — wersja ${pl.version}${g.plans.length > 1 ? ` <span class="small muted">(poprzednie wersje: ${g.plans.length - 1})</span>` : ""}</h3>${pl.acceptedAt ? `<span class="pill good">zaakceptowany ${fmtD(pl.acceptedAt)}</span>` : `<span class="pill info">czeka na akceptację</span>`}</div>
+      <div class="items">${own.map(a => `<div class="item"><div>${esc(a.title)}<br><span class="small muted">Wykonuje: ${esc(a.owner)}</span></div><div>${a.owner === "Ty" && g.status !== "plan_review" && !["closed","cancelled"].includes(g.status) ? `<label class="check small"><input type="checkbox" data-act="toggle-action" data-id="${g.id}" data-a="${a.id}" ${a.status === "done" ? "checked" : ""}> wykonane</label>` : `<span class="pill ${a.status === "done" ? "good" : ""}">${a.status === "done" ? "wykonane" : a.status === "skipped" ? "pominięte" : "do zrobienia"}</span>`}</div></div>`).join("")}</div>
+      <p class="small">Przegląd: <b>${esc(pl.reviewDate)}</b></p>
+      ${g.status === "plan_review" ? (UI.planEdit ? `<form class="stack" data-form="plan-edit" data-id="${g.id}"><div class="field"><label for="p-date">Termin przeglądu</label><input id="p-date" name="review" type="date" value="${esc(pl.reviewDate)}"></div>${own.map(a => `<label class="check"><input type="checkbox" name="keep" value="${a.id}" ${a.status !== "skipped" ? "checked" : ""}> ${esc(a.title)}</label>`).join("")}<div class="row"><button class="btn primary" type="submit">Zapisz jako nową wersję</button><button class="btn" type="button" data-act="plan-edit-close">Anuluj</button></div></form>`
+        : `<div class="row"><button class="btn primary" data-act="accept-plan" data-id="${g.id}">Zatwierdź plan</button><button class="btn" data-act="plan-edit">Zmień plan</button><span class="small muted">Akceptacja planu nie jest zakupem.</span></div>`) : ""}
+    </div>` : ""}
+    ${realization}
+    ${g.variant === "V5" && g.covered === "self" && committedImport() ? `<div class="card"><h3>Wyliczenie z reguł</h3><p class="small muted">Obliczenie deterministyczne, bez kosztu i bez modelu AI.</p><pre class="material">${esc(decompText(committedImport()))}</pre></div>` : ""}
+    ${del.length ? `<div class="card"><h3>Materiały</h3>${del.map(d => `<div class="row" style="justify-content:space-between"><span>${esc(d.title)} · wersja ${d.version}</span>${pill(DEL_ST, d.status)}</div>`).join("")}<div><a class="btn sm" href="#wyniki">Otwórz w Wynikach</a></div></div>` : ""}
+    ${outcomeOpen ? `<form class="card accent" data-form="outcome" data-id="${g.id}"><h3>Ocena wyniku</h3><p class="small muted">Wykonanie zadania nie dowodzi wzrostu sprzedaży. „Wynik niepewny” i „bez zmiany” są prawidłowymi odpowiedziami.</p>
+      <div class="grid2"><div class="field"><label for="o-exec">Czy działania zostały wykonane?</label><select id="o-exec" name="exec"><option value="tak">Tak</option><option value="czesciowo">Częściowo</option><option value="nie">Nie</option></select></div>
+      <div class="field"><label for="o-eff">Co da się powiedzieć o efekcie?</label><select id="o-eff" name="effect"><option value="not_measured">Nie mierzono</option><option value="no_change">Bez zmiany</option><option value="inconclusive">Wynik niepewny</option><option value="observed">Zaobserwowana zmiana, bez dowodu przyczyny</option><option value="other_measure">Potrzebny inny pomiar</option></select></div></div>
+      <div class="field"><label for="o-obs">Twoja obserwacja</label><textarea id="o-obs" name="obs" rows="3"></textarea></div>
+      <div class="field"><label for="o-dec">Decyzja</label><select id="o-dec" name="decision"><option>Zakończ</option><option>Kontynuuj</option><option>Zmień</option><option>Odłóż</option><option>Brakuje podstaw do oceny</option></select></div>
+      <div><button class="btn primary" type="submit">Zapisz ocenę</button></div></form>` : ""}
+    ${g.outcome ? `<div class="card good"><h3>Ocena z ${fmtD(g.outcome.at)}</h3>${kv([["Wykonanie", esc(g.outcome.exec)],["Efekt", esc({ not_measured:"Nie mierzono", no_change:"Bez zmiany", inconclusive:"Wynik niepewny", observed:"Zaobserwowana zmiana, bez dowodu przyczyny", other_measure:"Potrzebny inny pomiar" }[g.outcome.effect])],["Obserwacja", esc(g.outcome.obs || "—")],["Decyzja", esc(g.outcome.decision)]])}<div><button class="btn" data-act="go" data-v="goal">Rozpocznij kolejną sprawę</button></div></div>` : ""}
+    ${["draft","needs_data","plan_review","ready","blocked"].includes(g.status) ? `<div><button class="btn link" data-act="cancel-goal" data-id="${g.id}">Odłóż i zamknij sprawę</button></div>` : ""}`;
+}
+function vCele(){
+  const list = goalsHere();
+  const g = list.find(x => x.id === UI.goalId) || list.find(x => !["closed","cancelled"].includes(x.status)) || list[0];
+  return `<section class="stack"><div class="row" style="justify-content:space-between"><h1>Cele i działania</h1><button class="btn primary" data-act="go" data-v="goal">Nowa sprawa</button></div>
+    ${list.length > 1 ? `<div class="subtabs">${list.map(x => `<button class="btn sm" data-act="goal-open" data-id="${x.id}" aria-pressed="${g && x.id === g.id}">${esc(VARIANTS[x.variant]?.title || x.situation)} · ${GOAL_ST[x.status][0]}</button>`).join("")}</div>` : ""}
+    ${g ? goalDetail(g) : `<div class="card"><h2>Nie masz jeszcze sprawy</h2><p>Wybierz cel. Możesz zacząć bez wykrytego problemu.</p><div><button class="btn primary" data-act="go" data-v="goal">Wybierz cel</button></div></div>`}</section>`;
+}
+function vWyniki(){
+  const p = portrait();
+  const ds = S.deliveries.filter(d => !d.goalId || S.goals.find(g => g.id === d.goalId)?.estId === S.estId);
+  return `<section class="stack"><h1>Wyniki</h1>
+    <div class="card"><div class="row" style="justify-content:space-between"><h2>Portret placówki</h2><span class="pill">wersja ${p.version}</span></div><p>${p.conflicts.length} rozbieżności, ${p.unknown.length} niewiadomych, ${p.facts.length} faktów. Bezpłatny.</p><div><button class="btn" data-act="go" data-v="portrait">Otwórz portret</button></div></div>
+    ${ds.map(d => {
+      const g = S.goals.find(x => x.id === d.goalId); const refillLeft = g && g.covered === "sub" && S.sub && S.sub.cycle.goalId === g.id && !S.sub.cycle.refillUsed;
+      const visible = ["ready_for_acceptance","accepted","correction_requested"].includes(d.status) || d.version > 1;
+      return `<div class="card ${d.status === "ready_for_acceptance" ? "accent" : ""}"><div class="row" style="justify-content:space-between"><h2>${esc(d.title)} · wersja ${d.version}</h2>${pill(DEL_ST, d.status)}</div>
+      ${d.status === "queued" ? `<p class="muted">Materiał jest przygotowywany. Dostaniesz wiadomość w Dzisiaj.</p>` : ""}
+      ${d.status === "needs_data" ? `<p>${esc(d.needMsg || "Potrzebujemy uzupełnienia danych.")}</p>` : ""}
+      ${visible && d.content ? `<pre class="material">${esc(d.content)}</pre><div class="row"><button class="btn sm" data-act="copy" data-id="${d.id}">Kopiuj treść</button><span class="small muted">Przekazane ${fmtDT(d.readyAt)} · wykonawca: ${esc(d.by || "CEO")}</span></div>` : ""}
+      ${d.status === "ready_for_acceptance" ? `<div class="row"><button class="btn primary" data-act="accept-del" data-id="${d.id}">Odbieram</button><button class="btn" data-act="corr-del" data-id="${d.id}">Zgłoś poprawkę</button></div>
+        ${UI.corrDel === d.id ? `<form class="stack card" data-form="del-corr" data-id="${d.id}"><fieldset class="stack" style="border:none;padding:0"><legend class="small muted">Rodzaj poprawki</legend>
+          <label class="check"><input type="radio" name="kind" value="error" checked> Błąd w materiale (bez dopłaty i bez zużycia rundy)</label>
+          <label class="check"><input type="radio" name="kind" value="refill" ${g && g.covered === "sub" && !refillLeft ? "disabled" : ""}> Uzupełnienie zakresu ${g && g.covered === "sub" ? (refillLeft ? "(1 runda w cyklu do wykorzystania)" : "(runda w tym cyklu wykorzystana)") : ""}</label></fieldset>
+          <div class="field"><label for="dc-text">Co poprawić</label><textarea id="dc-text" name="text" required></textarea></div>${errFor("delcorr")}
+          <div class="row"><button class="btn primary" type="submit">Wyślij poprawkę</button><button class="btn" type="button" data-act="corr-del-close">Anuluj</button></div></form>` : ""}` : ""}
+      ${d.corrections.length ? `<p class="small muted">Poprawki: ${d.corrections.map(c => `${c.kind === "error" ? "błąd" : "uzupełnienie"} (${fmtD(c.at)})`).join(", ")}</p>` : ""}</div>`; }).join("") || `<div class="card"><p class="muted">Nie masz jeszcze materiałów. Pojawią się tu po realizacji celu.</p></div>`}</section>`;
+}
+function vFirma(){
+  const r = S.recog, e = est(), p = portrait();
+  const ests = [...(r.candidates || []), ...S.extraEsts];
+  const imps = S.imports.filter(i => i.estId === S.estId);
+  const integ = [["Rejestr GUS/CEIDG","Adapter testowy","test","Oczekiwanie na dostęp. Prawdziwe numery nie są rozpoznawane."],["Profil Firmy w Google","Nieskonfigurowane","","Wymaga zatwierdzenia projektu API i Twojej roli. Bez tego kompetencje P06–P09 są wyłączone."],["Operator płatności","Tryb testowy","test","Zdarzenia płatności symuluje panel operatora."],["Poczta","Nieskonfigurowana","","Wiadomości tylko w skrzynce aplikacji."],["Model AI","Nieużywany","","Materiały przygotowują reguły i operator."],["Analityka","Wyłączona","good","Brak GA i nagrań sesji."]];
+  return `<section class="stack"><h1>Moja firma</h1>
+    <div class="grid2">
+      <div class="card"><h2>Podmiot</h2>${r.declaredOnly ? `<p>Nie rozpoznano w rejestrze. Pracujemy na Twojej deklaracji.</p>` : kv([["Nazwa", esc(r.entity.name)],["NIP", `<span class="mono">${esc(S.nipMasked)}</span>`],["REGON", `<span class="mono">${esc(r.entity.regon)}</span>`],["Siedziba", esc(r.entity.seat)],["PKD", esc(r.entity.pkd)],["Źródło", `Adapter testowy, ${fmtDT(r.at)}`]])}</div>
+      <div class="card"><h2>Placówki</h2><div class="items">${ests.map(x => `<div class="item"><div><b>${esc(x.sign)}</b><br>${esc(x.addr)}</div><div>${x.id === S.estId ? '<span class="pill acc">bieżąca</span>' : UI.confirmEst === x.id ? `<button class="btn primary sm" data-act="switch-est" data-id="${x.id}">Potwierdzam, że ją prowadzę</button>` : `<button class="btn sm" data-act="ask-est" data-id="${x.id}">Pracuj na tej</button>`}</div></div>`).join("")}</div>
+        <p class="small muted">Każda placówka ma osobne dane, cele i wyniki. Abonament obejmuje jedną wybraną placówkę.</p></div>
+    </div>
+    <div class="card"><div class="row" style="justify-content:space-between"><h2>Dane sprzedaży</h2><button class="btn primary" data-act="go" data-v="import">Nowy import</button></div>
+      ${imps.length ? `<div class="tablewrap"><table><thead><tr><th>Wersja</th><th>Plik</th><th>Okres</th><th class="r">Dni</th><th class="r">Suma brutto</th><th>Zatwierdzono</th></tr></thead><tbody>${imps.map(i => `<tr><td class="mono">v${i.version}</td><td>${esc(i.filename)}</td><td>${i.first} – ${i.last}</td><td class="r">${i.rows.length}</td><td class="r">${zl(i.sum)}</td><td>${fmtDT(i.at)}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">Brak danych. Import jest potrzebny tylko do analizy sprzedaży.</p>`}</div>
+    <div class="card"><h2>Korekty i deklaracje</h2>${S.corrections.filter(c => c.estId === S.estId).length ? `<div class="items">${S.corrections.filter(c => c.estId === S.estId).map(c => `<div class="item"><div>${esc({ hours:"Godziny", phone:"Telefon", other:"Inna informacja" }[c.field])}: ${esc(c.value)}</div><div class="small muted">${fmtDT(c.at)}</div></div>`).join("")}</div>` : `<p class="muted">Brak korekt.</p>`}<div><button class="btn" data-act="correct" data-f="hours">Popraw informację</button></div>${UI.corrOpen ? correctionForm(UI.corrOpen) : ""}</div>
+    <div class="card"><h2>Połączenia i integracje</h2><div class="tablewrap"><table><thead><tr><th>Usługa</th><th>Stan</th><th>Co to znaczy</th></tr></thead><tbody>${integ.map(([a, b, c, d]) => `<tr><td>${a}</td><td><span class="pill ${c}">${b}</span></td><td>${d}</td></tr>`).join("")}</tbody></table></div></div>
+    <div class="card"><h2>Konto</h2>${kv([["E-mail", esc(S.account.email)],["Workspace", `<span class="mono">${esc(S.account.ws)}</span>`],["Od", fmtDT(S.account.since)]])}
+      <p class="small muted">Usunięcie konta jest osobne od rezygnacji z abonamentu.</p><div><button class="btn danger" data-act="delete-account">Usuń konto i dane</button></div></div></section>`;
+}
+function vImport(){
+  const dr = UI.importDraft, ch = UI.importCheck;
+  let step2 = "";
+  if (dr){
+    const h = dr.rows[0] || [], m = dr.map;
+    const sel = (name, val, opt) => `<select id="m-${name}" name="${name}">${opt ? `<option value="-1">— brak —</option>` : ""}${h.map((x, i) => `<option value="${i}" ${i === val ? "selected" : ""}>${esc(x || "kolumna " + (i + 1))}</option>`).join("")}</select>`;
+    step2 = `<form class="card" data-form="import-map"><h2>2. Mapowanie kolumn</h2><p class="small muted">Plik: ${esc(dr.filename)} · ${dr.rows.length - 1} wierszy danych${dr.formulas ? ` · ${dr.formulas} komórek z formułami: używamy zapisanych wartości, formuł nie wykonujemy` : ""}</p>
+      <div class="grid3"><div class="field"><label for="m-date">Data</label>${sel("date", m.date)}</div><div class="field"><label for="m-gross">Kwota sprzedaży</label>${sel("gross", m.gross)}</div><div class="field"><label for="m-tx">Liczba transakcji</label>${sel("tx", m.tx, true)}</div>
+      <div class="field"><label for="m-basis">Podstawa kwot</label><select id="m-basis" name="basis"><option value="brutto">brutto</option><option value="netto">netto</option></select></div><div class="field"><label>Waluta</label><input type="text" value="PLN" disabled></div></div>
+      <div><button class="btn primary" type="submit">Sprawdź dane</button></div></form>`;
+  }
+  let step3 = "";
+  if (ch){
+    step3 = `<div class="card ${ch.errors.length ? "warn" : "good"}"><h2>3. Wynik sprawdzenia</h2>
+      ${kv([["Poprawne dni", `<span class="num">${ch.rows.length}</span>`],["Odrzucone wiersze", `<span class="num">${ch.errors.length}</span>`],["Okres", `${ch.first || "—"} – ${ch.last || "—"}`],["Suma " + ch.basis, `<span class="num">${zl(ch.sum)}</span>`],["Suma transakcji", ch.hasTx ? `<span class="num">${int(ch.txs)}</span>` : "brak kolumny"]])}
+      ${ch.errors.length ? `<div class="tablewrap"><table><thead><tr><th class="r">Wiersz</th><th>Powód odrzucenia</th></tr></thead><tbody>${ch.errors.slice(0, 20).map(e => `<tr><td class="r">${e.line}</td><td>${esc(e.reasons.join("; "))}</td></tr>`).join("")}</tbody></table></div>` : ""}
+      <h3>Podgląd</h3><div class="tablewrap"><table><thead><tr><th>Data</th><th class="r">Kwota</th><th class="r">Transakcje</th></tr></thead><tbody>${ch.rows.slice(0, 8).map(r => `<tr><td class="mono">${r.date}</td><td class="r">${zl(r.gross)}</td><td class="r">${r.tx ?? "—"}</td></tr>`).join("")}</tbody></table></div>
+      <form class="stack" data-form="import-commit">${ch.errors.length ? `<label class="check"><input type="checkbox" name="ack" value="1"> Rozumiem, że zatwierdzam tylko ${ch.rows.length} poprawnych dni, a ${ch.errors.length} wierszy zostanie odrzuconych z podanym powodem.</label>` : ""}${errFor("commit")}
+        <div class="row"><button class="btn primary" type="submit" ${ch.rows.length ? "" : "disabled"}>Zatwierdź wersję danych</button><span class="small muted">Zatwierdzenie publikuje jedną wersję w całości. Ponowne zatwierdzenie tego samego pliku nie tworzy duplikatu.</span></div></form></div>`;
+  }
+  return `<section class="stack"><div class="row"><a href="#firma">← Moja firma</a></div><h1>Import danych sprzedaży</h1>
+    <form class="card" data-form="import-file"><h2>1. Placówka, okres i plik</h2>
+      <p>Placówka: <b>${esc(est().sign)}, ${esc(est().addr)}</b></p>
+      <div class="grid2"><div class="field"><label for="i-from">Okres od (opcjonalnie)</label><input id="i-from" name="from" type="date" value="${esc(UI.importPeriod?.from || "")}"></div><div class="field"><label for="i-to">Okres do (opcjonalnie)</label><input id="i-to" name="to" type="date" value="${esc(UI.importPeriod?.to || "")}"></div></div>
+      <div class="field"><label for="i-file">Plik CSV lub XLSX</label><input id="i-file" name="file" type="file" accept=".csv,.txt,.xlsx"></div>
+      <div class="field"><label for="i-paste">albo wklej zawartość CSV</label><textarea id="i-paste" name="paste" rows="4" class="mono small" placeholder="date;transactions;gross_pln">${esc(UI.importPaste || "")}</textarea></div>
+      <p class="hint">Obsługiwane: CSV (separator ; , lub tabulator) i XLSX (pierwszy arkusz). Kolumny: data, kwota w PLN, opcjonalnie liczba transakcji. Inne układy wymagają mapowania; nie obiecujemy obsługi każdego eksportu.</p>${errFor("import")}
+      <div class="row"><button class="btn primary" type="submit">Wczytaj</button><button class="btn" type="button" data-act="sample">Wstaw przykładowe dane</button></div></form>
+    ${step2}${step3}</section>`;
+}
+function vZlecenia(){
+  const t = UI.zTab;
+  const tabs = [["abonament","Abonament"],["zakup","Zakres i zakup"],["zlecenia","Zlecenia"],["pomoc","Pomoc"]];
+  let body = "";
+  if (t === "abonament"){
+    const s = S.sub;
+    body = s ? `<div class="card ${s.status === "ended" ? "" : "good"}"><div class="row" style="justify-content:space-between"><h2>${esc(SUB_OFFER.title)}</h2><span class="pill ${s.status === "active" ? "good" : s.status === "ended" ? "" : "warn"}">${{ active:"aktywny", cancel_at_period_end:"bez odnowienia", ended:"zakończony" }[s.status]}</span></div>
+      ${kv([["Cena", "99,00 zł brutto / miesiąc"],["Bieżący okres", `${fmtD(s.periodStart)} – ${fmtD(s.periodEnd)}`],["Placówka", esc(est()?.sign || "—")],["Cel w cyklu", s.cycle.goalId ? esc(VARIANTS[S.goals.find(g => g.id === s.cycle.goalId)?.variant]?.title || "—") : "nieprzypisany"],["Runda uzupełnienia", s.cycle.refillUsed ? "wykorzystana" : "dostępna"],["Następne odnowienie", s.status === "active" ? fmtD(s.periodEnd) : "nie nastąpi"]])}
+      <div class="row">${s.status === "active" ? `<button class="btn" data-act="cancel-renew">Zrezygnuj z odnowienia</button>` : s.status === "cancel_at_period_end" ? `<button class="btn primary" data-act="resume-renew">Wznów odnowienie</button>` : `<button class="btn primary" data-act="buy-sub">Kup ponownie</button>`}</div>
+      <p class="small muted">Rezygnacja zatrzymuje przyszłe odnowienie. Nie usuwa konta, danych ani odebranych wyników.</p></div>`
+      : `<div class="card"><h2>Nie masz abonamentu</h2><p>Abonament to cykliczna praca nad jednym wybranym celem. Zobacz zakres przed zakupem.</p><div><button class="btn primary" data-act="ztab" data-t="zakup">Zobacz zakres</button></div></div>`;
+  }
+  if (t === "zakup"){
+    const block = !loggedIn() ? "Zakup wymaga konta." : S.capacityPaused ? "Przyjmowanie nowych zakupów jest wstrzymane: nie mamy teraz pojemności, by dostarczyć zakres w terminie." : subActive() ? "Masz już aktywny abonament dla tej placówki." : null;
+    body = `<div class="card accent"><div class="row" style="justify-content:space-between"><h2>${esc(SUB_OFFER.title)}</h2><span class="pill">oferta v${SUB_OFFER.version}</span></div>
+      <p style="font-size:1.6rem;font-family:var(--display)">99,00 zł <span class="small muted" style="font-family:var(--body)">brutto / miesiąc</span></p>
+      <div class="grid2"><div><h3>W cenie</h3><ul>${SUB_OFFER.scope.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div><div><h3>Poza ceną</h3><ul>${SUB_OFFER.out.map(x => `<li>${esc(x)}</li>`).join("")}</ul><p class="small muted">Mogą powstać jako osobne, jawnie wycenione zlecenia.</p></div></div>
+      ${kv([["Wykonawca", esc(SUB_OFFER.executor)],["Odbiór i poprawki", esc(SUB_OFFER.acceptance)],["Zakończenie", esc(SUB_OFFER.end)]])}
+      ${block ? `<p class="flash info">${esc(block)}</p>` : ""}
+      <div><button class="btn primary" data-act="checkout-sub" ${block ? "disabled" : ""}>Zamawiam z obowiązkiem zapłaty 99,00 zł</button></div></div>
+      <h2>Usługi jednorazowe</h2><p class="muted">Ceny ustalamy po kwalifikacji konkretnego zakresu. Raport nie wymaga abonamentu.</p>
+      <div class="grid2">${SERVICES.map(s => `<div class="card"><div class="row" style="justify-content:space-between"><h3>${esc(s.title)}</h3><span class="pill ${s.stage === "Zależne" ? "warn" : "info"}">${esc(s.stage)}</span></div><p class="small">${esc(s.desc)}</p><p class="small muted">Kompetencje: <span class="mono">${esc(s.caps)}</span> · Cena: do ustalenia po kwalifikacji</p><div><button class="btn" data-act="quote" data-id="${s.id}">Poproś o wycenę</button></div></div>`).join("")}</div>
+      ${UI.quoteFor ? `<form class="card accent" data-form="quote" data-id="${UI.quoteFor}"><h3>Wycena: ${esc(SERVICES.find(s => s.id === UI.quoteFor).title)}</h3><div class="field"><label for="q-text">Opisz, czego potrzebujesz</label><textarea id="q-text" name="text" required>${esc(UI.quoteText || "")}</textarea></div>${errFor("quote")}<p class="small muted">Zapytanie nie jest zamówieniem. Dostaniesz ofertę z ceną brutto, terminem i warunkami odbioru.</p><div class="row"><button class="btn primary" type="submit">Wyślij zapytanie</button><button class="btn" type="button" data-act="quote-close">Anuluj</button></div></form>` : ""}`;
+  }
+  if (t === "zlecenia"){
+    const qs = S.quotes;
+    body = `${qs.filter(q => q.status === "offered").map(q => `<div class="card accent"><h2>Oferta: ${esc(q.offer.title)}</h2>${kv([["Zakres", esc(q.offer.scope)],["Cena", `<b>${zl(q.offer.price)}</b> brutto`],["Termin", esc(q.offer.term)],["Wymagane dostępy", esc(q.offer.access || "—")],["Odbiór i poprawki", "Odbiór w Wynikach; poprawka błędu bez dopłaty"],["Wersja oferty", fmtDT(q.offer.at)]])}<div class="row"><button class="btn primary" data-act="accept-quote" data-id="${q.id}">Akceptuję ofertę i zamawiam</button><button class="btn" data-act="decline-quote" data-id="${q.id}">Odrzuć</button></div></div>`).join("")}
+      <div class="card"><h2>Zamówienia</h2>${S.orders.length ? S.orders.map(o => { const d = S.deliveries.find(x => (o.kind === "sub" && x.goalId === S.sub?.cycle.goalId && o.id === S.sub?.orderId) || (o.kind === "svc" && x.quoteId === o.ref));
+        return `<div class="stack" style="border-top:1px solid var(--line);padding-top:12px"><div class="row" style="justify-content:space-between"><b>${esc(o.snapshot.title)}</b><span class="mono small">${o.id}</span></div>
+        <div class="axes"><div>Płatność ${pill(ORD_ST, o.status)}</div><div>Uprawnienie <span class="pill ${o.status === "paid" ? "good" : ""}">${o.status === "paid" ? "przyznane" : "brak"}</span></div><div>Praca ${d ? pill(DEL_ST, d.status) : '<span class="pill">nie rozpoczęta</span>'}</div><div>Odbiór <span class="pill ${d?.status === "accepted" ? "good" : ""}">${d?.status === "accepted" ? "odebrane" : "—"}</span></div></div>
+        <p class="small">${zl(o.amount)} brutto · ${fmtDT(o.createdAt)}</p>
+        ${o.status === "awaiting_payment" || o.status === "failed" ? `<div><button class="btn primary sm" data-act="pay" data-id="${o.id}">Przejdź do płatności</button></div>` : ""}
+        ${o.status === "payment_pending" ? `<p class="flash info">Czekamy na potwierdzenie operatora płatności. Nie płać ponownie.</p>` : ""}</div>`; }).join("") : `<p class="muted">Brak zamówień.</p>`}</div>
+      <div class="card"><h2>Zapytania o wycenę</h2>${qs.length ? `<div class="items">${qs.map(q => `<div class="item"><div>${esc(SERVICES.find(s => s.id === q.serviceId).title)}<br><span class="small muted">${esc(q.text)}</span></div><div><span class="pill">${{ requested:"czeka na ofertę", offered:"oferta gotowa", declined:"odrzucone", ordered:"zamówione", paid:"opłacone" }[q.status]}</span></div></div>`).join("")}</div>` : `<p class="muted">Brak zapytań.</p>`}</div>`;
+  }
+  if (t === "pomoc"){
+    const g = goalsHere().find(x => !["closed","cancelled"].includes(x.status));
+    body = `<form class="card" data-form="ticket"><h2>Napisz do obsługi</h2><p class="small muted">Sprawę prowadzi CEO RaportFirmy. Dołączymy kontekst: placówka ${esc(est().sign)}${g ? `, sprawa „${esc(VARIANTS[g.variant]?.title || g.situation)}”` : ""}. Nie wpisuj haseł.</p>
+      <div class="field"><label for="t-text">Wiadomość</label><textarea id="t-text" name="text" required></textarea></div>${errFor("ticket")}<div><button class="btn primary" type="submit">Wyślij</button></div></form>
+      ${S.tickets.map(k => `<div class="card"><div class="row" style="justify-content:space-between"><b>${esc(k.text)}</b><span class="pill ${k.reply ? "good" : "info"}">${k.reply ? "odpowiedziano" : "czeka"}</span></div><p class="small muted">${fmtDT(k.at)} · ${esc(k.ctx)}</p>${k.reply ? `<p><b>Odpowiedź:</b> ${esc(k.reply)}</p>` : ""}</div>`).join("")}`;
+  }
+  return `<section class="stack"><h1>Zlecenia i pomoc</h1><div class="subtabs" role="tablist">${tabs.map(([k, l]) => `<button class="btn sm" role="tab" data-act="ztab" data-t="${k}" aria-pressed="${t === k}" aria-selected="${t === k}">${l}</button>`).join("")}</div>${body}</section>`;
+}
+function vOperator(){
+  const t = UI.opTab;
+  const tabs = [["dostawy","Dostawy"],["wyceny","Wyceny"],["platnosci","Płatności testowe"],["pomoc","Zgłoszenia"],["incydenty","Incydenty i pojemność"],["dziennik","Dziennik"]];
+  const queue = S.deliveries.filter(d => ["queued","correction_requested"].includes(d.status));
+  let body = "";
+  if (t === "dostawy") body = queue.length ? queue.map(d => { const g = S.goals.find(x => x.id === d.goalId);
+    return `<form class="card accent" data-form="op-deliver" data-id="${d.id}"><div class="row" style="justify-content:space-between"><h2>${esc(d.title)} · wersja ${d.version}</h2>${pill(DEL_ST, d.status)}</div>
+      ${g ? `<p class="small muted">Sprawa ${g.id} · ${esc(SITUATIONS[g.situation].label)} · ${g.covered === "sub" ? "abonament" : "zlecenie"}</p>` : ""}
+      ${d.corrections.length ? `<p class="flash info">Poprawka (${d.corrections[d.corrections.length - 1].kind === "error" ? "błąd wykonawcy" : "uzupełnienie"}): ${esc(d.corrections[d.corrections.length - 1].text)}</p>` : ""}
+      <div class="field"><label for="op-${d.id}">Materiał dla klienta (szkic z reguł; uzupełnij miejsca w nawiasach)</label><textarea id="op-${d.id}" name="content" rows="14" class="small">${esc(d.content || d.draft)}</textarea></div>${UI.err["op-" + d.id] ? `<p class="err">${esc(UI.err["op-" + d.id])}</p>` : ""}
+      <div class="row"><button class="btn primary" type="submit" name="op" value="ready">Przekaż do odbioru</button><button class="btn" type="submit" name="op" value="needs">Brakuje danych od klienta</button></div></form>`; }).join("") : `<div class="card"><p class="muted">Kolejka dostaw jest pusta.</p></div>`;
+  if (t === "wyceny"){ const qs = S.quotes.filter(q => q.status === "requested");
+    body = qs.length ? qs.map(q => `<form class="card" data-form="op-quote" data-id="${q.id}"><h2>${esc(SERVICES.find(s => s.id === q.serviceId).title)}</h2><p>${esc(q.text)}</p><p class="small muted">Placówka: ${esc(q.est)} · ${fmtDT(q.at)}</p>
+      <div class="grid2"><div class="field"><label for="oq-p-${q.id}">Cena brutto (zł)</label><input id="oq-p-${q.id}" name="price" type="number" min="1" step="0.01" required></div><div class="field"><label for="oq-t-${q.id}">Termin</label><input id="oq-t-${q.id}" name="term" type="text" placeholder="np. 7 dni roboczych od akceptacji" required></div></div>
+      <div class="field"><label for="oq-s-${q.id}">Zakres i rezultat</label><textarea id="oq-s-${q.id}" name="scope" required></textarea></div><div class="field"><label for="oq-a-${q.id}">Wymagane dostępy</label><input id="oq-a-${q.id}" name="access" type="text"></div>${UI.err["oq-" + q.id] ? `<p class="err">${esc(UI.err["oq-" + q.id])}</p>` : ""}
+      <div class="row"><button class="btn primary" type="submit">Wyślij ofertę</button></div></form>`).join("") : `<div class="card"><p class="muted">Brak zapytań do wyceny.</p></div>`; }
+  if (t === "platnosci"){ const os = S.orders.filter(o => ["payment_pending","awaiting_payment"].includes(o.status) || o.status === "paid");
+    body = `<div class="card"><p class="small muted">Symulacja zdarzeń operatora płatności (webhook). Pokazuje, że powrót z płatności nie przyznaje praw, a duplikaty i zdarzenia spoza kolejności niczego nie mnożą.</p></div>` + (os.length ? os.map(o => `<div class="card"><div class="row" style="justify-content:space-between"><b>${esc(o.snapshot.title)} · ${zl(o.amount)}</b>${pill(ORD_ST, o.status)}</div><p class="mono small">${o.id}</p>
+      <div class="row"><button class="btn primary sm" data-act="ev" data-id="${o.id}" data-t="paid">Zdarzenie: opłacono</button><button class="btn sm" data-act="ev-dup" data-id="${o.id}">Powtórz ostatnie zdarzenie</button><button class="btn sm" data-act="ev" data-id="${o.id}" data-t="failed">Zdarzenie: odmowa</button><button class="btn sm" data-act="ev-bad" data-id="${o.id}">Zdarzenie z błędną kwotą</button></div></div>`).join("") : `<div class="card"><p class="muted">Brak zamówień.</p></div>`)
+      + (S.sub ? `<div class="card"><h3>Koniec okresu abonamentu (test)</h3><p class="small">Przesuwa czas do końca bieżącego okresu: przy włączonym odnowieniu zaczyna się nowy cykl, przy rezygnacji abonament się kończy.</p><div><button class="btn sm" data-act="period-end">Zakończ bieżący okres</button></div></div>` : ""); }
+  if (t === "pomoc"){ const ts = S.tickets.filter(k => !k.reply);
+    body = ts.length ? ts.map(k => `<form class="card" data-form="op-reply" data-id="${k.id}"><b>${esc(k.text)}</b><p class="small muted">${esc(k.ctx)} · ${fmtDT(k.at)}</p><div class="field"><label for="r-${k.id}">Odpowiedź</label><textarea id="r-${k.id}" name="reply" required></textarea></div><div><button class="btn primary" type="submit">Odpowiedz</button></div></form>`).join("") : `<div class="card"><p class="muted">Brak otwartych zgłoszeń.</p></div>`; }
+  if (t === "incydenty") body = `<div class="card"><h2>Pojemność</h2><p>Limit pilota: jeden równocześnie realizowany cykl wymagający pracy ręcznej. W kolejce: <b>${queue.length}</b>.</p><label class="check"><input type="checkbox" data-act="capacity" ${S.capacityPaused ? "checked" : ""}> Wstrzymaj przyjmowanie nowych zakupów</label></div>
+    <div class="card"><h2>Incydenty źródeł</h2>${S.incidents.length ? `<div class="items">${S.incidents.map(i => `<div class="item"><div>${esc(i.text)}</div><div class="num">${i.count}×</div><div class="src">ostatnio ${fmtDT(i.last)}</div></div>`).join("")}</div>` : `<p class="muted">Brak incydentów.</p>`}<p class="small muted">Awaria wspólnego źródła jest jednym incydentem, niezależnie od liczby sesji.</p></div>`;
+  if (t === "dziennik") body = `<div class="card">${S.log.length ? `<div class="items">${S.log.map(l => `<div class="item"><div class="small">${esc(l.text)}</div><div class="small muted">${fmtDT(l.at)}</div></div>`).join("")}</div>` : `<p class="muted">Pusto.</p>`}</div>`;
+  const counts = { dostawy:queue.length, wyceny:S.quotes.filter(q => q.status === "requested").length, platnosci:S.orders.filter(o => o.status === "payment_pending").length, pomoc:S.tickets.filter(k => !k.reply).length };
+  return `<section class="stack"><h1>Panel operatora</h1><p class="muted">Kolejki spraw tego workspace. Operator widzi kontekst potrzebny do sprawy.</p>
+    <div class="subtabs">${tabs.map(([k, l]) => `<button class="btn sm" data-act="optab" data-t="${k}" aria-pressed="${t === k}">${l}${counts[k] ? `<span class="count">${counts[k]}</span>` : ""}</button>`).join("")}</div>${body}</section>`;
+}
+function vFinished(){ return `<section class="card good"><h1>Gotowe</h1><p>Nie musisz nic więcej robić. Portret pozostaje dostępny, dopóki nie zamkniesz tej sesji.</p><div class="row"><button class="btn" data-act="go" data-v="portrait">Wróć do portretu</button><button class="btn" data-act="go" data-v="goal">Jednak wybiorę cel</button></div></section>`; }
+function modal(){
+  const m = UI.modal; if (!m) return "";
+  if (m.type === "pay"){ const o = S.orders.find(x => x.id === m.id);
+    return `<div class="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><span class="pill test">operator płatności — tryb testowy</span><h2 id="mt">Płatność ${zl(o.amount)}</h2><p>${esc(o.snapshot.title)}</p><p class="small muted">W prawdziwym wdrożeniu tu otworzy się strona operatora. Powrót do aplikacji nie przyznaje praw; robi to dopiero zweryfikowane zdarzenie operatora.</p>
+      <div class="stack"><button class="btn primary" data-act="pay-return">Zapłać i wróć do RaportFirmy</button><button class="btn" data-act="modal-close">Przerwij</button></div></div></div>`; }
+  if (m.type === "delete") return `<div class="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><h2 id="mt">Usunąć konto i wszystkie dane?</h2><p>Usuniemy workspace, sprawy, importy i wyniki z tej przeglądarki. ${subActive() ? "Aktywny abonament zostanie zakończony bez odnowienia." : ""}</p><div class="row"><button class="btn danger" data-act="delete-confirm">Usuń</button><button class="btn" data-act="modal-close">Anuluj</button></div></div></div>`;
+  if (m.type === "reset") return `<div class="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><h2 id="mt">Wyczyścić dane testowe?</h2><p>Aplikacja wróci do ekranu startowego.</p><div class="row"><button class="btn danger" data-act="reset-confirm">Wyczyść</button><button class="btn" data-act="modal-close">Anuluj</button></div></div></div>`;
+  return "";
+}
+const VIEWS = { start:vStart, context:vContext, portrait:vPortrait, goal:vGoal, account:vAccount, finished:vFinished, dzisiaj:vDzisiaj, cele:vCele, wyniki:vWyniki, firma:vFirma, import:vImport, zlecenia:vZlecenia, operator:vOperator };
+function guard(v){
+  if (S.mode === "operator" && loggedIn()) return "operator";
+  if (!S.estId && v !== "start" && v !== "context") return S.recog && S.recog.status === "ok" ? "context" : "start";
+  if (!ONBOARD.includes(v) && !loggedIn()) return "account";
+  if (v === "operator") return loggedIn() ? "dzisiaj" : "account";
+  return v;
+}
+let lastView = null;
+function render(){
+  S.view = guard(S.view);
+  document.getElementById("app").innerHTML = header() + `<main id="main" tabindex="-1">${flash()}${VIEWS[S.view]()}</main><footer>RaportFirmy.pl · wersja pilotażowa na danych testowych · ceny brutto · bez analityki zewnętrznej</footer>` + modal();
+  save();
+  if (lastView !== S.view){ lastView = S.view; window.scrollTo(0, 0); const h = document.querySelector("main h1"); if (h){ h.setAttribute("tabindex", "-1"); h.focus({ preventScroll:true }); } }
+  const modalBtn = document.querySelector(".modal button"); if (modalBtn) modalBtn.focus();
+  const firstErr = document.querySelector("[aria-invalid=true]"); if (firstErr) firstErr.focus();
+}
+function go(v){
+  UI.err = {};
+  const dash = AREAS.some(a => a[0] === v) || v === "operator";
+  S.view = v;
+  if (dash){ if (location.hash !== "#" + v){ location.hash = v; return; } }
+  else if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+  render();
+}
+window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (VIEWS[h]){ UI.err = {}; S.view = h; render(); } });
+
+/* ============ Akcje ============ */
+const ACT = {
+  go:d => { UI.flash = null; if (d.v === "goal") UI.goalDraft = null; go(d.v); },
+  "fill-nip":d => { const i = document.getElementById("nip"); if (i){ i.value = d.nip; i.focus(); } },
+  "cancel-run":() => { UI.loading = false; UI.runToken = null; NIP_MEM = null; render(); },
+  declare:() => { S.recog = { status:"ok", declaring:true, declaredOnly:true, entity:null, candidates:[], channels:{}, at:now() }; S.estId = null; go("context"); },
+  "not-mine":() => { if (S.recog.declaredOnly){ S.recog.declaring = true; } S.estId = null; UI.flash = { kind:"info", text:"Wybierz właściwą placówkę albo wskaż własną. Zależne wnioski zostaną przeliczone." }; S.view = "context"; render(); },
+  correct:d => { UI.corrOpen = d.f || "hours"; if (!["portrait","firma"].includes(S.view)) { S.view = "portrait"; history.replaceState(null, "", location.pathname); } render(); setTimeout(() => document.getElementById("c-val")?.focus(), 0); },
+  "corr-close":() => { UI.corrOpen = false; render(); },
+  finish:() => { S.finished = true; UI.goalDraft = null; go(loggedIn() ? "dzisiaj" : "finished"); },
+  pick:d => { UI.goalDraft = { situation:d.s, variant:d.v || null, inputs:{}, qual:null }; render(); setTimeout(() => document.querySelector('[data-form="goal"] input, [data-form="goal"] textarea')?.focus(), 0); },
+  unpick:() => { UI.goalDraft = null; render(); },
+  "goal-open":d => { UI.goalId = d.id; UI.planEdit = false; go("cele"); },
+  "goal-fill":d => { const g = S.goals.find(x => x.id === d.id); UI.goalDraft = { id:g.id, situation:g.situation, variant:g.variant, inputs:g.inputs, question:g.question, qual:g.qual }; go("goal"); },
+  "accept-plan":d => { const g = S.goals.find(x => x.id === d.id); curPlan(g).acceptedAt = now(); g.status = "ready"; log(`Plan v${curPlan(g).version} sprawy ${g.id} zaakceptowany`); UI.flash = { kind:"good", text:"Plan zatwierdzony. Wybierz sposób realizacji." }; render(); },
+  "plan-edit":() => { UI.planEdit = true; render(); },
+  "plan-edit-close":() => { UI.planEdit = false; render(); },
+  "toggle-action":(d, el) => { const g = S.goals.find(x => x.id === d.id); const a = curPlan(g).actions.find(x => x.id === d.a); a.status = el.checked ? "done" : "todo"; if (el.checked) log(`Działanie wykonane: ${a.title}`); render(); },
+  reviewed:d => { const g = S.goals.find(x => x.id === d.id); g.needsReview = false; render(); },
+  "cancel-goal":d => { const g = S.goals.find(x => x.id === d.id); g.status = "cancelled"; if (S.sub && S.sub.cycle.goalId === g.id) S.sub.cycle.goalId = null; UI.flash = { kind:"info", text:"Sprawa zamknięta. Historia zostaje zachowana." }; render(); },
+  "use-cycle":d => { const g = S.goals.find(x => x.id === d.id); if (!subActive() || S.sub.cycle.goalId) return; assignToCycle(g); UI.flash = { kind:"good", text:"Cel jest w Twoim cyklu. Operator przygotowuje materiał." }; render(); },
+  self:d => { const g = S.goals.find(x => x.id === d.id); g.covered = "self"; g.status = "running"; curPlan(g).actions.forEach(a => { if (a.owner === "RaportFirmy") a.owner = "Ty"; }); UI.flash = { kind:"info", text:"Wykonujesz plan samodzielnie. Oznaczaj działania jako wykonane; potem ocenisz wynik." }; render(); },
+  "buy-sub":d => { UI.zTab = "zakup"; UI.pendingGoal = d.id || null; go("zlecenia"); },
+  ztab:d => { UI.zTab = d.t; UI.flash = null; render(); },
+  "checkout-sub":() => {
+    if (!loggedIn() || S.capacityPaused || subActive()) return;
+    const ref = UI.pendingGoal || S.estId;
+    const o = createOrder("sub", ref, { title:SUB_OFFER.title, price:SUB_OFFER.price, version:SUB_OFFER.version, est:est().sign });
+    if (UI.pendingGoal){ const g = S.goals.find(x => x.id === UI.pendingGoal); if (g) g.pendingOrder = o.id; }
+    UI.modal = { type:"pay", id:o.id }; render(); },
+  pay:d => { UI.modal = { type:"pay", id:d.id }; render(); },
+  "pay-return":() => { const o = S.orders.find(x => x.id === UI.modal.id); if (o.status !== "paid"){ o.status = "payment_pending"; o.history.push({ at:now(), text:"Powrót z płatności bez potwierdzenia" }); }
+    UI.modal = null; UI.zTab = "zlecenia"; UI.flash = { kind:"info", text:"Wróciłeś z płatności. Uprawnienie przyznamy po potwierdzeniu operatora. W środowisku testowym potwierdzenie wysyłasz w Panelu operatora → Płatności testowe." }; go("zlecenia"); },
+  "modal-close":() => { UI.modal = null; render(); },
+  quote:d => { UI.quoteFor = d.id; render(); setTimeout(() => document.getElementById("q-text")?.focus(), 0); },
+  "quote-close":() => { UI.quoteFor = null; render(); },
+  "quote-from-goal":d => { UI.quoteFor = d.s === "S2" ? "U1" : "U3"; UI.zTab = "zakup"; UI.goalDraft = null; if (!loggedIn()){ UI.flash = { kind:"info", text:"Zapytanie o wycenę wymaga konta." }; go("account"); return; } go("zlecenia"); },
+  "accept-quote":d => { const q = S.quotes.find(x => x.id === d.id);
+    const g = q.goalId && S.goals.find(x => x.id === q.goalId);
+    if (g && g.covered === "sub"){ UI.flash = { kind:"info", text:"Ten rezultat jest już w Twoim abonamencie. Nie pobieramy drugiej opłaty." }; render(); return; }
+    q.status = "ordered"; const o = createOrder("svc", q.id, { title:q.offer.title, price:q.offer.price }); UI.modal = { type:"pay", id:o.id }; render(); },
+  "decline-quote":d => { const q = S.quotes.find(x => x.id === d.id); q.status = "declined"; log(`Oferta ${q.id} odrzucona przez klienta`); render(); },
+  "accept-del":d => { const del = S.deliveries.find(x => x.id === d.id); del.status = "accepted"; del.acceptedAt = now(); del.history.push({ at:now(), text:"Odebrane" });
+    const g = S.goals.find(x => x.id === del.goalId); if (g){ g.status = "outcome_review"; (curPlan(g)?.actions || []).forEach(a => { if (a.owner === "RaportFirmy") a.status = "done"; }); }
+    log(`Dostawa ${del.id} v${del.version} odebrana`); UI.flash = { kind:"good", text:"Odebrane. Gdy wykonasz działania, oceń wynik w Celach." }; render(); },
+  "corr-del":d => { UI.corrDel = d.id; render(); },
+  "corr-del-close":() => { UI.corrDel = null; render(); },
+  copy:async d => { const del = S.deliveries.find(x => x.id === d.id); try { await navigator.clipboard.writeText(del.content); UI.flash = { kind:"good", text:"Skopiowano treść." }; } catch (e) { UI.flash = { kind:"bad", text:"Przeglądarka nie pozwoliła skopiować. Zaznacz tekst ręcznie." }; } render(); },
+  "cancel-renew":() => { S.sub.status = "cancel_at_period_end"; S.sub.renew = false; S.sub.history.push({ at:now(), text:"Rezygnacja z odnowienia" }); log("Rezygnacja z odnowienia abonamentu"); UI.flash = { kind:"info", text:`Abonament nie odnowi się. Działa do ${fmtD(S.sub.periodEnd)}. Wyniki zostają.` }; render(); },
+  "resume-renew":() => { S.sub.status = "active"; S.sub.renew = true; S.sub.history.push({ at:now(), text:"Wznowienie odnowienia" }); render(); },
+  "read-all":() => { S.inbox.forEach(m => m.read = true); render(); },
+  snooze:d => { S.snoozed.push(d.k); render(); },
+  dismiss:d => { S.dismissed.push(d.k); log("Sugestia odrzucona: nie wróci bez nowej przesłanki"); render(); },
+  "ask-est":d => { UI.confirmEst = d.id; render(); },
+  "switch-est":d => { UI.confirmEst = null; const r = S.recog; const c = r.candidates.find(x => x.id === d.id) || S.extraEsts.find(x => x.id === d.id);
+    UI.goalId = null; UI.goalDraft = null; UI.importDraft = null; UI.importCheck = null; S.estId = c.id; S.snoozed = [];
+    UI.flash = { kind:"info", text:`Pracujesz teraz na placówce ${c.sign}. Sprawy i dane innych placówek są oddzielone.` }; render(); },
+  sample:() => { UI.importPaste = sampleCSV(); render(); },
+  logout:() => { S.account.loggedIn = false; S.mode = "client"; go("start"); },
+  "login-cancel":() => { UI.loginStep = null; go(S.estId ? "portrait" : "start"); },
+  mode:() => { S.mode = S.mode === "client" ? "operator" : "client"; UI.flash = null; const v = S.mode === "operator" ? "operator" : "dzisiaj"; go(v); },
+  optab:d => { UI.opTab = d.t; UI.err = {}; render(); },
+  ev:d => { const o = S.orders.find(x => x.id === d.id); const eid = "evt_" + rid(4); UI.lastEvent = { id:eid, orderId:o.id, type:d.t, amount:o.amount }; UI.flash = { kind:"info", text:paymentEvent(o.id, d.t, eid, o.amount) }; render(); },
+  "ev-dup":() => { const e = UI.lastEvent; if (!e){ UI.flash = { kind:"info", text:"Najpierw wyślij jakieś zdarzenie." }; render(); return; } UI.flash = { kind:"info", text:paymentEvent(e.orderId, e.type, e.id, e.amount) }; render(); },
+  "ev-bad":d => { const o = S.orders.find(x => x.id === d.id); UI.flash = { kind:"bad", text:paymentEvent(o.id, "paid", "evt_" + rid(4), o.amount - 50) }; render(); },
+  "period-end":() => { const s = S.sub;
+    const g = s.cycle.goalId && S.goals.find(x => x.id === s.cycle.goalId);
+    const owed = g && !S.deliveries.some(dd => dd.goalId === g.id && dd.status === "accepted");
+    if (s.renew){ s.periodStart = s.periodEnd; s.periodEnd = addMonth(s.periodStart); s.history.push({ at:now(), text:"Odnowienie: zweryfikowane zdarzenie płatności (test)" });
+      if (!owed) s.cycle = { goalId:null, refillUsed:false }; notify(owed ? "Nowy okres. Niedostarczony materiał z poprzedniego okresu pozostaje naszym zobowiązaniem." : "Nowy okres abonamentu. Możesz przypisać kolejny cel.", "zlecenia"); log("Koniec okresu: odnowienie"); }
+    else { s.status = "ended"; s.history.push({ at:now(), text:"Okres zakończony bez odnowienia" }); notify(owed ? "Abonament zakończony. Niedostarczony materiał nadal dostarczymy." : "Abonament zakończony. Odebrane wyniki zostają na koncie.", "wyniki"); log("Koniec okresu: abonament zakończony"); }
+    UI.flash = { kind:"info", text:"Okres zakończony (test)." }; render(); },
+  capacity:(d, el) => { S.capacityPaused = el.checked; log(el.checked ? "Wstrzymano nowe zakupy (pojemność)" : "Wznowiono przyjmowanie zakupów"); render(); },
+  "delete-account":() => { UI.modal = { type:"delete" }; render(); },
+  "delete-confirm":() => { S = fresh(); UI.modal = null; UI.flash = { kind:"good", text:"Konto i dane zostały usunięte." }; history.replaceState(null, "", location.pathname); render(); },
+  reset:() => { UI.modal = { type:"reset" }; render(); },
+  "reset-confirm":() => { try { localStorage.removeItem(LS_KEY); } catch (e) {} S = fresh(); Object.assign(UI, { modal:null, flash:null, err:{}, goalDraft:null, importDraft:null, importCheck:null, importPaste:"" }); history.replaceState(null, "", location.pathname); lastView = null; render(); }
+};
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-act]"); if (!el) return;
+  if (el.type !== "checkbox") e.preventDefault();
+  const f = ACT[el.dataset.act]; if (f) f(el.dataset, el);
+});
+
+/* ============ Formularze ============ */
+const FORM = {
+  nip:fd => {
+    const c = checkNip(fd.get("nip"));
+    if (!c.ok){ UI.err = { nip:c.err }; render(); return; }
+    UI.err = {}; const sid = S.sid; S = fresh(); S.sid = sid; NIP_MEM = c.d; S.nipMasked = maskNip(c.d); S.recog = null; S.estId = null; UI.loading = true;
+    const token = rid(); UI.runToken = token; render();
+    setTimeout(() => {
+      if (UI.runToken !== token) return; // spóźniony wynik nie nadpisuje nowego kontekstu
+      const res = registryAdapter(NIP_MEM); NIP_MEM = null; UI.loading = false;
+      if (res.status === "source_unavailable"){ const inc = S.incidents.find(i => i.code === "registry_unavailable"); if (inc){ inc.count++; inc.last = now(); } else S.incidents.push({ code:"registry_unavailable", text:"Rejestr (adapter testowy) niedostępny", count:1, last:now() }); }
+      S.recog = { ...res, at:now() };
+      S.view = res.status === "ok" ? "context" : "start"; render();
+    }, 650);
+  },
+  declare:fd => { const sign = String(fd.get("sign") || "").trim(), addr = String(fd.get("addr") || "").trim();
+    if (!sign || !addr){ UI.err = { declare:"Podaj szyld i adres sklepu." }; render(); return; }
+    const id = "D" + rid(2); S.recog = { status:"ok", declaredOnly:true, entity:{ name:"Deklaracja właściciela" }, candidates:[{ id, sign, addr, basis:"Twoja deklaracja do potwierdzenia" }], channels:{}, at:now(), confirmedAt:now() };
+    S.estId = id; UI.err = {}; go("portrait"); },
+  context:fd => { const id = fd.get("est");
+    if (!id || !fd.get("confirm")){ UI.err = { context:!id ? "Wybierz placówkę, którą prowadzisz." : "Zaznacz potwierdzenie, że prowadzisz tę placówkę." }; render(); return; }
+    S.estId = id; S.recog.confirmedAt = now(); UI.err = {}; go("portrait"); },
+  correct:fd => { const value = String(fd.get("value") || "").trim(); if (!value){ UI.err = { correct:"Wpisz aktualną wartość." }; render(); return; }
+    S.corrections.push({ estId:S.estId, field:fd.get("field"), value, at:now() });
+    let flagged = 0; S.goals.filter(g => g.estId === S.estId && !["closed","cancelled"].includes(g.status)).forEach(g => { g.needsReview = true; flagged++; });
+    UI.corrOpen = false; UI.err = {}; UI.flash = { kind:"good", text:`Korekta zapisana. Portret ma nową wersję${flagged ? `; ${flagged} spraw oznaczono do przeglądu` : ""}.` }; log("Korekta portretu"); render(); },
+  goal:(fd, form, submitter) => {
+    const dr = UI.goalDraft, v = dr.variant, op = submitter?.value || "check";
+    const lines = s => String(s || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+    const inp = {};
+    if (v === "V1"){ inp.hours = String(fd.get("hours") || "").trim(); inp.phone = String(fd.get("phone") || "").trim(); inp.addr = String(fd.get("addr") || "").trim(); inp.extraCh = String(fd.get("extra") || ""); inp.channels = [...fd.getAll("ch"), ...lines(fd.get("extra"))].slice(0, 3); if (fd.getAll("ch").length + lines(fd.get("extra")).length > 3) UI.flash = { kind:"info", text:"Cykl obejmuje do trzech kanałów. Wzięliśmy pierwsze trzy." }; }
+    if (v === "V2"){ inp.fragment = String(fd.get("fragment") || "").trim(); inp.questions = lines(fd.get("questions")); }
+    if (!v) inp.own = String(fd.get("own") || "").trim();
+    if (v === "V3"){ inp.mode = fd.get("mode"); inp.desc = String(fd.get("desc") || "").trim(); inp.start = fd.get("start"); inp.end = fd.get("end"); inp.observed = String(fd.get("observed") || "").trim(); }
+    dr.inputs = inp; dr.question = String(fd.get("question") || "").trim();
+    dr.qual = qualify(dr.situation, v, inp);
+    if (op === "check" && dr.qual.code !== "eligible"){ render(); return; }
+    let g = dr.id && S.goals.find(x => x.id === dr.id);
+    if (!g){ g = { id:uid("C"), estId:S.estId, situation:dr.situation, variant:v, createdAt:now(), plans:[], covered:null, needsReview:false }; S.goals.unshift(g); }
+    Object.assign(g, { inputs:inp, question:dr.question, qual:dr.qual });
+    if (dr.qual.code === "eligible"){ g.status = "plan_review"; if (!g.plans.length) g.plans.push(makePlan(g)); else { const np = makePlan(g); np.version = curPlan(g).version + 1; g.plans.push(np); } }
+    else g.status = ["needs_authorization","not_supported"].includes(dr.qual.code) ? "blocked" : "needs_data";
+    log(`Sprawa ${g.id}: ${QUAL[dr.qual.code][0]}`);
+    UI.goalDraft = null; UI.goalId = g.id;
+    if (!loggedIn()){ UI.flash = { kind:"info", text:"Cel zapisany w tej sesji. Załóż konto, żeby zachować plan i pracować dalej." }; go("account"); return; }
+    UI.flash = { kind:"good", text:g.status === "plan_review" ? "Plan gotowy do sprawdzenia." : "Sprawa zapisana z brakującymi danymi." }; go("cele");
+  },
+  login:fd => { const email = String(fd.get("email") || "").trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ UI.err = { login:"Wpisz poprawny adres e-mail, np. imie@firma.pl." }; render(); return; }
+    if (S.account && S.account.email !== email){ UI.err = { login:`W tej przeglądarce istnieje workspace innego konta. Potwierdzenie NIP nie daje dostępu do cudzego workspace. Użyj „Wyczyść dane testowe”, by zacząć od nowa.` }; render(); return; }
+    UI.loginEmail = email; UI.loginStep = "code"; UI.err = {}; render(); },
+  code:fd => { if (String(fd.get("code") || "").trim() !== "000000"){ UI.err = { code:"Kod jest nieprawidłowy. W środowisku testowym wpisz 000000." }; render(); return; }
+    const first = !S.account;
+    S.account = S.account ? { ...S.account, loggedIn:true } : { email:UI.loginEmail, ws:"ws-" + rid(4), since:now(), loggedIn:true };
+    UI.loginStep = null; UI.err = {};
+    if (first){ notify("Sesja anonimowa została przypisana do Twojego workspace. Portret i sprawy są zachowane.", "dzisiaj"); log("Claim sesji anonimowej do workspace"); }
+    go(S.goals.length ? "cele" : "dzisiaj"); },
+  "plan-edit":(fd, form) => { const g = S.goals.find(x => x.id === form.dataset.id), old = curPlan(g), keep = fd.getAll("keep");
+    const np = { ...old, version:old.version + 1, createdAt:now(), acceptedAt:null, reviewDate:fd.get("review") || old.reviewDate, actions:old.actions.map(a => ({ ...a, status:keep.includes(a.id) ? (a.status === "skipped" ? "todo" : a.status) : "skipped" })) };
+    g.plans.push(np); UI.planEdit = false; UI.flash = { kind:"good", text:`Zapisano plan w wersji ${np.version}. Poprzednia wersja zostaje w historii.` }; render(); },
+  outcome:(fd, form) => { const g = S.goals.find(x => x.id === form.dataset.id);
+    g.outcome = { exec:{ tak:"Tak", czesciowo:"Częściowo", nie:"Nie" }[fd.get("exec")], effect:fd.get("effect"), obs:String(fd.get("obs") || "").trim(), decision:fd.get("decision"), at:now() };
+    g.status = "closed"; log(`Ocena sprawy ${g.id}: ${g.outcome.decision}`); UI.flash = { kind:"good", text:"Ocena zapisana. Sprawa zakończona." }; render(); },
+  "del-corr":(fd, form) => { const d = S.deliveries.find(x => x.id === form.dataset.id), kind = fd.get("kind"), text = String(fd.get("text") || "").trim();
+    if (!text){ UI.err = { delcorr:"Opisz, co poprawić." }; render(); return; }
+    const g = S.goals.find(x => x.id === d.goalId);
+    if (kind === "refill" && g && g.covered === "sub"){ if (S.sub.cycle.refillUsed){ UI.err = { delcorr:"Runda uzupełnienia w tym cyklu jest wykorzystana. Błąd w materiale zgłosisz bez limitu." }; render(); return; } S.sub.cycle.refillUsed = true; }
+    d.corrections.push({ kind, text, at:now() }); d.status = "correction_requested"; if (g) g.status = "correction";
+    UI.corrDel = null; UI.err = {}; log(`Poprawka dostawy ${d.id}: ${kind}`); UI.flash = { kind:"good", text:kind === "error" ? "Zgłoszono błąd. Poprawimy bez dopłaty." : "Zgłoszono uzupełnienie zakresu." }; render(); },
+  "import-file":async fd => {
+    UI.importPeriod = { from:fd.get("from"), to:fd.get("to") }; UI.importPaste = String(fd.get("paste") || "");
+    const file = fd.get("file"); let rows, formulas = 0, filename, raw;
+    try {
+      if (file && file.size){
+        if (file.size > 2 * 1024 * 1024) throw new Error("Plik jest większy niż 2 MB. Podziel go na krótsze okresy.");
+        filename = file.name;
+        if (/\.xlsx$/i.test(file.name)){ const buf = await file.arrayBuffer(); raw = Array.from(new Uint8Array(buf.slice(0, 200000)), b => String.fromCharCode(b)).join(""); const x = await parseXLSX(buf); rows = x.rows; formulas = x.formulas; }
+        else { raw = await file.text(); rows = parseCSV(raw); }
+      } else if (UI.importPaste.trim()){ raw = UI.importPaste; rows = parseCSV(raw); filename = "wklejone dane"; }
+      else throw new Error("Wybierz plik albo wklej dane.");
+      if (rows.length < 2) throw new Error("Plik nie zawiera wierszy danych pod nagłówkiem.");
+      if (rows.length > 5001) throw new Error("Plik ma więcej niż 5000 wierszy. Limit tego wydania to 5000.");
+    } catch (e) { UI.err = { import:e.message || "Nie udało się odczytać pliku." }; UI.importDraft = null; UI.importCheck = null; render(); return; }
+    const map = guessMap(rows[0]); if (map.date < 0) map.date = 0; if (map.gross < 0) map.gross = Math.min(1, rows[0].length - 1);
+    UI.importDraft = { filename, rows, formulas, hash:fnv(raw), map }; UI.importCheck = null; UI.err = {}; render();
+    setTimeout(() => document.querySelector('[data-form="import-map"] h2')?.scrollIntoView({ block:"start" }), 0); },
+  "import-map":fd => { const dr = UI.importDraft; dr.map = { date:Number(fd.get("date")), gross:Number(fd.get("gross")), tx:Number(fd.get("tx")) };
+    const r = validateImport(dr, dr.map, UI.importPeriod?.from, UI.importPeriod?.to);
+    UI.importCheck = { ...r, basis:fd.get("basis"), hasTx:dr.map.tx >= 0 }; render();
+    setTimeout(() => document.querySelectorAll("main h2")[2]?.scrollIntoView({ block:"start" }), 0); },
+  "import-commit":fd => { const dr = UI.importDraft, ch = UI.importCheck;
+    if (ch.errors.length && !fd.get("ack")){ UI.err = { commit:"Potwierdź, że odrzucone wiersze nie wejdą do wersji danych." }; render(); return; }
+    const key = dr.hash + ":" + JSON.stringify(dr.map) + ":" + ch.basis;
+    const dup = S.imports.find(i => i.estId === S.estId && i.key === key);
+    if (dup){ UI.flash = { kind:"info", text:`Ten plik z tym mapowaniem jest już zatwierdzony jako wersja v${dup.version}. Nie tworzymy duplikatu.` }; render(); return; }
+    const version = S.imports.filter(i => i.estId === S.estId).length + 1;
+    S.imports.push({ id:uid("I"), key, estId:S.estId, version, filename:dr.filename, rows:ch.rows, sum:ch.sum, first:ch.first, last:ch.last, hasTx:ch.hasTx, basis:ch.basis, rejected:ch.errors.length, at:now() });
+    S.goals.filter(g => g.estId === S.estId && g.variant === "V5" && !["closed","cancelled"].includes(g.status)).forEach(g => { g.needsReview = true; });
+    UI.importDraft = null; UI.importCheck = null; UI.importPaste = ""; UI.err = {}; log(`Import v${version} zatwierdzony (${ch.rows.length} dni)`);
+    UI.flash = { kind:"good", text:`Zatwierdzono wersję danych v${version}: ${ch.rows.length} dni. Możesz teraz wybrać cel „Składniki zmiany sprzedaży”.` }; go("firma"); },
+  quote:(fd, form) => { const text = String(fd.get("text") || "").trim(); if (!text){ UI.err = { quote:"Opisz zakres, żebyśmy mogli go wycenić." }; render(); return; }
+    const g = goalsHere().find(x => !["closed","cancelled"].includes(x.status));
+    S.quotes.unshift({ id:uid("W"), serviceId:form.dataset.id, text, status:"requested", at:now(), est:est().sign, goalId:g?.id || null });
+    UI.quoteFor = null; UI.quoteText = ""; UI.err = {}; UI.zTab = "zlecenia"; log("Zapytanie o wycenę"); UI.flash = { kind:"good", text:"Zapytanie wysłane. Ofertę zobaczysz w Zleceniach." }; render(); },
+  ticket:fd => { const text = String(fd.get("text") || "").trim(); if (!text){ UI.err = { ticket:"Wpisz wiadomość." }; render(); return; }
+    const g = goalsHere().find(x => !["closed","cancelled"].includes(x.status));
+    S.tickets.unshift({ id:uid("T"), text, at:now(), ctx:`Placówka ${est().sign}${g ? `, sprawa ${g.id}` : ""}`, reply:null }); UI.err = {}; UI.flash = { kind:"good", text:"Wiadomość wysłana do obsługi." }; render(); },
+  "op-deliver":(fd, form, submitter) => { const d = S.deliveries.find(x => x.id === form.dataset.id), content = String(fd.get("content") || "").trim();
+    if (submitter?.value === "needs"){ d.status = "needs_data"; d.needMsg = "Operator potrzebuje uzupełnienia. Napisz w Zlecenia i pomoc → Pomoc."; notify(`Do materiału „${d.title}” potrzebujemy od Ciebie uzupełnienia.`, "wyniki"); log(`Dostawa ${d.id}: potrzebne dane`); render(); return; }
+    if (!content){ UI.err = { ["op-" + d.id]:"Materiał jest pusty." }; render(); return; }
+    if (/\[do uzupełnienia/i.test(content)){ UI.err = { ["op-" + d.id]:"Materiał zawiera niewypełnione miejsca „[do uzupełnienia…]”. Uzupełnij je przed przekazaniem." }; d.content = content; render(); return; }
+    const wasCorr = d.status === "correction_requested";
+    if (wasCorr) d.version++;
+    d.content = content; d.status = "ready_for_acceptance"; d.readyAt = now(); d.by = "CEO"; d.history.push({ at:now(), text:`Wersja ${d.version} przekazana do odbioru` });
+    const g = S.goals.find(x => x.id === d.goalId); if (g) g.status = "acceptance";
+    notify(`Gotowe do odbioru: ${d.title} (wersja ${d.version}).`, "wyniki"); log(`Dostawa ${d.id} v${d.version} przekazana`); UI.err = {}; UI.flash = { kind:"good", text:"Przekazano klientowi do odbioru." }; render(); },
+  "op-quote":(fd, form) => { const q = S.quotes.find(x => x.id === form.dataset.id), price = Math.round(Number(fd.get("price")) * 100) / 100;
+    if (!(price > 0) || !String(fd.get("term")).trim() || !String(fd.get("scope")).trim()){ UI.err = { ["oq-" + q.id]:"Podaj cenę brutto, termin i zakres." }; render(); return; }
+    q.offer = { title:SERVICES.find(s => s.id === q.serviceId).title, price, term:String(fd.get("term")).trim(), scope:String(fd.get("scope")).trim(), access:String(fd.get("access") || "").trim(), at:now() };
+    q.status = "offered"; notify(`Oferta gotowa: ${q.offer.title}, ${zl(price)} brutto.`, "zlecenia"); log(`Oferta ${q.id}: ${zl(price)}`); UI.err = {}; UI.flash = { kind:"good", text:"Oferta wysłana klientowi." }; render(); },
+  "op-reply":(fd, form) => { const k = S.tickets.find(x => x.id === form.dataset.id); k.reply = String(fd.get("reply") || "").trim(); if (!k.reply) return; notify("Obsługa odpowiedziała na Twoją wiadomość.", "zlecenia"); log(`Odpowiedź na zgłoszenie ${k.id}`); render(); }
+};
+document.addEventListener("submit", e => {
+  const f = e.target.closest("[data-form]"); if (!f) return; e.preventDefault();
+  const h = FORM[f.dataset.form]; if (h) h(new FormData(f), f, e.submitter);
+});
+
+/* ============ Start ============ */
+if (location.hash && VIEWS[location.hash.slice(1)]) S.view = location.hash.slice(1);
+render();
+</script>
+</body>
+</html>

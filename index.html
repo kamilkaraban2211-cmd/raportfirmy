@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RaportFirmy.pl — Sklep w porządku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,500;7..72,650&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f3f5f4; --surface:#ffffff; --ink:#16222c; --muted:#56646d; --line:#d6dedd; --accent:#0b6b63; --accent-soft:#e0efec; --on-accent:#ffffff;
+  --good:#2e7533; --good-soft:#e3f1e3; --warn:#94580a; --warn-soft:#fbefd9; --bad:#ad2a20; --bad-soft:#f8e2df; --info:#2d5b8a; --info-soft:#e2ebf5; --test:#6345a8; --test-soft:#ece6f7;
+  --display:"Literata", Georgia, "Times New Roman", serif; --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --r:10px; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root{
+  --paper:#111a1f; --surface:#18232a; --ink:#e4ebec; --muted:#9aa9ae; --line:#2c3a41; --accent:#43b3a6; --accent-soft:#163633; --on-accent:#06201d;
+  --good:#78c27c; --good-soft:#1b3320; --warn:#e2ad5a; --warn-soft:#3a2c14; --bad:#f08a80; --bad-soft:#3d1d1a; --info:#8ab6e3; --info-soft:#1a2b3d; --test:#b9a2ee; --test-soft:#2a2240; color-scheme:dark; } }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+h1,h2,h3{font-family:var(--display);font-weight:650;line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:1.75rem} h2{font-size:1.25rem} h3{font-size:1.02rem;font-family:var(--body);font-weight:600}
+p{margin:0} a{color:var(--accent)} ol,ul{margin:0;padding-left:1.2em}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)} .small{font-size:.875rem}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+.testbar{background:var(--test-soft);color:var(--test);font-size:.82rem;padding:6px 16px;display:flex;gap:8px 12px;flex-wrap:wrap;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+header.top{background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{max-width:860px;margin:0 auto;padding:12px 16px;display:flex;gap:10px 20px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.brand{font-family:var(--display);font-weight:650;font-size:1.2rem;color:var(--ink);text-decoration:none}
+.brand span{color:var(--accent)}
+main{max-width:860px;margin:0 auto;padding:24px 16px 64px;display:flex;flex-direction:column;gap:18px;outline:none}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card.accent{border-left:5px solid var(--accent)} .card.warn{border-left:5px solid var(--warn)}
+.card.bad{border-left:5px solid var(--bad)} .card.good{border-left:5px solid var(--good)}
+.lead{font-size:1.08rem;max-width:60ch}
+.btn{font:inherit;font-weight:500;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 15px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;line-height:1.2}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.big{font-size:1.05rem;padding:13px 20px}
+.btn.link{border:none;background:none;color:var(--accent);padding:4px 2px;text-decoration:underline}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.sm{padding:5px 10px;font-size:.875rem}
+label{font-weight:500;font-size:.92rem}
+.field{display:flex;flex-direction:column;gap:5px}
+input[type=text],input[type=tel],input[type=number],select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 11px;width:100%;max-width:100%}
+.hint{font-size:.84rem;color:var(--muted)}
+.err{color:var(--bad);font-size:.9rem;font-weight:500}
+.check{display:flex;gap:8px;align-items:flex-start;font-weight:400}
+.check input{margin-top:4px}
+.pill{display:inline-flex;align-items:center;font-size:.78rem;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap;background:var(--paper);color:var(--muted);border:1px solid var(--line)}
+.pill.good{background:var(--good-soft);color:var(--good);border-color:transparent}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.pill.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.pill.info{background:var(--info-soft);color:var(--info);border-color:transparent}
+.pill.test{background:var(--test-soft);color:var(--test);border-color:transparent}
+.src{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:8px 0;border-top:1px solid var(--line)}
+.src .when{grid-column:1/-1;font-size:.8rem;color:var(--muted)}
+.src b{overflow-wrap:anywhere}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-weight:400}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.stage{padding:10px;border-radius:8px;border:1px solid var(--line);text-align:center;font-weight:600;color:var(--muted);background:var(--surface)}
+.stage.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.stage.past{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.price{font-family:var(--display);font-size:1.6rem;font-weight:650}
+.change{display:grid;grid-template-columns:1fr;gap:2px;padding:10px 0;border-top:1px solid var(--line)}
+.change s{color:var(--muted)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);background:var(--paper)}
+.flash{padding:10px 14px;border-radius:8px;font-weight:500;background:var(--info-soft);color:var(--info)}
+.flash.good{background:var(--good-soft);color:var(--good)} .flash.bad{background:var(--bad-soft);color:var(--bad)}
+footer{max-width:860px;margin:0 auto;padding:0 16px 40px;font-size:.82rem;color:var(--muted)}
+@media (max-width:520px){h1{font-size:1.45rem}.btn.big{width:100%;justify-content:center}.src{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+/* RaportFirmy.pl — „Sklep w porządku”. Ścieżka klienta w trzech stanach + lekki panel opiekuna.
+   Wersja na danych testowych: brak prawdziwych źródeł (Google, Facebook, rejestry), płatności i wysyłki SMS. */
+const LS_KEY = "rf-sklep-v1";
+const PRICE_SIMPLE = 149;
+const CARETAKER = { name:"[imię i nazwisko opiekuna — do uzupełnienia]", phone:"[numer telefonu — do uzupełnienia]" };
+const TODAY = () => new Date().toISOString();
+const fmtD = iso => iso ? new Date(iso).toLocaleDateString("pl-PL") : "—";
+const addDays = (iso, d) => { const t = new Date(iso); t.setDate(t.getDate() + d); return t.toISOString(); };
+const zl = n => n.toLocaleString("pl-PL") + " zł brutto";
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c])); }
+function rid(){ try { const a = new Uint8Array(4); crypto.getRandomValues(a); return Array.from(a, b => b.toString(16).padStart(2, "0")).join(""); } catch (e) { return Math.random().toString(16).slice(2, 10); } }
+const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ł/g, "l").replace(/[^a-z0-9]+/g, " ").trim();
+
+/* ---------- Dane testowe: cztery sklepy, cztery różne wyniki ---------- */
+const SHOPS = [
+  { id:"kwadrat", name:"Sklep Kwadrat", addr:"ul. Lipowa 12, Warszawa", what:"rozbieżne godziny i stary telefon",
+    findings:[
+      { id:"godziny", type:"simple", field:"Godziny otwarcia", why:"Klient, który sprawdzi godziny w Google, przyjdzie po 16:00 i uzna, że jest zamknięte.",
+        values:[ { src:"Profil firmy w Google", val:"pn–pt 8:00–16:00, sob zamknięte", seen:"2026-11-04" },
+                 { src:"Facebook sklepu", val:"pn–pt 8:00–20:00, sob 9:00–14:00", seen:"2026-10-28" },
+                 { src:"Strona WWW sklepu", val:"pn–pt 8:00–18:00, sob 9:00–14:00", seen:"2026-11-02" } ] },
+      { id:"telefon", type:"simple", field:"Telefon", why:"W Google jest inny numer niż na Facebooku i stronie. Jeden z nich może już nie działać.",
+        values:[ { src:"Profil firmy w Google", val:"+48 22 000 00 99", seen:"2026-11-04" },
+                 { src:"Facebook sklepu", val:"+48 22 000 00 01", seen:"2026-10-28" },
+                 { src:"Strona WWW sklepu", val:"+48 22 000 00 01", seen:"2026-11-02" } ] } ],
+    ok:[ { field:"Adres", val:"ul. Lipowa 12, Warszawa", srcs:"Google, Facebook, strona WWW" } ],
+    unknown:[ "Nie wiemy, które godziny są prawdziwe. To wiesz tylko Ty." ] },
+  { id:"ksiegarnia", name:"Księgarnia pod Testem", addr:"Rynek 5, Kraków", what:"wszystko się zgadza",
+    findings:[],
+    ok:[ { field:"Godziny otwarcia", val:"pn–sob 10:00–18:00", srcs:"Google, Facebook, strona WWW" },
+         { field:"Telefon", val:"+48 12 000 00 23", srcs:"Google, Facebook, strona WWW" },
+         { field:"Adres", val:"Rynek 5, Kraków", srcs:"Google, Facebook, strona WWW" } ],
+    unknown:[] },
+  { id:"zoo", name:"Zoologiczny Azor", addr:"ul. Parkowa 3, Łódź", what:"zdublowany profil i brak dostępu do Facebooka",
+    findings:[
+      { id:"duplikat", type:"hard", field:"Dwa profile sklepu w Google", why:"Klient może trafić na stary profil z nieaktualnymi danymi. Opinie rozkładają się na dwa profile.",
+        values:[ { src:"Profil w Google nr 1", val:"„Zoologiczny Azor”, ul. Parkowa 3, czynne pn–sob", seen:"2026-11-05" },
+                 { src:"Profil w Google nr 2", val:"„Sklep zoologiczny Azor”, ul. Parkowa 3, oznaczony jako „zamknięte na stałe”", seen:"2026-11-05" } ] },
+      { id:"fb-dostep", type:"hard", field:"Facebook sklepu bez opiekuna", why:"Ostatni wpis jest sprzed ponad roku, a godziny różnią się od tych w Google. Jeśli nie pamiętasz hasła, strony nie da się poprawić zwykłą drogą.",
+        values:[ { src:"Facebook sklepu", val:"pn–pt 9:00–17:00, ostatni wpis 2025-08-14", seen:"2026-11-05" },
+                 { src:"Profil w Google nr 1", val:"pn–sob 9:00–18:00", seen:"2026-11-05" } ] } ],
+    ok:[ { field:"Telefon", val:"+48 42 000 00 31", srcs:"Google (profil nr 1), Facebook" } ],
+    unknown:[ "Nie wiemy, kto założył drugi profil w Google.", "Nie wiemy, czy masz jeszcze dostęp do strony na Facebooku." ] },
+  { id:"siec", name:"Sieć Testowa — sklep partnerski", addr:"os. Zielone 7, Poznań", what:"sklep pod szyldem sieci",
+    chain:true,
+    findings:[
+      { id:"niedziela", type:"simple", field:"Godziny w niedzielę", why:"Wyszukiwarka sklepów sieci pokazuje, że w niedzielę masz otwarte. Facebook pokazuje, że zamknięte.",
+        values:[ { src:"Facebook sklepu", val:"niedziela: zamknięte", seen:"2026-09-12" },
+                 { src:"Strona sieci — wyszukiwarka sklepów", val:"niedziela: 9:00–20:00", seen:"2026-11-04", locked:true } ] },
+      { id:"szyld", type:"chain", field:"Nazwa i opis sklepu", why:"Te pola ustala centrala sieci. Nie zmieniamy ich i nie bierzemy za nie pieniędzy.",
+        values:[ { src:"Strona sieci — wyszukiwarka sklepów", val:"Sieć Testowa — sklep partnerski", seen:"2026-11-04", locked:true } ] } ],
+    ok:[ { field:"Adres", val:"os. Zielone 7, Poznań", srcs:"strona sieci, Facebook" } ],
+    unknown:[ "Nie wiemy, które pola w Twojej umowie z siecią możesz zmieniać samodzielnie. Sprawdzamy to przed startem." ] }
+];
+const shopById = id => SHOPS.find(s => s.id === id);
+function findShop(q){
+  const n = norm(q); if (n.length < 3) return [];
+  const words = n.split(" ").filter(w => w.length >= 3);
+  return SHOPS.filter(s => { const hay = norm(s.name + " " + s.addr); return words.some(w => hay.includes(w)); });
+}
+const fixable = shop => shop.findings.filter(f => f.type !== "chain");
+const hasHard = shop => shop.findings.some(f => f.type === "hard");
+
+/* ---------- Stan ---------- */
+function fresh(){ return { v:1, view:"start", mode:"client", shopId:null, query:"", picks:{}, selfFix:false, orders:[], registry:[], limit:8, log:[] }; }
+let S = fresh();
+try { const raw = localStorage.getItem(LS_KEY); if (raw){ const p = JSON.parse(raw); if (p && p.v === 1) S = Object.assign(fresh(), p); } } catch (e) { /* bez pamięci przeglądarki też działa */ }
+function save(){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { /* tryb bez pamięci */ } }
+const UI = { flash:null, err:{}, noData:false };
+function log(o, text){ o.history.push({ at:TODAY(), text }); }
+const myOrder = () => S.orders.find(o => o.shopId === S.shopId && !["cancelled"].includes(o.status)) || null;
+const activeThisMonth = () => { const m = TODAY().slice(0, 7); return S.orders.filter(o => o.createdAt.slice(0, 7) === m && !["cancelled","waitlist","failed"].includes(o.status)).length; };
+
+/* ---------- Logika zlecenia ---------- */
+const STATUS = {
+  waitlist:["Lista oczekujących","warn"], new:["Czeka na telefon opiekuna","info"], quoted:["Cena do Twojej akceptacji","warn"],
+  called:["Po rozmowie, czekamy na dostęp","info"], working:["Przygotowujemy zmiany","info"], proposed:["Zmiany do Twojej akceptacji","warn"],
+  accepted:["Wprowadzamy zmiany","info"], done:["Gotowe, do zapłaty","good"], paid:["Gotowe i opłacone","good"],
+  failed:["Nie udało się. Nic nie płacisz","bad"], cancelled:["Anulowane","" ] };
+const pill = st => { const [t, c] = STATUS[st] || [st, ""]; return `<span class="pill ${c}">${esc(t)}</span>`; };
+function stageOf(st){ if (["waitlist","new","quoted"].includes(st)) return 0; if (["called","working","proposed","accepted"].includes(st)) return 1; return 2; }
+function buildChanges(shop, picks){
+  const out = [];
+  shop.findings.filter(f => f.type === "simple").forEach(f => {
+    const target = picks[f.id]; if (!target) return;
+    f.values.forEach(v => { if (v.val !== target) out.push({ field:f.field, src:v.src, from:v.val, to:target, locked:!!v.locked }); });
+  });
+  shop.findings.filter(f => f.type === "hard").forEach(f => out.push({ field:f.field, src:f.values[0].src, from:"stan z dnia sprawdzenia", to:"do ustalenia z opiekunem podczas rozmowy", hard:true }));
+  return out;
+}
+function createOrder(shop, picks, contact){
+  const full = activeThisMonth() >= S.limit;
+  const o = { id:"Z-" + rid().slice(0, 6).toUpperCase(), shopId:shop.id, shopName:shop.name, createdAt:TODAY(), status: full ? "waitlist" : "new",
+    contact, picks:Object.assign({}, picks), changes:buildChanges(shop, picks), needsQuote:hasHard(shop), price: hasHard(shop) ? null : PRICE_SIMPLE,
+    note:"", history:[], recheckAt:null, minutes:null };
+  log(o, full ? "Limit zleceń w tym miesiącu jest wyczerpany. Zgłoszenie trafiło na listę oczekujących." : "Zgłoszenie przyjęte. Opiekun zadzwoni w wybranej porze.");
+  S.orders.unshift(o); return o;
+}
+/* Dozwolone przejścia; każde inne jest odrzucane. */
+const NEXT = { waitlist:["new","cancelled"], new:["called","quoted","cancelled"], quoted:["called","cancelled"], called:["working","failed","cancelled"],
+  working:["proposed","failed","cancelled"], proposed:["accepted","working","cancelled"], accepted:["done","failed"], done:["paid"], paid:[], failed:[], cancelled:[] };
+function move(o, to, text){ if (!NEXT[o.status].includes(to)) return false; o.status = to; log(o, text); return true; }
+
+/* ---------- Widoki klienta ---------- */
+function header(){
+  return `<div class="testbar" role="note"><span><b>Wersja testowa.</b> Dane sklepów są przykładowe. Nic nie jest wysyłane ani pobierane.</span>
+    <span class="row"><button class="btn sm" data-act="mode">${S.mode === "client" ? "Pokaż panel opiekuna" : "Wróć do widoku klienta"}</button><button class="btn sm" data-act="reset">Wyczyść dane testowe</button></span></div>
+  <header class="top"><div class="top-in"><a class="brand" href="#start">Raport<span>Firmy</span>.pl</a><span class="small muted">Sklep w porządku</span></div></header>`;
+}
+const errFor = k => UI.err[k] ? `<p class="err" id="err-${k}">${esc(UI.err[k])}</p>` : "";
+function vStart(){
+  const noData = UI.noData ? `<section class="card warn"><h2>Nie mamy jeszcze danych dla tego sklepu</h2><p>Ta wersja zna tylko sklepy testowe z listy poniżej. Nie pokazujemy wymyślonych danych. Po podłączeniu prawdziwych źródeł sprawdzimy każdy sklep.</p></section>` : "";
+  return `<section class="stack">
+    <h1>Sprawdź za darmo, co klienci widzą o Twoim sklepie</h1>
+    <p class="lead">Wpisz nazwę sklepu i miejscowość. Pokażemy, czy godziny, telefon i adres zgadzają się w Google, na Facebooku i na stronie. Bez NIP-u, bez konta, bez podawania telefonu.</p>
+    <form class="card" data-form="search" novalidate>
+      <div class="field"><label for="q">Nazwa sklepu i miejscowość</label>
+        <input id="q" name="q" type="text" autocomplete="off" placeholder="np. Sklep Kwadrat, Warszawa" value="${esc(S.query)}" ${UI.err.q ? 'aria-invalid="true" aria-describedby="err-q"' : ""}>${errFor("q")}</div>
+      <div><button class="btn primary big" type="submit">Sprawdź sklep</button></div>
+    </form>
+    ${noData}
+    <section class="card"><h3>Sklepy testowe</h3><p class="small muted">Każdy pokazuje inny wynik sprawdzenia.</p>
+      <div class="grid2">${SHOPS.map(s => `<button class="btn" data-act="pick-shop" data-id="${s.id}" style="flex-direction:column;align-items:flex-start"><b>${esc(s.name)}</b><span class="small muted">${esc(s.addr)} · ${esc(s.what)}</span></button>`).join("")}</div></section>
+    <section class="grid2">
+      <div class="card"><h3>Jeśli wszystko się zgadza</h3><p>Mówimy to wprost i niczego nie sprzedajemy.</p></div>
+      <div class="card"><h3>Jeśli coś jest nie tak</h3><p>Możesz poprawić to sam według naszej instrukcji albo zlecić nam. Płacisz dopiero po wykonaniu.</p></div>
+    </section>
+  </section>`;
+}
+function sources(f){ return f.values.map(v => `<div class="src"><span>${esc(v.src)}${v.locked ? ' <span class="pill">ustala centrala</span>' : ""}</span><b>${esc(v.val)}</b><span class="when">sprawdzone ${fmtD(v.seen)} · dane testowe</span></div>`).join(""); }
+function pickForm(f){
+  const uniq = [...new Set(f.values.map(v => v.val))], cur = S.picks[f.id];
+  const custom = cur && !uniq.includes(cur);
+  return `<fieldset class="stack" style="border:none;padding:0;margin:0"><legend style="font-weight:600;padding:0;margin-bottom:6px">Która wersja jest prawdziwa?</legend>
+    ${uniq.map((v, i) => `<label class="opt"><input type="radio" name="pick-${f.id}" value="${esc(v)}" data-pick="${f.id}" ${cur === v ? "checked" : ""}> <span>${esc(v)}</span></label>`).join("")}
+    <label class="opt"><input type="radio" name="pick-${f.id}" value="__other" data-pick="${f.id}" ${custom ? "checked" : ""}> <span>Żadna. Prawdziwa to:</span></label>
+    <input type="text" aria-label="Prawdziwa wartość: ${esc(f.field)}" data-other="${f.id}" value="${custom ? esc(cur) : ""}" placeholder="wpisz prawdziwą wartość" ${custom ? "" : "hidden"}>
+    ${errFor("pick-" + f.id)}</fieldset>`;
+}
+function selfFixBox(shop){
+  const ch = buildChanges(shop, S.picks).filter(c => !c.hard && !c.locked);
+  const locked = buildChanges(shop, S.picks).filter(c => c.locked);
+  return `<section class="card" id="sam"><h2>Jak poprawić to samemu</h2>
+    ${ch.length ? `<ol class="stack">${ch.map(c => `<li><b>${esc(c.src)}</b>, pole „${esc(c.field)}”: zmień <s>${esc(c.from)}</s> na <b>${esc(c.to)}</b>. ${c.src.includes("Google") ? "Wyszukaj nazwę sklepu w Google, będąc zalogowanym na konto właściciela profilu, i wybierz „Edytuj profil”." : c.src.includes("Facebook") ? "Otwórz stronę sklepu jako administrator i wejdź w „Informacje”." : "Zmień to u osoby, która prowadzi stronę."}</li>`).join("")}</ol>` : `<p class="muted">Najpierw zaznacz wyżej, która wersja jest prawdziwa.</p>`}
+    ${locked.length ? `<p><b>Do zgłoszenia centrali:</b> ${locked.map(c => `${esc(c.src)}, „${esc(c.field)}”: ${esc(c.from)} → ${esc(c.to)}`).join("; ")}.</p>` : ""}
+    ${hasHard(shop) ? `<p class="muted">Zdublowanego profilu i utraconego dostępu zwykle nie da się naprawić w kilka minut. Wymagają zgłoszeń do Google lub Facebooka i dowodów, że sklep jest Twój.</p>` : ""}
+    <p class="small muted">Ta instrukcja jest bezpłatna.</p></section>`;
+}
+function vWynik(){
+  const shop = shopById(S.shopId); if (!shop) return vStart();
+  const o = myOrder();
+  const head = `<p class="small muted"><a href="#start">← Inny sklep</a></p><h1>${esc(shop.name)}</h1><p class="muted">${esc(shop.addr)}</p>`;
+  const okList = shop.ok.length ? `<section class="card"><h3>To się zgadza</h3>${shop.ok.map(k => `<div class="src"><span>${esc(k.field)}</span><b>${esc(k.val)}</b><span class="when">tak samo w: ${esc(k.srcs)}</span></div>`).join("")}</section>` : "";
+  const unk = shop.unknown.length ? `<section class="card"><h3>Czego nie wiemy</h3><ul>${shop.unknown.map(u => `<li>${esc(u)}</li>`).join("")}</ul></section>` : "";
+  if (!shop.findings.length) return `${head}<section class="card good"><h2>Wszystko się zgadza</h2><p class="lead">Klienci widzą te same godziny, telefon i adres w każdym miejscu, które sprawdziliśmy. Nie mamy Ci czego sprzedać.</p><p class="muted">Warto sprawdzić ponownie po zmianie godzin, numeru albo przed świętami.</p></section>${okList}`;
+  const n = fixable(shop).length;
+  const cards = shop.findings.map(f => `<section class="card ${f.type === "chain" ? "" : f.type === "hard" ? "bad" : "warn"}">
+      <div class="row" style="justify-content:space-between"><h2>${esc(f.field)}</h2>${f.type === "hard" ? '<span class="pill bad">trudna sprawa</span>' : f.type === "chain" ? '<span class="pill">nie zmieniamy</span>' : '<span class="pill warn">do poprawy</span>'}</div>
+      <p>${esc(f.why)}</p><div>${sources(f)}</div>
+      ${f.type === "simple" && !o ? pickForm(f) : ""}</section>`).join("");
+  let offer;
+  if (o) offer = `<section class="card accent"><h2>Masz już zlecenie ${esc(o.id)}</h2><p>${pill(o.status)}</p><div><a class="btn primary" href="#zlecenie">Zobacz, na jakim jest etapie</a></div></section>`;
+  else {
+    const hard = hasHard(shop);
+    offer = `<section class="card accent" id="oferta"><h2>Popraw za mnie</h2>
+      <p>Opiekun zadzwoni, przeprowadzi Cię przez nadanie dostępu i wprowadzi zmiany. Ty tylko je akceptujesz w telefonie.</p>
+      <p class="price">${hard ? "Stała cena podana przed startem" : zl(PRICE_SIMPLE)}</p>
+      <ul><li>${hard ? "Opiekun poda jedną cenę po rozmowie. Bez Twojej zgody na cenę nie zaczynamy." : "Jedna cena, jednorazowo."}</li><li>Płacisz dopiero po wykonaniu. Nie udało się, nie płacisz.</li><li>Nie dzwonimy z innymi ofertami i nie przekazujemy danych.</li>${shop.chain ? "<li>Przed startem sprawdzamy, które pola możesz zmieniać sam, a które ustala centrala. Zmieniamy tylko Twoje.</li>" : ""}</ul>
+      <form class="stack" data-form="order" novalidate>
+        <div class="grid2">
+          <div class="field"><label for="c-name">Imię</label><input id="c-name" name="name" type="text" autocomplete="given-name" ${UI.err.name ? 'aria-invalid="true" aria-describedby="err-name"' : ""}>${errFor("name")}</div>
+          <div class="field"><label for="c-phone">Telefon</label><input id="c-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="9 cyfr" ${UI.err.phone ? 'aria-invalid="true" aria-describedby="err-phone"' : ""}>${errFor("phone")}</div>
+        </div>
+        <div class="field"><label for="c-when">Kiedy zadzwonić</label><select id="c-when" name="when"><option>rano, przed otwarciem</option><option>w ciągu dnia</option><option>wieczorem, po zamknięciu</option><option>w niedzielę</option></select></div>
+        <label class="check"><input type="checkbox" name="consent"> <span>Zgadzam się na jeden telefon w sprawie tego zlecenia.</span></label>${errFor("consent")}
+        <div><button class="btn primary big" type="submit">Popraw za mnie</button></div>
+        <p class="hint">Opiekun: ${esc(CARETAKER.name)}, tel. ${esc(CARETAKER.phone)}. Dostęp do profilu nadajesz dopiero podczas rozmowy i możesz go cofnąć w każdej chwili.</p>
+      </form>
+      <div><button class="btn link" data-act="self">Wolę poprawić sam. Pokaż instrukcję</button></div></section>`;
+  }
+  return `${head}<section class="card bad"><h2>Znaleźliśmy ${n === 1 ? "1 rzecz" : n + " rzeczy"} do poprawy</h2><p>Poniżej dokładnie to, co widzi klient, ze źródłem i datą sprawdzenia.</p></section>
+    ${cards}${offer}${S.selfFix && !o ? selfFixBox(shop) : ""}${okList}${unk}`;
+}
+function stagesBar(o){
+  const s = stageOf(o.status), names = ["Znaleźliśmy","Robimy","Gotowe"];
+  return `<div class="stages" role="list" aria-label="Etap zlecenia">${names.map((n, i) => `<div role="listitem" class="stage ${i === s ? "on" : i < s ? "past" : ""}" ${i === s ? 'aria-current="step"' : ""}>${n}</div>`).join("")}</div>`;
+}
+function changesList(o){ return o.changes.map(c => `<div class="change"><span class="small muted">${esc(c.src)} · ${esc(c.field)}${c.locked ? " · zgłaszamy centrali" : ""}</span><span><s>${esc(c.from)}</s></span><b>${esc(c.to)}</b></div>`).join(""); }
+function vZlecenie(){
+  const o = myOrder() || S.orders.find(x => x.shopId === S.shopId);
+  if (!o) return `<section class="card"><h1>Nie masz jeszcze zlecenia</h1><div><a class="btn primary" href="#start">Sprawdź sklep</a></div></section>`;
+  let now;
+  const who = `Opiekun: ${esc(CARETAKER.name)}, tel. ${esc(CARETAKER.phone)}`;
+  switch (o.status){
+    case "waitlist": now = `<section class="card warn"><h2>Jesteś na liście oczekujących</h2><p>W tym miesiącu opiekun prowadzi już komplet zleceń. Zadzwonimy, gdy zwolni się miejsce. Nic nie płacisz.</p></section>`; break;
+    case "new": now = `<section class="card accent"><h2>Teraz: opiekun do Ciebie zadzwoni</h2><p>Pora: ${esc(o.contact.when)}. Nie musisz nic robić.</p><p class="small muted">${who}</p></section>`; break;
+    case "quoted": now = `<section class="card warn"><h2>Teraz: Twoja decyzja o cenie</h2><p class="price">${zl(o.price)}</p><p>To stała cena za całe zlecenie. Płacisz po wykonaniu. Nie udało się, nie płacisz.</p><div class="row"><button class="btn primary" data-act="accept-price">Zgadzam się na tę cenę</button><button class="btn danger" data-act="cancel">Rezygnuję</button></div></section>`; break;
+    case "called": now = `<section class="card accent"><h2>Teraz: nadanie dostępu</h2><p>Opiekun przeprowadzi Cię przez to telefonicznie. Trwa to kilka minut. Dostęp możesz cofnąć w każdej chwili.</p><p class="small muted">${who}</p></section>`; break;
+    case "working": now = `<section class="card accent"><h2>Teraz: przygotowujemy zmiany</h2><p>Nie musisz nic robić. Zanim cokolwiek opublikujemy, pokażemy Ci zmiany do akceptacji.</p>${o.note ? `<p class="small muted">Twoja uwaga: ${esc(o.note)}</p>` : ""}</section>`; break;
+    case "proposed": now = `<section class="card warn"><h2>Teraz: sprawdź i zaakceptuj zmiany</h2>${changesList(o)}
+        <div class="row"><button class="btn primary big" data-act="accept">Akceptuję</button></div>
+        <form class="stack" data-form="reject" novalidate><div class="field"><label for="rej">Coś się nie zgadza? Napisz co</label><input id="rej" name="note" type="text">${errFor("note")}</div><div><button class="btn" type="submit">Odeślij do poprawy</button></div></form></section>`; break;
+    case "accepted": now = `<section class="card accent"><h2>Teraz: wprowadzamy zmiany</h2><p>Nie musisz nic robić. Damy znać, gdy będzie gotowe.</p></section>`; break;
+    case "done": now = `<section class="card good"><h2>Gotowe. Zostało tylko zapłacić</h2><p class="price">${zl(o.price)}</p><p>Dane do przelewu podaje opiekun. W tej wersji testowej płatność odnotowuje opiekun w swoim panelu.</p></section>`; break;
+    case "paid": now = `<section class="card good"><h2>Gotowe i opłacone</h2><p>Dziękujemy. Ponowna kontrola: ${fmtD(o.recheckAt)}. Nie dzwonimy z ofertami.</p></section>`; break;
+    case "failed": now = `<section class="card bad"><h2>Nie udało się. Nic nie płacisz</h2><p>${esc(o.note || "Opiekun wyjaśni przyczynę telefonicznie.")}</p></section>`; break;
+    default: now = `<section class="card"><h2>Zlecenie anulowane</h2><p>Nic nie płacisz.</p><div><a class="btn" href="#wynik">Wróć do wyniku</a></div></section>`;
+  }
+  const done = ["done","paid"].includes(o.status);
+  const folder = done ? `<section class="card"><h2>Teczka zmian</h2><p class="small muted">Wprowadzone ${fmtD(o.doneAt)}</p>${changesList(o)}
+      <h3>Jak usunąć nas z profilu</h3><ol><li>Google: profil firmy → „Osoby i dostęp” → wybierz nas → „Usuń dostęp”.</li><li>Facebook: strona → „Ustawienia” → „Dostęp do strony” → usuń nas z listy.</li></ol>
+      ${o.status === "paid" && shopById(o.shopId)?.chain ? `<p class="small muted">Jeśli chcesz, żebyśmy co miesiąc pilnowali zmian wprowadzanych przez sieć, powiedz o tym opiekunowi. To osobna, dobrowolna usługa.</p>` : ""}</section>` : "";
+  const hist = `<section class="card"><h3>Co się działo</h3>${o.history.slice().reverse().map(h => `<div class="src"><span>${esc(h.text)}</span><span class="small muted">${fmtD(h.at)}</span></div>`).join("")}</section>`;
+  const price = o.price && !done && o.status !== "quoted" ? `<p class="small muted">Cena: ${zl(o.price)}, płatne po wykonaniu.</p>` : "";
+  const cancel = ["waitlist","new","called","working","proposed"].includes(o.status) ? `<div><button class="btn link" data-act="cancel">Zrezygnuj ze zlecenia</button></div>` : "";
+  return `<p class="small muted"><a href="#wynik">← Wynik sprawdzenia</a></p><h1>${esc(o.shopName)}</h1><p class="muted">Zlecenie <span class="mono">${esc(o.id)}</span></p>
+    ${["failed","cancelled"].includes(o.status) ? "" : stagesBar(o)}${now}${price}${folder}${!done && !["failed","cancelled","proposed"].includes(o.status) && o.changes.length ? `<section class="card"><h3>Zakres zlecenia</h3>${changesList(o)}</section>` : ""}${hist}${cancel}`;
+}
+
+/* ---------- Panel opiekuna ---------- */
+function opActions(o){
+  const b = (act, label, cls = "") => `<button class="btn sm ${cls}" data-act="${act}" data-id="${o.id}">${label}</button>`;
+  switch (o.status){
+    case "waitlist": return b("op-admit", "Przyjmij z listy");
+    case "new": return o.needsQuote ? `<form class="row" data-form="quote" data-id="${o.id}" novalidate><label class="small" for="q-${o.id}">Cena po rozmowie (zł brutto)</label><input id="q-${o.id}" name="price" type="number" min="1" step="1" style="width:110px"><button class="btn sm primary" type="submit">Wyślij cenę</button></form>` : b("op-called", "Zadzwoniono", "primary");
+    case "quoted": return `<span class="small muted">Czeka na zgodę klienta na cenę ${zl(o.price)}</span>`;
+    case "called": return b("op-access", "Dostęp nadany", "primary") + b("op-fail", "Nie udało się", "danger");
+    case "working": return b("op-propose", "Wyślij zmiany do akceptacji", "primary") + b("op-fail", "Nie udało się", "danger");
+    case "proposed": return `<span class="small muted">Czeka na akceptację klienta</span>`;
+    case "accepted": return `<form class="row" data-form="done" data-id="${o.id}" novalidate><label class="small" for="m-${o.id}">Czas pracy (min)</label><input id="m-${o.id}" name="minutes" type="number" min="1" step="1" style="width:90px"><label class="small" for="h-${o.id}">Metoda</label><input id="h-${o.id}" name="method" type="text" style="width:220px" placeholder="np. edycja profilu, zgłoszenie duplikatu"><button class="btn sm primary" type="submit">Wprowadzono</button></form>` + b("op-fail", "Nie udało się", "danger");
+    case "done": return b("op-paid", "Odnotuj płatność", "primary");
+    default: return "";
+  }
+}
+function vOperator(){
+  const used = activeThisMonth();
+  const rows = S.orders.map(o => `<section class="card"><div class="row" style="justify-content:space-between"><h3>${esc(o.shopName)} <span class="mono small muted">${esc(o.id)}</span></h3>${pill(o.status)}</div>
+      <p class="small muted">${esc(o.contact.name)}, tel. ${esc(o.contact.phone)} · dzwonić: ${esc(o.contact.when)} · ${o.price ? zl(o.price) : "cena do ustalenia"}</p>
+      ${o.note ? `<p class="small">Uwaga klienta: ${esc(o.note)}</p>` : ""}${UI.err["op-" + o.id] ? `<p class="err">${esc(UI.err["op-" + o.id])}</p>` : ""}
+      <div class="row">${opActions(o)}</div></section>`).join("");
+  const mins = S.registry.map(r => r.minutes), avg = mins.length ? Math.round(mins.reduce((a, b) => a + b, 0) / mins.length) : null;
+  return `<h1>Panel opiekuna</h1>
+    <section class="card"><div class="row" style="justify-content:space-between"><h3>Pojemność w tym miesiącu</h3><span class="pill ${used >= S.limit ? "bad" : "good"}">${used} z ${S.limit}</span></div>
+      <form class="row" data-form="limit" novalidate><label for="lim">Limit zleceń</label><input id="lim" name="limit" type="number" min="1" max="99" value="${S.limit}" style="width:90px"><button class="btn sm" type="submit">Zapisz</button></form>
+      <p class="small muted">Po przekroczeniu limitu nowe zgłoszenia trafiają na listę oczekujących.</p></section>
+    <h2>Zlecenia</h2>${rows || `<p class="muted">Brak zleceń. Przejdź do widoku klienta i zamów poprawkę w jednym ze sklepów testowych.</p>`}
+    <h2>Rejestr rozwiązanych spraw</h2>
+    ${S.registry.length ? `<div class="tablewrap"><table><thead><tr><th>Data</th><th>Typ błędu</th><th>Źródło</th><th>Metoda</th><th>Min</th></tr></thead><tbody>${S.registry.map(r => `<tr><td>${fmtD(r.at)}</td><td>${esc(r.type)}</td><td>${esc(r.src)}</td><td>${esc(r.method)}</td><td class="mono">${r.minutes}</td></tr>`).join("")}</tbody></table></div><p class="small muted">Średni czas pracy na zlecenie: ${avg} min.</p>` : `<p class="muted">Rejestr zapełnia się po każdym wykonanym zleceniu: typ błędu, źródło, metoda i czas.</p>`}
+    <p class="small muted">Pełny proces pilota (W01–W14: kwalifikacja, plan, import sprzedaży, płatności testowe) jest w <a href="pilot/">osobnej aplikacji pilota</a>.</p>`;
+}
+
+/* ---------- Render i zdarzenia ---------- */
+const VIEWS = { start:vStart, wynik:vWynik, zlecenie:vZlecenie, operator:vOperator };
+let lastView = null;
+function render(){
+  if (S.mode === "operator") S.view = "operator"; else if (S.view === "operator") S.view = "start";
+  if (!VIEWS[S.view]) S.view = "start";
+  if ((S.view === "wynik" || S.view === "zlecenie") && !shopById(S.shopId)) S.view = "start";
+  const fl = UI.flash ? `<div class="flash ${UI.flash[1] || ""}" role="status">${esc(UI.flash[0])}</div>` : ""; UI.flash = null;
+  document.getElementById("app").innerHTML = header() + `<main id="main" tabindex="-1">${fl}${VIEWS[S.view]()}</main><footer>RaportFirmy.pl · wersja testowa · ceny brutto · bez analityki zewnętrznej</footer>`;
+  if (lastView !== S.view){ lastView = S.view; window.scrollTo(0, 0); const m = document.getElementById("main"); if (m) m.focus({ preventScroll:true }); }
+  const bad = document.querySelector('[aria-invalid="true"]'); if (bad) bad.focus();
+  save();
+}
+function go(v){ S.view = v; UI.err = {}; if (location.hash.slice(1) !== v){ try { history.replaceState(null, "", "#" + v); } catch (e) { location.hash = v; } } render(); }
+const orderById = id => S.orders.find(o => o.id === id);
+const ACT = {
+  mode(){ S.mode = S.mode === "client" ? "operator" : "client"; go(S.mode === "operator" ? "operator" : (S.shopId ? "wynik" : "start")); },
+  reset(){ S = fresh(); try { localStorage.removeItem(LS_KEY); } catch (e) {} UI.flash = ["Dane testowe wyczyszczone."]; go("start"); },
+  "pick-shop"(el){ S.shopId = el.dataset.id; S.picks = {}; S.selfFix = false; UI.noData = false; go("wynik"); },
+  self(){ S.selfFix = true; render(); const el = document.getElementById("sam"); if (el) el.scrollIntoView({ block:"start" }); },
+  "accept-price"(){ const o = myOrder(); if (o && move(o, "called", "Zgodziłeś się na cenę " + zl(o.price) + ".")) UI.flash = ["Cena zaakceptowana. Opiekun przeprowadzi Cię przez nadanie dostępu.", "good"]; render(); },
+  accept(){ const o = myOrder(); if (o && move(o, "accepted", "Zaakceptowałeś zmiany.")) UI.flash = ["Zmiany zaakceptowane. Wprowadzamy je.", "good"]; render(); },
+  cancel(){ const o = myOrder(); if (o && move(o, "cancelled", "Zrezygnowałeś ze zlecenia. Nic nie płacisz.")) UI.flash = ["Zlecenie anulowane. Nic nie płacisz."]; render(); },
+  "op-admit"(el){ const o = orderById(el.dataset.id); if (activeThisMonth() >= S.limit){ UI.err["op-" + o.id] = "Limit jest wyczerpany. Zwiększ limit albo poczekaj na zwolnienie miejsca."; return render(); } move(o, "new", "Zgłoszenie przyjęte z listy oczekujących."); render(); },
+  "op-called"(el){ move(orderById(el.dataset.id), "called", "Opiekun zadzwonił i omówił zakres."); render(); },
+  "op-access"(el){ move(orderById(el.dataset.id), "working", "Dostęp nadany. Przygotowujemy zmiany."); render(); },
+  "op-propose"(el){ const o = orderById(el.dataset.id); o.note = ""; move(o, "proposed", "Zmiany wysłane do akceptacji."); render(); },
+  "op-fail"(el){ const o = orderById(el.dataset.id); o.note = "Nie udało się wykonać zlecenia. Nic nie płacisz."; o.price = 0; move(o, "failed", "Nie udało się. Klient nic nie płaci."); render(); },
+  "op-paid"(el){ move(orderById(el.dataset.id), "paid", "Płatność odnotowana."); render(); }
+};
+const FORM = {
+  search(fd){
+    const q = String(fd.get("q") || "").trim(); S.query = q; UI.err = {}; UI.noData = false;
+    if (q.length < 3){ UI.err.q = "Wpisz nazwę sklepu, co najmniej 3 znaki."; return render(); }
+    const hit = findShop(q);
+    if (!hit.length){ UI.noData = true; return render(); }
+    S.shopId = hit[0].id; S.picks = {}; S.selfFix = false; go("wynik");
+  },
+  order(fd){
+    const shop = shopById(S.shopId); UI.err = {};
+    shop.findings.filter(f => f.type === "simple").forEach(f => { if (!S.picks[f.id]) UI.err["pick-" + f.id] = "Zaznacz, która wersja jest prawdziwa."; });
+    const name = String(fd.get("name") || "").trim(), phone = String(fd.get("phone") || "").replace(/[\s-]/g, "").replace(/^\+?48/, "");
+    if (!name) UI.err.name = "Podaj imię.";
+    if (!/^\d{9}$/.test(phone)) UI.err.phone = "Podaj 9 cyfr numeru telefonu.";
+    if (!fd.get("consent")) UI.err.consent = "Potrzebujemy zgody na jeden telefon w sprawie zlecenia.";
+    if (Object.keys(UI.err).length){ render(); const f = document.querySelector('[data-form="order"]'); if (f){ f.elements.name.value = name; f.elements.phone.value = String(fd.get("phone") || ""); f.elements.when.value = fd.get("when"); f.elements.consent.checked = !!fd.get("consent"); } return; }
+    if (myOrder()) return go("zlecenie");
+    const o = createOrder(shop, S.picks, { name, phone, when:String(fd.get("when")) });
+    UI.flash = [o.status === "waitlist" ? "Zgłoszenie zapisane na liście oczekujących." : "Zgłoszenie przyjęte. Opiekun zadzwoni.", "good"]; go("zlecenie");
+  },
+  reject(fd){ const o = myOrder(), note = String(fd.get("note") || "").trim(); if (!note){ UI.err.note = "Napisz krótko, co się nie zgadza."; return render(); } UI.err = {}; o.note = note; move(o, "working", "Odesłałeś zmiany do poprawy: " + note); render(); },
+  quote(fd, form){ const o = orderById(form.dataset.id), p = Number(fd.get("price")); if (!Number.isInteger(p) || p < 1){ UI.err["op-" + o.id] = "Podaj cenę w pełnych złotych."; return render(); } UI.err = {}; o.price = p; move(o, "quoted", "Opiekun zadzwonił i podał stałą cenę: " + zl(p) + "."); render(); },
+  done(fd, form){
+    const o = orderById(form.dataset.id), m = Number(fd.get("minutes")), method = String(fd.get("method") || "").trim();
+    if (!Number.isInteger(m) || m < 1 || !method){ UI.err["op-" + o.id] = "Podaj czas pracy w minutach i metodę. Trafią do rejestru rozwiązanych spraw."; return render(); }
+    UI.err = {}; o.minutes = m; o.doneAt = TODAY(); o.recheckAt = addDays(o.doneAt, 30);
+    const shop = shopById(o.shopId);
+    shop.findings.filter(f => f.type !== "chain").forEach(f => S.registry.unshift({ at:o.doneAt, type:f.field, src:f.values.map(v => v.src).join(", "), method, minutes:m, orderId:o.id }));
+    move(o, "done", "Zmiany wprowadzone. Ponowna kontrola " + fmtD(o.recheckAt) + "."); render();
+  },
+  limit(fd){ const n = Number(fd.get("limit")); if (Number.isInteger(n) && n >= 1 && n <= 99){ S.limit = n; UI.flash = ["Limit zapisany.", "good"]; } render(); }
+};
+document.addEventListener("click", e => { const el = e.target.closest("[data-act]"); if (el && ACT[el.dataset.act]){ e.preventDefault(); ACT[el.dataset.act](el); } });
+document.addEventListener("submit", e => { const f = e.target.closest("[data-form]"); if (!f) return; e.preventDefault(); if (FORM[f.dataset.form]) FORM[f.dataset.form](new FormData(f), f); });
+document.addEventListener("change", e => {
+  const r = e.target.closest("[data-pick]"); if (!r) return;
+  const id = r.dataset.pick, other = document.querySelector(`[data-other="${id}"]`);
+  if (r.value === "__other"){ other.hidden = false; other.focus(); S.picks[id] = other.value.trim() || null; } else { other.hidden = true; S.picks[id] = r.value; }
+  save(); if (S.selfFix) render();
+});
+document.addEventListener("input", e => { const o = e.target.closest("[data-other]"); if (o){ S.picks[o.dataset.other] = o.value.trim() || null; save(); } });
+window.addEventListener("hashchange", () => { const v = location.hash.slice(1); if (VIEWS[v] && v !== S.view){ if (v === "operator") S.mode = "operator"; else S.mode = "client"; S.view = v; UI.err = {}; render(); } });
+{ const v = location.hash.slice(1); if (VIEWS[v]){ S.view = v; S.mode = v === "operator" ? "operator" : "client"; } }
+render();
+</script>
+</body>
+</html>
