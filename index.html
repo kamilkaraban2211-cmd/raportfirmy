@@ -76,6 +76,7 @@ table{border-collapse:collapse;width:100%;font-size:.9rem}
 th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
 th{font-weight:600;color:var(--muted);background:var(--paper)}
 .flash{padding:10px 14px;border-radius:8px;font-weight:500;background:var(--info-soft);color:var(--info)}
+.testnote{padding:10px 14px;border-radius:8px;background:var(--test-soft);color:var(--test);font-size:.92rem}
 .flash.good{background:var(--good-soft);color:var(--good)} .flash.bad{background:var(--bad-soft);color:var(--bad)}
 footer{max-width:860px;margin:0 auto;padding:0 16px 40px;font-size:.82rem;color:var(--muted)}
 @media (max-width:520px){h1{font-size:1.45rem}.btn.big{width:100%;justify-content:center}.src{grid-template-columns:1fr}}
@@ -89,7 +90,10 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;font-size:.82rem;color:
    Wersja na danych testowych: brak prawdziwych źródeł (Google, Facebook, rejestry), płatności i wysyłki SMS. */
 const LS_KEY = "rf-sklep-v1";
 const PRICE_SIMPLE = 149;
-const CARETAKER = { name:"[imię i nazwisko opiekuna — do uzupełnienia]", phone:"[numer telefonu — do uzupełnienia]" };
+const CARETAKER = { name:"", phone:"" }; // uzupełnić przed uruchomieniem usługi; puste = wersja testowa
+const LIVE = !!(CARETAKER.name && CARETAKER.phone);
+const TESTNOTE = LIVE ? "" : `<p class="testnote" role="note"><b>To jest wersja testowa.</b> Zgłoszenie zostaje tylko w tej przeglądarce i nie trafia do nikogo. Nikt nie zadzwoni i nic nie zapłacisz.</p>`;
+const WHO = () => LIVE ? `Opiekun: ${esc(CARETAKER.name)}, tel. ${esc(CARETAKER.phone)}` : "Opiekun zostanie wskazany z imienia, nazwiska i telefonu przed uruchomieniem usługi";
 const TODAY = () => new Date().toISOString();
 const fmtD = iso => iso ? new Date(iso).toLocaleDateString("pl-PL") : "—";
 const addDays = (iso, d) => { const t = new Date(iso); t.setDate(t.getDate() + d); return t.toISOString(); };
@@ -260,8 +264,9 @@ function vWynik(){
         </div>
         <div class="field"><label for="c-when">Kiedy zadzwonić</label><select id="c-when" name="when"><option>rano, przed otwarciem</option><option>w ciągu dnia</option><option>wieczorem, po zamknięciu</option><option>w niedzielę</option></select></div>
         <label class="check"><input type="checkbox" name="consent"> <span>Zgadzam się na jeden telefon w sprawie tego zlecenia.</span></label>${errFor("consent")}
-        <div><button class="btn primary big" type="submit">Popraw za mnie</button></div>
-        <p class="hint">Opiekun: ${esc(CARETAKER.name)}, tel. ${esc(CARETAKER.phone)}. Dostęp do profilu nadajesz dopiero podczas rozmowy i możesz go cofnąć w każdej chwili.</p>
+        ${TESTNOTE}
+        <div><button class="btn primary big" type="submit">${LIVE ? "Popraw za mnie" : "Popraw za mnie (test)"}</button></div>
+        <p class="hint">${WHO()}. Dostęp do profilu nadajesz dopiero podczas rozmowy i możesz go cofnąć w każdej chwili.</p>
       </form>
       <div><button class="btn link" data-act="self">Wolę poprawić sam. Pokaż instrukcję</button></div></section>`;
   }
@@ -277,7 +282,7 @@ function vZlecenie(){
   const o = myOrder() || S.orders.find(x => x.shopId === S.shopId);
   if (!o) return `<section class="card"><h1>Nie masz jeszcze zlecenia</h1><div><a class="btn primary" href="#start">Sprawdź sklep</a></div></section>`;
   let now;
-  const who = `Opiekun: ${esc(CARETAKER.name)}, tel. ${esc(CARETAKER.phone)}`;
+  const who = WHO();
   switch (o.status){
     case "waitlist": now = `<section class="card warn"><h2>Jesteś na liście oczekujących</h2><p>W tym miesiącu opiekun prowadzi już komplet zleceń. Zadzwonimy, gdy zwolni się miejsce. Nic nie płacisz.</p></section>`; break;
     case "new": now = `<section class="card accent"><h2>Teraz: opiekun do Ciebie zadzwoni</h2><p>Pora: ${esc(o.contact.when)}. Nie musisz nic robić.</p><p class="small muted">${who}</p></section>`; break;
@@ -301,7 +306,7 @@ function vZlecenie(){
   const price = o.price && !done && o.status !== "quoted" ? `<p class="small muted">Cena: ${zl(o.price)}, płatne po wykonaniu.</p>` : "";
   const cancel = ["waitlist","new","called","working","proposed"].includes(o.status) ? `<div><button class="btn link" data-act="cancel">Zrezygnuj ze zlecenia</button></div>` : "";
   return `<p class="small muted"><a href="#wynik">← Wynik sprawdzenia</a></p><h1>${esc(o.shopName)}</h1><p class="muted">Zlecenie <span class="mono">${esc(o.id)}</span></p>
-    ${["failed","cancelled"].includes(o.status) ? "" : stagesBar(o)}${now}${price}${folder}${!done && !["failed","cancelled","proposed"].includes(o.status) && o.changes.length ? `<section class="card"><h3>Zakres zlecenia</h3>${changesList(o)}</section>` : ""}${hist}${cancel}`;
+    ${["failed","cancelled"].includes(o.status) ? "" : stagesBar(o)}${TESTNOTE}${now}${price}${folder}${!done && !["failed","cancelled","proposed"].includes(o.status) && o.changes.length ? `<section class="card"><h3>Zakres zlecenia</h3>${changesList(o)}</section>` : ""}${hist}${cancel}`;
 }
 
 /* ---------- Panel opiekuna ---------- */

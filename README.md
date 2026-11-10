@@ -34,7 +34,7 @@ Na darmowym planie GitHub Pages działa tylko dla repozytoriów publicznych.
 - Nie sprawdza prawdziwych sklepów. Zna cztery sklepy testowe; dla innych mówi wprost, że nie ma danych.
 - Nie ma serwera: stan żyje w pamięci jednej przeglądarki, więc klient i opiekun nie widzą się między urządzeniami.
 - Nie wysyła SMS-ów, nie przyjmuje płatności, nie łączy się z Google ani Facebookiem.
-- Dane opiekuna (`CARETAKER` w `index.html`) są do uzupełnienia.
+- Dopóki `CARETAKER` w `index.html` jest pusty, przy formularzu i na ekranie zlecenia widać informację, że to wersja testowa: zgłoszenie nie trafia do nikogo i nikt nie zadzwoni.
 
 ## Zasady produktu zapisane w kodzie
 
