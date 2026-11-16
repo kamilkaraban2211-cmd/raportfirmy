@@ -1,0 +1,13 @@
+{
+  "id": "P010",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Wizytówkę Google i fanpage poprawiam sama, a godziny otwarcia ujednolicę w godzinę. Darmowy portret po NIP chętnie sprawdzę z ciekawości, ale 99 zł co miesiąc za poprawki, które i tak muszę sama zaakceptować i sama opublikować, to dla mnie wyrzucone pieniądze.",
+  "objection": "Płacę 99 zł miesięcznie, a publikować dalej muszę sama, więc w praktyce płacę za listę rzeczy do zrobienia, którą sama sobie zrobię. Do tego nie wiem, czy ktoś z zewnątrz zna mój sklep i moich klientów na tyle, żeby doradzić coś mądrzejszego niż ja.",
+  "would_change_my_mind": "Gdyby darmowy portret pokazał mi coś konkretnego, czego sama nie zauważyłam (np. błędy w miejscach, których nie sprawdzam), kupiłabym jednorazowy raport, ale nie abonament.",
+  "price_too_cheap": 10,
+  "price_cheap": 25,
+  "price_expensive": 49,
+  "price_too_expensive": 79
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P006",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Nikt z moich znajomych tego nie używa ani mi nie polecił, a z reklamy niczego nie kupuję. Raport z kasy i tak oddaję księgowej, a ile sprzedałam, widzę w szufladzie i w zeszycie, więc nie wiem, za co miałabym płacić 49 zł co miesiąc.",
+  "objection": "Po miesiącu już będę wiedziała, ile mam paragonów i jaki średni, to po co płacić dalej co miesiąc za to samo. Wieczorem przy stole nie mam siły jeszcze robić zdjęć i poprawiać kwot w aplikacji.",
+  "would_change_my_mind": "Gdyby moja księgowa albo znajoma ze sklepu obok powiedziała, że tego używa, że jej to oszczędza czas i że naprawdę coś wyłapała w raportach.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 30,
+  "price_too_expensive": 50
+}

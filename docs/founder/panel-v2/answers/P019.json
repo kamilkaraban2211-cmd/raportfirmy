@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Nikt z sieci ani żaden znajomy kupiec mi tego nie polecił, a ja nie wpuszczam obcej firmy do swojego Google i Facebooka tylko dlatego, że wyskoczyła mi reklama. Poza tym połowę tych rzeczy i tak ustala centrala, więc nie wiem, co tu w ogóle zostaje do poprawiania za 149 zł.",
+  "objection": "Obca firma jako menedżer na moim profilu, a ja nie wiem, czy centrala w ogóle na to pozwala i czy potem nie będzie z tego kłopotu z siecią. Po dwunastu godzinach w sklepie nie mam głowy sprawdzać, kto to jest.",
+  "would_change_my_mind": "Gdyby polecił mi to kolega z sieci albo opiekun z hurtowni i powiedział, że u niego to zrobili i centrala nie miała nic przeciwko.",
+  "price_too_cheap": 30,
+  "price_cheap": 80,
+  "price_expensive": 200,
+  "price_too_expensive": 350
+}

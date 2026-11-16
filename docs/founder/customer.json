@@ -1,0 +1,39 @@
+{
+  "business": "RaportFirmy.pl — środowisko pracy właściciela mikrofirmy handlowej: rozpoznanie sklepu po NIP, wybór celu, przygotowanie kroku i przegląd wyniku; abonament 99 zł brutto/mies.",
+  "target": "Polski właściciel lub właścicielka małego sklepu stacjonarnego (1–9 osób, jedna placówka), który sam prowadzi sklep na co dzień. Wszystkie kwoty, także dochód na Twojej karcie, są w złotych (PLN), nie w dolarach; imię na karcie jest przypadkowe.",
+  "where": "Polska, małe i średnie miasta oraz osiedla w dużych miastach",
+  "age": [28, 64],
+  "segments": [
+    {"name": "Niezależny sklep spożywczy (bez szyldu sieci)", "share": 0.40, "income": [48000, 120000]},
+    {"name": "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)", "share": 0.30, "income": [60000, 150000]},
+    {"name": "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)", "share": 0.30, "income": [42000, 110000]}
+  ],
+  "behaviours": [
+    {"name": "Robię wszystko sam", "share": 0.22, "how": "Stoi za ladą większość dnia, papiery i zamówienia robi wieczorem, na nowe narzędzia brakuje czasu."},
+    {"name": "Sceptyk wobec abonamentów i AI", "share": 0.15, "how": "Słyszał już wiele obietnic od sprzedawców 'wizytówek Google' i pozycjonowania; zakłada, że to kolejny naciągacz."},
+    {"name": "Ufa księgowej i centrali", "share": 0.15, "how": "Z pytaniami idzie do biura rachunkowego albo opiekuna z sieci; to, co dostaje od nich, zwykle mu wystarcza."},
+    {"name": "Liczy każdy stały koszt", "share": 0.12, "how": "Każdą miesięczną opłatę ogląda trzy razy; płaci tylko wtedy, gdy widzi konkretny zwrot w złotówkach."},
+    {"name": "Patrzy w program sklepowy", "share": 0.12, "how": "Codziennie sprawdza utarg w kasie lub programie (np. Subiekt); raporty ma, ale rzadko z nich wyciąga decyzje."},
+    {"name": "Sam ogarnia internet", "share": 0.12, "how": "Prowadzi fanpage sklepu, sam poprawia wizytówkę Google, chętnie testuje nowe aplikacje."},
+    {"name": "Kupuje z polecenia", "share": 0.12, "how": "Zaczyna korzystać z usługi dopiero, gdy poleci ją znajomy przedsiębiorca albo ktoś z sieci."}
+  ],
+  "objections": [
+    "Znowu ktoś chce mi sprzedać wizytówkę Google albo pozycjonowanie",
+    "99 zł co miesiąc za coś, co mogę zrobić sam w godzinę",
+    "Nie mam czasu na kolejną aplikację po dwunastu godzinach w sklepie",
+    "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie?",
+    "Nie chcę podawać NIP-u i danych sprzedaży nieznanej firmie",
+    "Księgowa albo centrala sieci i tak mi to robi",
+    "Po jednym miesiącu wszystko będzie poprawione, po co płacić dalej?",
+    "Sztuczna inteligencja napisze jakieś ogólniki, które nie pasują do mojego sklepu"
+  ],
+  "habits": [
+    "otwierasz sklep o 6:00 i zamykasz o 21:00, papiery robisz wieczorem przy kuchennym stole",
+    "co tydzień dzwoni do Ciebie handlowiec od 'pozycjonowania w Google'",
+    "fanpage sklepu na Facebooku prowadzi Ci córka albo syn",
+    "raz w miesiącu oddajesz dokumenty do biura rachunkowego",
+    "towar zamawiasz w hurtowni i przez aplikację dostawcy",
+    "zatrudniasz dwie osoby na zmiany i sam łatasz grafik",
+    "klienci często dzwonią z pytaniem, do której jesteś otwarty"
+  ]
+}

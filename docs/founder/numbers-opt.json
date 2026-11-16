@@ -1,0 +1,67 @@
+{
+ "business": "Skaner raportu z kasy (raportfirmy.pl), płatny SaaS. Konfiguracja zoptymalizowana",
+ "unit": "klient-miesiąc (1 aktywna subskrypcja przez 1 miesiąc)",
+ "price": 39.84,
+ "variable": [
+  {
+   "label": "AI: odczyt ~32 zdjęć/mies. (Haiku 5.5, zdjęcie zmniejszone w telefonie do ok. 2 000 tokenów)",
+   "cost": 0.11
+  },
+  {
+   "label": "AI: komentarz z szablonu (0 zł) + 2 komentarze AI/mies. na żądanie (Haiku 5.5)",
+   "cost": 0.01
+  },
+  {
+   "label": "Płatność: abonament roczny (Stripe, 1 transakcja/rok, w przeliczeniu na miesiąc)",
+   "cost": 0.98
+  },
+  {
+   "label": "Wsparcie: 4 min/mies. x 60 zł/h (samodzielne poprawki, kontrola sum, instrukcja zdjęcia)",
+   "cost": 4.0
+  }
+ ],
+ "fixed_monthly": [
+  {
+   "label": "Hosting MyDevil MD1 (szacunek, do podania)",
+   "cost": 20
+  },
+  {
+   "label": "Domena i poczta (szacunek)",
+   "cost": 10
+  },
+  {
+   "label": "Księgowość raportfirmy.pl (szacunek, do podania)",
+   "cost": 300
+  }
+ ],
+ "startup": [
+  {
+   "label": "Regulamin, polityka prywatności, umowa powierzenia (szacunek)",
+   "cost": 1500
+  },
+  {
+   "label": "Testy odczytu na 50 prawdziwych raportach (API)",
+   "cost": 20
+  },
+  {
+   "label": "Pierwsze działania marketingowe (budżet eksperymentów)",
+   "cost": 200
+  }
+ ],
+ "days_per_month": 1,
+ "plan_per_day": 100,
+ "ramp_per_day": [
+  3,
+  5,
+  8,
+  12,
+  16,
+  20,
+  25,
+  30,
+  35,
+  40,
+  45,
+  50
+ ]
+}

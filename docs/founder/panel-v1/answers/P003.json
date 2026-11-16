@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason": "Darmowy portret sobie zrobię, bo nic nie kosztuje, ale 99 zł co miesiąc to dla mnie stały koszt bez żadnej liczby po drugiej stronie. Sami piszą, że nie obiecują wzrostu sprzedaży, więc za co ja właściwie płacę, za poprawione godziny otwarcia?",
+  "reason_code": "trust",
+  "objection": "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie? Poprawki do akceptacji i plan testu i tak muszę wdrożyć sam, a czasu nie mam, bo łatam grafik za dwie osoby.",
+  "would_change_my_mind": "Gdyby darmowy portret pokazał konkretny błąd, przez który tracę klientów (np. złe godziny w Google), i dali pierwszy miesiąc za darmo albo zwrot pieniędzy, jeśli nic nie wyjdzie.",
+  "price_too_cheap": 10,
+  "price_cheap": 29,
+  "price_expensive": 59,
+  "price_too_expensive": 90
+}

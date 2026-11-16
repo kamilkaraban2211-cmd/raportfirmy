@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Mam sklep pod szyldem sieci, więc wizytówką w Google i Facebookiem i tak w dużej części rządzi centrala, a dla mnie zostają może godziny i telefon, które sama mogę poprawić. Za 149 zł mogę ewentualnie zrobić darmowe sprawdzenie, jak znajdę wieczorem chwilę, ale płacić za to raczej nie będę.",
+  "objection": "Boję się, że dopiszą jakieś ogólne formułki, które nie pasują do mojego sklepu, a do tego wejdą w coś, co ustala centrala, i potem ja będę się z siecią tłumaczyć. Nie wiem też, czy w ogóle mam uprawnienia, żeby dodać kogoś jako menedżera.",
+  "would_change_my_mind": "Gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google stoją u mnie złe godziny albo stary numer i klienci przez to idą gdzie indziej, a centrala potwierdziła, że mogę to zlecić.",
+  "price_too_cheap": 30,
+  "price_cheap": 60,
+  "price_expensive": 120,
+  "price_too_expensive": 200
+}

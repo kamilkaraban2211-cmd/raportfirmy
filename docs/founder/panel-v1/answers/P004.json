@@ -1,0 +1,13 @@
+{
+  "id": "P004",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Szyld, opisy i promocje i tak w dużej mierze ustala centrala sieci, a z pytaniami idę do opiekuna albo do księgowej i to mi wystarcza. Nie widzę, po co płacić 99 zł co miesiąc obcej firmie za to, co dostaję w ramach sieci.",
+  "objection": "Boję się, że komputer napisze mi jakieś ogólniki, które do mojego sklepu nie pasują, a do tego część rzeczy i tak musi zatwierdzić centrala, więc sama niewiele mogę zmienić.",
+  "would_change_my_mind": "Gdyby opiekun z sieci albo moja księgowa sami mi to polecili i powiedzieli, że centrala na to pozwala, a darmowy portret pokazałby konkretny błąd o moim sklepie, który kosztuje mnie klientów.",
+  "price_too_cheap": 15,
+  "price_cheap": 30,
+  "price_expensive": 60,
+  "price_too_expensive": 100
+}

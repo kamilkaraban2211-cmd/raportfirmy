@@ -1,0 +1,13 @@
+{
+  "id": "P015",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "timing",
+  "reason": "Ten darmowy portret z NIP-u może sprawdzę wieczorem, bo klienci ciągle dzwonią, do której mam otwarte, więc pewnie gdzieś te godziny się nie zgadzają. Ale 99 zł co miesiąc za cele, poprawki do akceptacji i przeglądy to dla mnie kolejna rzecz do ogarniania po dwunastu godzinach za ladą, a i tak sama musiałabym to potem wklejać w Google.",
+  "objection": "Nie mam czasu, żeby co miesiąc wybierać cel, czytać materiały i akceptować poprawki, a publikowania za mnie i tak nie ma w cenie, więc płacę za radę, którą muszę sama wdrożyć.",
+  "would_change_my_mind": "Gdyby za tę cenę ktoś po prostu sam poprawił mi godziny i dane w Google i na Facebooku, a ja tylko kliknęłabym raz na telefonie, że się zgadzam.",
+  "price_too_cheap": 15,
+  "price_cheap": 29,
+  "price_expensive": 59,
+  "price_too_expensive": 99
+}

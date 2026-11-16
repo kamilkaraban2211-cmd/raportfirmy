@@ -1,0 +1,13 @@
+{
+  "id": "P001",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Takich od wizytówek Google miałem już kilku i każdy zaczynał od 'za darmo'. Do tego jestem pod szyldem sieci, więc profil i tak w dużej części ogarnia centrala; może wpiszę ten NIP z ciekawości, ale 149 zł i dawanie komuś obcemu dostępu menedżera do mojego Facebooka to nie w tym tygodniu.",
+  "objection": "Że to kolejny naciągacz: dziś 149 zł bez abonamentu, a za miesiąc będą mnie męczyć o te 99 zł co miesiąc. I nie wiem, czy centrala w ogóle pozwoli mi coś zmieniać, więc mogę zapłacić za poprawienie dwóch godzin otwarcia.",
+  "would_change_my_mind": "Gdyby darmowy raport pokazał czarno na białym, że w Google mam złe godziny albo telefon i klienci przez to odchodzą, a centrala albo inny sklep z naszej sieci potwierdził, że z nimi współpracował.",
+  "price_too_cheap": 29,
+  "price_cheap": 59,
+  "price_expensive": 119,
+  "price_too_expensive": 199
+}

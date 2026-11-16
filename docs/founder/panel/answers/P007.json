@@ -1,0 +1,13 @@
+{
+  "id": "P007",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Raporty z kasy raz w miesiącu oddaję księgowej, a obroty i porównania i tak widzę w systemie od centrali sieci. Nie będę co dzień fotografował paragonów, żeby zobaczyć liczby, które już mam, i jeszcze płacić za to 49 zł.",
+  "objection": "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie? Sami piszą, że sprzedaży nie zwiększy i zysku nie policzy, więc wiem tylko, że coś spadło albo wzrosło, a co z tym zrobić, i tak muszę wymyślić sam albo zapytać opiekuna z sieci.",
+  "would_change_my_mind": "Gdyby moja księgowa albo opiekun z sieci sami to polecili i powiedzieli, że eksport oszczędzi im pracy albo obniży mi rachunek w biurze.",
+  "price_too_cheap": 9,
+  "price_cheap": 19,
+  "price_expensive": 39,
+  "price_too_expensive": 59
+}

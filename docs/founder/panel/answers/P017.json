@@ -1,0 +1,13 @@
+{
+  "id": "P017",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Kolejna firma z internetu chce co miesiąc 49 zł i dostępu do moich obrotów, a ja już kilka razy dałem się nabrać na takie obietnice. Raport z kasy umiem przeczytać sam, a porównanie z zeszłym tygodniem robię w zeszycie za darmo.",
+  "objection": "Piszą, że zdjęć nie trzymają i NIP-u nie czytają, ale kto to sprawdzi? Na raporcie są moje dane i obroty, a ja nie wiem, kim są ci ludzie ani gdzie te liczby lądują.",
+  "would_change_my_mind": "Gdyby moja księgowa albo znajomy sklepikarz z okolicy używali tego od kilku miesięcy i powiedzieli, że działa i nic nie wyciekło, plus pierwszy miesiąc za darmo, żebym sprawdził na swoich raportach.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 30,
+  "price_too_expensive": 49
+}

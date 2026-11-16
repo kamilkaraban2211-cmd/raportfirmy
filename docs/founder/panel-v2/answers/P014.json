@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Darmowe sprawdzenie może bym zrobiła, bo nic nie kosztuje. Ale jak mi pokażecie, że godziny się nie zgadzają, to sama to poprawię wieczorem w telefonie, a 149 zł zostanie w kasie. Sami piszecie, że nie obiecujecie więcej klientów, więc nie widzę, za co konkretnie w złotówkach płacę.",
+  "objection": "To wygląda jak kolejna wizytówka Google w ładniejszym opakowaniu. Poprawienie godzin i telefonu to dla mnie 15 minut roboty, a zwrotu z tych 149 zł nikt mi nie policzy. Do tego 99 zł miesięcznie za pilnowanie godzin świątecznych to stały koszt, którego bym nigdy nie wzięła.",
+  "would_change_my_mind": "Gdyby sprawdzenie pokazało coś, czego sama nie umiem naprawić, na przykład zdublowaną albo przejętą wizytówkę, której nie da się odzyskać, albo gdyby ktoś mi pokazał na liczbach, że przez złe dane realnie tracę klientów.",
+  "price_too_cheap": 20,
+  "price_cheap": 49,
+  "price_expensive": 99,
+  "price_too_expensive": 179
+}

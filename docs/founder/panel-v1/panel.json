@@ -1,0 +1,96 @@
+{
+ "n": 20,
+ "seed": 483380,
+ "customer": {
+  "business": "RaportFirmy.pl — środowisko pracy właściciela mikrofirmy handlowej: rozpoznanie sklepu po NIP, wybór celu, przygotowanie kroku i przegląd wyniku; abonament 99 zł brutto/mies.",
+  "target": "Polski właściciel lub właścicielka małego sklepu stacjonarnego (1–9 osób, jedna placówka), który sam prowadzi sklep na co dzień. Wszystkie kwoty, także dochód na Twojej karcie, są w złotych (PLN), nie w dolarach; imię na karcie jest przypadkowe.",
+  "where": "Polska, małe i średnie miasta oraz osiedla w dużych miastach",
+  "age": [
+   28,
+   64
+  ],
+  "segments": [
+   {
+    "name": "Niezależny sklep spożywczy (bez szyldu sieci)",
+    "share": 0.4,
+    "income": [
+     48000,
+     120000
+    ]
+   },
+   {
+    "name": "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)",
+    "share": 0.3,
+    "income": [
+     60000,
+     150000
+    ]
+   },
+   {
+    "name": "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)",
+    "share": 0.3,
+    "income": [
+     42000,
+     110000
+    ]
+   }
+  ],
+  "behaviours": [
+   {
+    "name": "Robię wszystko sam",
+    "share": 0.22,
+    "how": "Stoi za ladą większość dnia, papiery i zamówienia robi wieczorem, na nowe narzędzia brakuje czasu."
+   },
+   {
+    "name": "Sceptyk wobec abonamentów i AI",
+    "share": 0.15,
+    "how": "Słyszał już wiele obietnic od sprzedawców 'wizytówek Google' i pozycjonowania; zakłada, że to kolejny naciągacz."
+   },
+   {
+    "name": "Ufa księgowej i centrali",
+    "share": 0.15,
+    "how": "Z pytaniami idzie do biura rachunkowego albo opiekuna z sieci; to, co dostaje od nich, zwykle mu wystarcza."
+   },
+   {
+    "name": "Liczy każdy stały koszt",
+    "share": 0.12,
+    "how": "Każdą miesięczną opłatę ogląda trzy razy; płaci tylko wtedy, gdy widzi konkretny zwrot w złotówkach."
+   },
+   {
+    "name": "Patrzy w program sklepowy",
+    "share": 0.12,
+    "how": "Codziennie sprawdza utarg w kasie lub programie (np. Subiekt); raporty ma, ale rzadko z nich wyciąga decyzje."
+   },
+   {
+    "name": "Sam ogarnia internet",
+    "share": 0.12,
+    "how": "Prowadzi fanpage sklepu, sam poprawia wizytówkę Google, chętnie testuje nowe aplikacje."
+   },
+   {
+    "name": "Kupuje z polecenia",
+    "share": 0.12,
+    "how": "Zaczyna korzystać z usługi dopiero, gdy poleci ją znajomy przedsiębiorca albo ktoś z sieci."
+   }
+  ],
+  "objections": [
+   "Znowu ktoś chce mi sprzedać wizytówkę Google albo pozycjonowanie",
+   "99 zł co miesiąc za coś, co mogę zrobić sam w godzinę",
+   "Nie mam czasu na kolejną aplikację po dwunastu godzinach w sklepie",
+   "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie?",
+   "Nie chcę podawać NIP-u i danych sprzedaży nieznanej firmie",
+   "Księgowa albo centrala sieci i tak mi to robi",
+   "Po jednym miesiącu wszystko będzie poprawione, po co płacić dalej?",
+   "Sztuczna inteligencja napisze jakieś ogólniki, które nie pasują do mojego sklepu"
+  ],
+  "habits": [
+   "otwierasz sklep o 6:00 i zamykasz o 21:00, papiery robisz wieczorem przy kuchennym stole",
+   "co tydzień dzwoni do Ciebie handlowiec od 'pozycjonowania w Google'",
+   "fanpage sklepu na Facebooku prowadzi Ci córka albo syn",
+   "raz w miesiącu oddajesz dokumenty do biura rachunkowego",
+   "towar zamawiasz w hurtowni i przez aplikację dostawcy",
+   "zatrudniasz dwie osoby na zmiany i sam łatasz grafik",
+   "klienci często dzwonią z pytaniem, do której jesteś otwarty"
+  ]
+ },
+ "pitch": "RaportFirmy.pl — internetowe narzędzie dla właściciela małego sklepu w Polsce, działa na komputerze i telefonie.\nZa darmo i bez zakładania konta: wpisujesz NIP, potwierdzasz swój sklep (szyld i adres placówki) i dostajesz portret: co publicznie widać o Twoim sklepie, skąd to wiemy i czego nie wiemy, np. różne godziny otwarcia w różnych miejscach w internecie.\nAbonament „Plan i przegląd”: 99 zł brutto miesięcznie, płatny co miesiąc, możesz nie odnawiać. W każdym miesiącu jeden wybrany cel dla jednej placówki, do wyboru: (1) uporządkowanie informacji o sklepie w maksymalnie 3 Twoich kanałach — dostajesz gotowe poprawki do akceptacji; (2) poprawiony opis oferty i do 5 odpowiedzi na prawdziwe pytania Twoich klientów; (3) plan małego testu pomysłu (np. promocji lub nowego towaru) albo ocena testu, który już zrobiłeś.\nW cyklu: odpowiedź na Twoje pytanie, do 3 działań w kolejności ważności, jeden gotowy materiał, jedna runda poprawek i przegląd, co z tego wyszło. Wszystko zostaje w Twoim panelu, także po rezygnacji.\nNie w cenie: publikowanie za Ciebie w Google czy na stronie, budowa strony, reklamy — to osobne zlecenia z ceną podaną przed zamówieniem. Jednorazowy raport na jedno pytanie kupisz bez abonamentu, cena po ustaleniu zakresu.\nNie obiecujemy wzrostu sprzedaży; wynik „nic nie trzeba zmieniać” też jest uczciwą odpowiedzią."
+}

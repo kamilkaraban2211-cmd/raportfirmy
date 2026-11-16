@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Po dwunastu godzinach w sklepie nie będę jeszcze fotografował raportów i klikał w kolejną aplikację, mam już aplikację dostawcy i swoje zestawienia z sieci. Nikt znajomy mi tego nie polecił, więc nawet nie zacznę.",
+  "objection": "Nie mam czasu ani głowy na kolejną aplikację, a to, ile sprzedałem i ile było paragonów, widzę sam na raporcie i w systemie sieci. Za 49 zł miesięcznie dostaję liczby, które już mam.",
+  "would_change_my_mind": "Gdyby polecił mi to ktoś z naszej sieci albo znajomy sklepikarz, który tego używa i powie, że naprawdę zajmuje minutę dziennie i coś mu wyłapało.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 30,
+  "price_too_expensive": 50
+}

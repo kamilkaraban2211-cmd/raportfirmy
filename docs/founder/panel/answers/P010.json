@@ -1,0 +1,13 @@
+{
+  "id": "P010",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raport z kasy czytam sama, a porównanie z zeszłym tygodniem robię w arkuszu w kilka minut, bo dobrze ogarniam takie rzeczy. Za 49 zł miesięcznie, czyli prawie 600 zł rocznie, dostaję coś, co i tak już mam, i nadal nie wiem, ile zarabiam.",
+  "objection": "Płaciłabym co miesiąc za przepisanie kwot, które już widzę na raporcie, a zysku ani marży i tak mi to nie pokaże.",
+  "would_change_my_mind": "Gdyby aplikacja łączyła sprzedaż z kasy z fakturami z hurtowni i aplikacji dostawcy i pokazywała marżę, albo miała darmowy miesiąc na moich własnych raportach, żebym sprawdziła, czy faktycznie widzi coś, czego sama nie widzę.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 29,
+  "price_too_expensive": 49
+}

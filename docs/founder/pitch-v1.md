@@ -1,0 +1,6 @@
+RaportFirmy.pl — internetowe narzędzie dla właściciela małego sklepu w Polsce, działa na komputerze i telefonie.
+Za darmo i bez zakładania konta: wpisujesz NIP, potwierdzasz swój sklep (szyld i adres placówki) i dostajesz portret: co publicznie widać o Twoim sklepie, skąd to wiemy i czego nie wiemy, np. różne godziny otwarcia w różnych miejscach w internecie.
+Abonament „Plan i przegląd”: 99 zł brutto miesięcznie, płatny co miesiąc, możesz nie odnawiać. W każdym miesiącu jeden wybrany cel dla jednej placówki, do wyboru: (1) uporządkowanie informacji o sklepie w maksymalnie 3 Twoich kanałach — dostajesz gotowe poprawki do akceptacji; (2) poprawiony opis oferty i do 5 odpowiedzi na prawdziwe pytania Twoich klientów; (3) plan małego testu pomysłu (np. promocji lub nowego towaru) albo ocena testu, który już zrobiłeś.
+W cyklu: odpowiedź na Twoje pytanie, do 3 działań w kolejności ważności, jeden gotowy materiał, jedna runda poprawek i przegląd, co z tego wyszło. Wszystko zostaje w Twoim panelu, także po rezygnacji.
+Nie w cenie: publikowanie za Ciebie w Google czy na stronie, budowa strony, reklamy — to osobne zlecenia z ceną podaną przed zamówieniem. Jednorazowy raport na jedno pytanie kupisz bez abonamentu, cena po ustaleniu zakresu.
+Nie obiecujemy wzrostu sprzedaży; wynik „nic nie trzeba zmieniać” też jest uczciwą odpowiedzią.

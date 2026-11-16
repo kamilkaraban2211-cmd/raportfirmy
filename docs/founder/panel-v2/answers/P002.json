@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Moi klienci to w większości stali bywalcy z okolicy, znają godziny i dzwonią, jak czegoś nie wiedzą. Może wpiszę ten NIP z ciekawości, ale 149 zł za poprawki w Google, których efektu nie zobaczę w kasie, to dla mnie wydatek bez dowodu.",
+  "objection": "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie? Sami piszecie, że nie obiecujecie wzrostu sprzedaży, a ja patrzę na utarg, nie na profil w internecie. Do tego dodawanie kogoś obcego jako menedżera do mojego Google i Facebooka trochę mnie niepokoi.",
+  "would_change_my_mind": "Gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny albo stary telefon i ludzie przez to odbijają się od zamkniętych drzwi, wtedy zapłaciłbym, żeby ktoś to za mnie załatwił.",
+  "price_too_cheap": 30,
+  "price_cheap": 79,
+  "price_expensive": 199,
+  "price_too_expensive": 300
+}

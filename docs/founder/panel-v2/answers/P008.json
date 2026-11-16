@@ -1,0 +1,13 @@
+{
+  "id": "P008",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Nie znam tej firmy, a mam wpisać NIP i jeszcze dać komuś obcemu dostęp do mojego Google i Facebooka. Do mnie przychodzą ludzie z osiedla, znają godziny z drzwi, więc nie widzę, żebym na tym traciła tyle, żeby ryzykować.",
+  "objection": "Kto to w ogóle jest? Dziś mówią, że nie dzwonią z ofertami, a za miesiąc mają mój NIP, numer i dostęp do profilu, i zaczyna się wciskanie abonamentu za 99 zł.",
+  "would_change_my_mind": "Gdyby polecił mi to ktoś znajomy, np. przedstawiciel z mojej hurtowni albo inny sklepikarz, który to zrobił i u którego nic złego się nie stało.",
+  "price_too_cheap": 29,
+  "price_cheap": 79,
+  "price_expensive": 149,
+  "price_too_expensive": 250
+}

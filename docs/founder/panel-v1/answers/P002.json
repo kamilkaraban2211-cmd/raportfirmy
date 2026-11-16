@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "NIP wpiszę z ciekawości, bo za darmo, ale 99 zł co miesiąc za poprawki w internecie i plany testów to dla mnie za mało konkretu. Klienci przychodzą do mnie od lat, utarg widzę codziennie w kasie, a raportów i tak nie czytam.",
+  "objection": "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie? Sami piszą, że nie obiecują wzrostu sprzedaży, a w dodatku publikować i tak muszę sam albo dopłacić osobno.",
+  "would_change_my_mind": "Gdyby ten darmowy portret pokazał mi konkretny błąd, np. złe godziny otwarcia w Google, przez który tracę klientów, i gdyby ktoś to za mnie od razu poprawił.",
+  "price_too_cheap": 15,
+  "price_cheap": 30,
+  "price_expensive": 60,
+  "price_too_expensive": 99
+}

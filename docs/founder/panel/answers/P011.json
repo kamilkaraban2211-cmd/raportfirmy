@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raport dobowy i tak widzę co wieczór na papierze, ile utargowałam i ile było paragonów, a księgowa dostaje swoje. Robienie zdjęć i poprawianie tego, co aplikacja zaznaczy, to kolejne 10 minut przy kuchennym stole o 22:00, a za 49 zł miesięcznie dostaję głównie to, co już wiem.",
+  "objection": "Nie wierzę, że te komentarze to będzie coś więcej niż ogólniki typu 'sprzedaż spadła, sprawdź ruch w sklepie' — ja wiem, czemu we wtorek było mniej ludzi, bo stałam za ladą.",
+  "would_change_my_mind": "Gdyby to w ogóle nie wymagało mojej pracy (samo się ciągnęło z kasy bez zdjęć) i zastąpiło coś, za co już płacę albo co robię ręcznie dla księgowej.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 30,
+  "price_too_expensive": 49
+}

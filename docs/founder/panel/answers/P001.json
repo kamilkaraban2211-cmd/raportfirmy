@@ -1,0 +1,13 @@
+{
+  "id": "P001",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "convenience",
+  "reason": "Po dwunastu godzinach w sklepie i łataniu grafiku nie będę jeszcze codziennie fotografować raportu i poprawiać tego, co mi aplikacja zaznaczy. Sprzedaż i liczbę paragonów widzę na raporcie sama, a to porównanie z zeszłym tygodniem to dla mnie miła ciekawostka, nie coś, za co płacę co miesiąc.",
+  "objection": "Kolejny abonament z AI, który brzmi mądrze, a w praktyce dokłada mi roboty przy zamknięciu dnia. Nie ma wersji darmowej, więc płacę zanim sprawdzę, czy w ogóle będę z tego korzystać dłużej niż tydzień.",
+  "would_change_my_mind": "Gdyby raport sam wpadał z kasy bez robienia zdjęć, a pierwszy miesiąc byłby za darmo na moich prawdziwych danych, żebym zobaczyła, czy coś mi to realnie mówi.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 29,
+  "price_too_expensive": 49
+}

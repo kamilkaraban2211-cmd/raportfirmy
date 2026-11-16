@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Jestem pod szyldem sieci, więc szyld, wizytówki, promocje i opisy towaru w dużej części ustala centrala, a ja i tak nie mam czasu siedzieć nad kolejnym panelem po 15 godzinach za ladą. Darmowy portret z NIP-u może sprawdzę z ciekawości, ale 99 zł co miesiąc za plan, który i tak muszę sama wdrożyć, to dla mnie za dużo zachodu.",
+  "objection": "Boję się, że dostanę ogólniki pisane przez maszynę, które nie znają mojego sklepu ani zasad sieci, a potem i tak muszę wszystko sama poprawiać i publikować wieczorem przy kuchennym stole.",
+  "would_change_my_mind": "Gdyby sieć to polecała albo dopłacała i ktoś za mnie wprowadzał poprawki w Google, tak żebym tylko klikała akceptuj na telefonie w pięć minut.",
+  "price_too_cheap": 15,
+  "price_cheap": 29,
+  "price_expensive": 69,
+  "price_too_expensive": 119
+}

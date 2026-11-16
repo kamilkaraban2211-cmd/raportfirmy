@@ -1,0 +1,13 @@
+{
+  "id": "P018",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Mój sklep żyje z ludzi z osiedla, którzy przychodzą od lat i wiedzą, kiedy jestem otwarta, więc nie widzę, po co mi co miesiąc płacić za porządkowanie informacji w internecie. Wieczorami ledwo ogarniam zamówienia i papiery do biura, nie usiądę jeszcze nad akceptowaniem poprawek i odpowiadaniem na pytania.",
+  "objection": "Boję się, że dostanę jakieś ogólniki napisane przez komputer, które nie pasują do mojego małego sklepu, a ja i tak będę musiała to czytać, poprawiać i sama wszystko wrzucać, bo publikowania nie robią.",
+  "would_change_my_mind": "Gdyby darmowy portret pokazał mi konkretny błąd, przez który tracę klientów, np. złe godziny w Google, i ktoś by to od razu poprawił za mnie bez mojego siedzenia nad tym, zapłaciłabym jednorazowo, ale raczej nie abonament.",
+  "price_too_cheap": 15,
+  "price_cheap": 29,
+  "price_expensive": 59,
+  "price_too_expensive": 99
+}

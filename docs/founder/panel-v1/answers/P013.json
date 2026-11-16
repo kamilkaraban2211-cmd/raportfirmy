@@ -1,0 +1,13 @@
+{
+  "id": "P013",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Mam zwykły spożywczak na osiedlu, ludzie przychodzą, bo mają blisko, a nie dlatego, że coś wyczytali w internecie. Ten darmowy portret może i sprawdzę z ciekawości, ale 99 zł co miesiąc za poprawki godzin i opisy to dla mnie stały koszt bez widocznego zwrotu w złotówkach.",
+  "objection": "Sami piszecie, że nie obiecujecie wzrostu sprzedaży, a publikowanie i tak muszę zrobić sama albo dopłacić. To za co ja płacę 99 zł miesięcznie, za radę, którą sama mogę sobie dać?",
+  "would_change_my_mind": "Gdyby darmowy portret pokazał mi czarno na białym, że klienci nie trafiają do sklepu przez złe godziny albo brak sklepu w Google, i gdybyście to raz poprawili za jedną niewielką opłatę bez abonamentu.",
+  "price_too_cheap": 9,
+  "price_cheap": 19,
+  "price_expensive": 39,
+  "price_too_expensive": 69
+}

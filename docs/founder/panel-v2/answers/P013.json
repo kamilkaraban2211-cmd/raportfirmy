@@ -1,0 +1,13 @@
+{
+  "id": "P013",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Mój sklep zna cała okolica od lat, ludzie przychodzą, bo mieszkają obok, a nie dlatego, że coś znaleźli w Google. Sami piszecie, że nie obiecujecie większej sprzedaży, więc za co mam zapłacić 149 zł? Darmowe sprawdzenie może kliknę z ciekawości, ale płacić nie będę.",
+  "objection": "Nie widzę, ile złotych mi to odda. Godziny w Google sama mogę poprawić, jak syn mi pokaże, a każda taka „jednorazowa” usługa kończy się potem namawianiem na abonament 99 zł miesięcznie.",
+  "would_change_my_mind": "Gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny albo zły telefon i klienci przez to odchodzą pod zamknięte drzwi, to za jakieś 50–80 zł bym się zgodziła.",
+  "price_too_cheap": 20,
+  "price_cheap": 49,
+  "price_expensive": 99,
+  "price_too_expensive": 149
+}

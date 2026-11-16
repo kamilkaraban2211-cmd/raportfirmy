@@ -1,0 +1,13 @@
+{
+  "id": "P013",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raport z kasy widzę codziennie i wiem, ile utargowałam; dokumenty i tak raz w miesiącu wożę do biura rachunkowego, więc księgowa to wszystko ma. Za 49 zł co miesiąc dostałabym ładniej podane liczby, które już znam, a nie widzę z tego ani złotówki zwrotu.",
+  "objection": "Płacić co miesiąc za to, żeby telefon przepisał mi kwoty z paragonu, które księgowa i tak dostaje. Zysku ani marży mi nie policzy, a to mnie naprawdę obchodzi.",
+  "would_change_my_mind": "Gdyby biuro rachunkowe przyjmowało ten eksport zamiast papierów i przez to obniżyło mi opłatę o więcej niż kosztuje aplikacja.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 35
+}

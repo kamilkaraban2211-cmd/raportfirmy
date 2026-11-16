@@ -1,0 +1,13 @@
+{
+  "id": "P008",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Utarg, liczbę paragonów i porównania mam już w Subiekcie i patrzę na to codziennie, więc nie będę płacić 49 zł miesięcznie za fotografowanie raportu, żeby zobaczyć te same liczby. Raportów mi nie brakuje, brakuje mi czasu, żeby coś z nich robić.",
+  "objection": "Piszą, że zdjęć nie trzymają i NIP-u nie czytają, ale to nadal obca firma, której oddaję sprzedaż mojego sklepu dzień po dniu, a do tego to dubluje to, co i tak mam w programie.",
+  "would_change_my_mind": "Gdyby to samo czytało dane prosto z Subiekta bez wysyłania ich nigdzie i co tydzień mówiło mi konkretnie, co zrobić inaczej, a nie tylko pokazywało liczby, które już znam.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 29,
+  "price_too_expensive": 49
+}

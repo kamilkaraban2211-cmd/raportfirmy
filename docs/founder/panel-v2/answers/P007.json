@@ -1,0 +1,13 @@
+{
+  "id": "P007",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Ja takie rzeczy załatwiam przez opiekuna z sieci, a centrala i tak pilnuje szyldu i wizytówki w Google. Najwyżej wpiszę ten NIP za darmo z ciekawości, ale 149 zł obcej firmie bez pytania centrali nie zapłacę.",
+  "objection": "Skąd mam wiedzieć, że poprawione godziny w Google przełożą się na klientów w sklepie? Sami piszecie, że nie obiecujecie sprzedaży, a do tego nie wiem, czy centrala nie zrobi tego za darmo albo nie będzie miała pretensji, że ktoś obcy grzebie przy profilu.",
+  "would_change_my_mind": "Gdyby centrala albo moja księgowa poleciła tę usługę i potwierdziła, że mogę ją zlecić, a darmowe sprawdzenie pokazało czarno na białym, że klienci widzą u mnie złe godziny albo zły telefon.",
+  "price_too_cheap": 30,
+  "price_cheap": 60,
+  "price_expensive": 150,
+  "price_too_expensive": 250
+}

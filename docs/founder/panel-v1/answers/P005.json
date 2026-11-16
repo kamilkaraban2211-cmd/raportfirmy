@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Darmowy portret chętnie zrobię, bo to chwila z NIP-em. Ale jak zobaczę, że godziny są różne w Google i na Facebooku, to poprawię to sama wieczorem, a nie będę płacić 99 zł co miesiąc za coś, co poprawia się raz.",
+  "objection": "Po jednym miesiącu wszystko będzie poprawione, po co płacić dalej? Do tego wieczorem i tak nie mam siły czytać planów i akceptować poprawek, a publikować i tak musiałabym sama albo dopłacać.",
+  "would_change_my_mind": "Jednorazowa opłata za samo uporządkowanie informacji z tym, że ktoś to od razu wrzuci za mnie do Google i na Facebooka, w jasnej cenie poniżej 150 zł.",
+  "price_too_cheap": 15,
+  "price_cheap": 39,
+  "price_expensive": 79,
+  "price_too_expensive": 129
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P010",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Wizytówkę w Google i fanpage poprawiam sama, to dla mnie godzina wieczorem, a nie 149 zł. Darmowe sprawdzenie po NIP chętnie zrobię, bo lubię testować takie rzeczy, ale co mi wyjdzie, to poprawię sama.",
+  "objection": "Płacę komuś za coś, co umiem zrobić sama, a do tego mam dać obcej osobie dostęp menedżera do mojego profilu i fanpage'a.",
+  "would_change_my_mind": "Gdyby darmowy raport pokazał rzeczy, których sama nie umiem znaleźć ani poprawić, np. że Google sam podmienia mi dane albo że jest zduplikowana wizytówka, której nie mogę usunąć.",
+  "price_too_cheap": 20,
+  "price_cheap": 49,
+  "price_expensive": 99,
+  "price_too_expensive": 149
+}

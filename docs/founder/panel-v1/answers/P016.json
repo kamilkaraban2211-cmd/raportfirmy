@@ -1,0 +1,13 @@
+{
+  "id": "P016",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Darmowy portret z NIP-u chętnie sprawdzę, bo lubię testować takie rzeczy, ale wizytówkę Google i fanpage poprawiam sam, a marketing, promocje i nowy towar w dużej mierze ustala centrala sieci. Za 99 zł miesięcznie dostałbym głównie to, co już robię sam albo co robi za mnie sieć.",
+  "objection": "Jestem pod szyldem sieci, więc sporo decyzji o ofercie, promocjach i wyglądzie informacji i tak nie należy do mnie. Nie wiem, czy wasze poprawki nie wejdą w konflikt z tym, co narzuca centrala, a sam ogarniam internet na tyle, że gotowe poprawki do akceptacji niewiele mi oszczędzą.",
+  "would_change_my_mind": "Gdyby darmowy portret pokazał mi konkretne błędy, których sam nie wyłapałem (np. złe godziny w miejscach, o których nie wiedziałem), kupiłbym jednorazowy raport, a nie abonament.",
+  "price_too_cheap": 15,
+  "price_cheap": 35,
+  "price_expensive": 69,
+  "price_too_expensive": 129
+}

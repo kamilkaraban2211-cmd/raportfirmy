@@ -1,0 +1,13 @@
+{
+  "id": "P015",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Ludzie dzwonią, do której jestem otwarta, ale odbieram i mówię, to mnie nie zabija. Za 149 zł mam wpuścić obcą firmę jako menedżera do mojego Google i Facebooka, a nawet nie wiem, jak to się robi, i nie mam na to wieczoru po dwunastu godzinach w sklepie.",
+  "objection": "Nie znam RaportFirmy.pl, a mam dać im dostęp do profilu sklepu. Wieczorem nie będę jeszcze szukać, jak dodać menedżera, i sprawdzać, czy ktoś mi czegoś nie namieszał.",
+  "would_change_my_mind": "Gdyby darmowe sprawdzenie pokazało mi czarno na białym, że w Google mam złe godziny albo telefon i przez to ludzie mnie omijają, a ta osoba z panelu zadzwoniła i przeprowadziła mnie przez dodanie jej jako menedżera w kilka minut, to bym zapłaciła.",
+  "price_too_cheap": 29,
+  "price_cheap": 69,
+  "price_expensive": 149,
+  "price_too_expensive": 250
+}

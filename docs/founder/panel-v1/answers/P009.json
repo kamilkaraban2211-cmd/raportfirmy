@@ -1,0 +1,13 @@
+{
+  "id": "P009",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Jak mam pytanie, dzwonię do księgowej i to mi wystarcza. Po piętnastu godzinach w sklepie nie usiądę jeszcze do panelu wybierać celu na miesiąc, a 99 zł co miesiąc przy moich dochodach to nie są drobne.",
+  "objection": "Dostanę poprawki i plany, ale i tak sam muszę to wszystko wkleić i zrobić, a czasu nie mam. Klienci przychodzą, bo mieszkają obok, nie przez internet.",
+  "would_change_my_mind": "Gdyby księgowa sama mi to poleciła i gdyby ktoś to za mnie wprowadził, tak żebym tylko kliknął akceptuję w telefonie.",
+  "price_too_cheap": 15,
+  "price_cheap": 29,
+  "price_expensive": 59,
+  "price_too_expensive": 99
+}

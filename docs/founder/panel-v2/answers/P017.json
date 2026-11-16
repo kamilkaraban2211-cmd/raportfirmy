@@ -1,0 +1,13 @@
+{
+  "id": "P017",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Ile razy już słyszałem, że ktoś mi 'uporządkuje Google' - zawsze kończyło się telefonami i fakturą za nic. Może z ciekawości wpiszę NIP w ten darmowy test, ale dodać obcą firmę jako menedżera mojego profilu w tym miesiącu? Nie, nie mam na to głowy przy łataniu grafiku.",
+  "objection": "Nie znam tych ludzi, a mam im dać dostęp menedżera do profilu sklepu. 'Płacisz po zatwierdzeniu' i 'nie dzwonimy' to mówi każdy na początku, potem i tak są telefony, a 99 zł miesięcznie wjeżdża tylnymi drzwiami.",
+  "would_change_my_mind": "Gdyby inny właściciel sklepu, którego znam z okolicy albo z mojej branży, powiedział mi, że to zrobili, wziął 149 zł i naprawdę dali mu spokój bez wciskania abonamentu.",
+  "price_too_cheap": 39,
+  "price_cheap": 79,
+  "price_expensive": 149,
+  "price_too_expensive": 250
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P020",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Do mnie przychodzą ludzie z osiedla, którzy wiedzą, kiedy jestem otwarty, a nie ktoś, kto szuka sklepu w Google. Darmowe sprawdzenie po NIP może bym kiedyś wieczorem kliknął, ale jak coś się nie zgadza, to godziny poprawię sam albo poproszę wnuczka, a nie zapłacę za to 149 zł.",
+  "objection": "Płacić obcej firmie za wpisanie godzin i telefonu, co mogę zrobić sam w godzinę, a jeszcze dawać komuś dostęp do mojego Google i Facebooka. Do tego wiem, jak to się kończy: najpierw jednorazowo, a potem namawianie na 99 zł co miesiąc.",
+  "would_change_my_mind": "Gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny albo stary telefon i przez to ludzie odchodzą, a cena była bliżej 50-70 zł, to może bym dał komuś to zrobić, żeby nie siedzieć nad tym wieczorem.",
+  "price_too_cheap": 20,
+  "price_cheap": 50,
+  "price_expensive": 100,
+  "price_too_expensive": 170
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P012",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Brzmi to jak kolejny telefon od tych od 'wizytówki Google', tylko ładniej napisany. Klienci przychodzą do mnie z osiedla, bo wiedzą, gdzie jestem, więc nie wydam 149 zł i nie dam obcemu dostępu do Facebooka, bo ktoś mi pokazał, że godziny się nie zgadzają.",
+  "objection": "Dodaję obcą firmę jako menedżera mojego profilu i nie wiem, kto to naprawdę jest ani co tam potem pozmienia; za dużo już takich słyszałem, a po dwunastu godzinach w sklepie nie mam siły tego pilnować.",
+  "would_change_my_mind": "Gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny albo stary telefon i ktoś przez to do mnie nie trafił, a ktoś znajomy z branży potwierdził, że z nimi robił i było uczciwie.",
+  "price_too_cheap": 30,
+  "price_cheap": 60,
+  "price_expensive": 120,
+  "price_too_expensive": 200
+}

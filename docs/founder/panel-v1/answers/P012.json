@@ -1,0 +1,13 @@
+{
+  "id": "P012",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Brzmi jak kolejny sprzedawca od wizytówek Google, tylko ładniej opisany. Po dwunastu godzinach w sklepie i łataniu grafiku nie będę jeszcze akceptował poprawek w panelu, a 99 zł co miesiąc to dla mnie realne pieniądze.",
+  "objection": "Że za miesiąc dostanę jakiś raport i listę rzeczy do zrobienia, które i tak muszę zrobić sam, bo publikowania w Google nie ma w cenie, a potem będą mi wciskać te osobne zlecenia.",
+  "would_change_my_mind": "Jakby sąsiad z branży, którego znam, pokazał mi, że mu to coś realnie dało, a darmowy portret wyłapał u mnie konkretny błąd, np. złe godziny w Google, który faktycznie odstrasza klientów.",
+  "price_too_cheap": 15,
+  "price_cheap": 29,
+  "price_expensive": 59,
+  "price_too_expensive": 99
+}

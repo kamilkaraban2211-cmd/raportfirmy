@@ -1,0 +1,13 @@
+{
+  "id": "P006",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Sklep spożywczy pod domem, ludzie i tak przychodzą, bo mieszkają obok. Darmowy portret mogę sobie sprawdzić wieczorem, poprawię te godziny otwarcia raz i tyle, za co mam potem płacić co miesiąc 99 zł?",
+  "objection": "Po jednym miesiącu wszystko będzie poprawione, po co płacić dalej? A nikt ze znajomych tego nie używa, nie wiem, kto za tym stoi.",
+  "would_change_my_mind": "Gdyby znajomy właściciel sklepu z okolicy powiedział, że mu to coś realnie dało, i gdybym mogła zapłacić raz za jedno uporządkowanie, a nie wchodzić w abonament.",
+  "price_too_cheap": 15,
+  "price_cheap": 30,
+  "price_expensive": 60,
+  "price_too_expensive": 100
+}

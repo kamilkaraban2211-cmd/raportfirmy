@@ -1,0 +1,13 @@
+{
+  "id": "P008",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Nie znam tej firmy i nie będę wpisywać NIP-u ani dawać wglądu w swój sklep komuś z internetu tylko dlatego, że na start jest za darmo. Utarg sprawdzam codziennie sama, towar zamawiam w hurtowni i to mi działa, a 99 zł co miesiąc za porady, które potem i tak sama muszę wdrożyć, to dla mnie wydatek bez pewnego zwrotu.",
+  "objection": "Kto za tym stoi i co zrobią z moim NIP-em i danymi o sklepie. Darmowe to zwykle haczyk, a potem telefony od handlowców.",
+  "would_change_my_mind": "Gdyby polecił mi to ktoś znajomy, na przykład mój hurtownik albo inny sklepikarz z okolicy, i pokazał, że coś konkretnego mu to dało, bez wciskania kolejnych usług.",
+  "price_too_cheap": 15,
+  "price_cheap": 30,
+  "price_expensive": 60,
+  "price_too_expensive": 100
+}

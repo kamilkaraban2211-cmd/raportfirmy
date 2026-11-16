@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raport z kasy i tak widzę codziennie, a sumy liczy kasa, nie ja. Wieczorem mam zamówienia i grafik do łatania, kolejne zdjęcie i kolejna apka za 49 zł co miesiąc tylko dokładają mi roboty, a nic mi nie poprawiają w sklepie.",
+  "objection": "Za co mam płacić co miesiąc? Raz zobaczę, że średni paragon spadł albo wzrósł, i co dalej? Nie liczy mi zysku ani nie powie, co zamówić, a księgowa i tak dostaje raporty ode mnie.",
+  "would_change_my_mind": "Gdyby to samo, bez mojego robienia zdjęć, przychodziło gotowe raz w tygodniu i dało się kupić na jeden miesiąc za kilkanaście złotych, żeby sprawdzić, czy w ogóle coś z tego wynika.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 29,
+  "price_too_expensive": 49
+}

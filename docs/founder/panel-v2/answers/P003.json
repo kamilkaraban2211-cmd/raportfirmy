@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Darmowe sprawdzenie zrobię chętnie, bo nic nie kosztuje. Ale jak mi pokażecie, że godziny w Google i na Facebooku się różnią, to sam to poprawię wieczorem w kwadrans, a 149 zł zostanie w kasie. Sami piszecie, że nie obiecujecie więcej klientów, więc nie widzę, za co konkretnie mam zapłacić.",
+  "objection": "Skąd mam wiedzieć, że te poprawki przełożą się na klientów w sklepie? Nie macie żadnej liczby, a ja płacę tylko za coś, co widzę w złotówkach. A jak już wiem, co jest źle, to większość z tego da się zrobić samemu.",
+  "would_change_my_mind": "Gdyby sprawdzenie pokazało dużo więcej niż jedną złą godzinę, np. że klienci dzwonią pod stary numer albo Google pokazuje, że sklep jest zamknięty, i do tego konkretny przykład podobnego sklepu, któremu po poprawkach przybyło telefonów albo wyznaczeń trasy. Wtedy 149 zł płatne po zrobieniu bym rozważył.",
+  "price_too_cheap": 29,
+  "price_cheap": 59,
+  "price_expensive": 129,
+  "price_too_expensive": 199
+}

@@ -1,0 +1,13 @@
+{
+  "id": "P017",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Już kilku 'specjalistów od wizytówek Google' brało ode mnie pieniądze i nic z tego nie było, a tu na start mam wpisać NIP nieznanej firmie. Darmowy portret może i obejrzę, ale 99 zł co miesiąc za porady, które i tak sam muszę wdrożyć, kiedy łatam grafik dwóch pracowników — nie.",
+  "objection": "Nie wiem, kim jesteście i co zrobicie z moim NIP-em i danymi sklepu; za chwilę zaczną dzwonić handlowcy albo sprzedacie moje dane dalej. Do tego sam muszę wszystko publikować, więc płacę za listę zadań na mój wolny czas, którego nie mam.",
+  "would_change_my_mind": "Polecenie od innego sklepikarza z okolicy, który faktycznie z tego korzysta, plus jasno napisane, kto stoi za firmą i że moje dane nie idą nikomu dalej — i żeby ten darmowy portret pokazał mi coś, czego naprawdę nie wiedziałem.",
+  "price_too_cheap": 15,
+  "price_cheap": 39,
+  "price_expensive": 79,
+  "price_too_expensive": 129
+}

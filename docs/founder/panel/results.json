@@ -1,0 +1,154 @@
+{
+ "business": "RaportFirmy.pl — środowisko pracy właściciela mikrofirmy handlowej: rozpoznanie sklepu po NIP, wybór celu, przygotowanie kroku i przegląd wyniku; abonament 99 zł brutto/mies.",
+ "seed": 483380,
+ "dealt": 20,
+ "answered": 20,
+ "skipped": [],
+ "buys": 0,
+ "passes": 20,
+ "buy_rate": 0.0,
+ "by_segment": [
+  [
+   "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)",
+   6,
+   0.0
+  ],
+  [
+   "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)",
+   6,
+   0.0
+  ],
+  [
+   "Niezależny sklep spożywczy (bez szyldu sieci)",
+   8,
+   0.0
+  ]
+ ],
+ "by_behaviour": [
+  [
+   "Sceptyk wobec abonamentów i AI",
+   3,
+   0.0
+  ],
+  [
+   "Patrzy w program sklepowy",
+   2,
+   0.0
+  ],
+  [
+   "Liczy każdy stały koszt",
+   3,
+   0.0
+  ],
+  [
+   "Ufa księgowej i centrali",
+   3,
+   0.0
+  ],
+  [
+   "Robię wszystko sam",
+   5,
+   0.0
+  ],
+  [
+   "Kupuje z polecenia",
+   2,
+   0.0
+  ],
+  [
+   "Sam ogarnia internet",
+   2,
+   0.0
+  ]
+ ],
+ "by_income": [
+  [
+   "$71,000 to $102,000",
+   7,
+   0.0
+  ],
+  [
+   "$102,000 and up",
+   7,
+   0.0
+  ],
+  [
+   "under $71,000",
+   6,
+   0.0
+  ]
+ ],
+ "why_not": [
+  [
+   "need",
+   13,
+   [
+    "Utarg, liczbę paragonów i porównania i tak widzę codziennie w programie sklepowym, a raporty już mam i rzadko coś z nich wynika. Kolejna aplikacja do fotografowania wydruku z kasy nie da mi nic, czego bym nie wiedział.",
+    "Raport z kasy i tak widzę co wieczór, a ile paragonów i jaki obrót było tydzień temu, mam w zeszycie albo w głowie. Za 49 zł miesięcznie dostaję ładniejsze liczby, ale ani jednego klienta więcej w sklepie, i sami piszą, że wzrostu sprzedaży nie obiecują."
+   ],
+   [
+    "P002",
+    "P003"
+   ]
+  ],
+  [
+   "habit",
+   4,
+   [
+    "Raporty z kasy i tak zanoszę księgowej, a jak czegoś nie rozumiem, dzwonię do opiekuna z sieci i to mi wystarcza. Nie będę płacić 49 zł co miesiąc, żeby telefon powiedział mi, że w środę było mniej paragonów, bo to widzę sama przy kasie.",
+    "Raporty z kasy raz w miesiącu oddaję księgowej, a obroty i porównania i tak widzę w systemie od centrali sieci. Nie będę co dzień fotografował paragonów, żeby zobaczyć liczby, które już mam, i jeszcze płacić za to 49 zł."
+   ],
+   [
+    "P004",
+    "P007"
+   ]
+  ],
+  [
+   "trust",
+   2,
+   [
+    "Nikt z moich znajomych tego nie używa ani mi nie polecił, a z reklamy niczego nie kupuję. Raport z kasy i tak oddaję księgowej, a ile sprzedałam, widzę w szufladzie i w zeszycie, więc nie wiem, za co miałabym płacić 49 zł co miesiąc.",
+    "Kolejna firma z internetu chce co miesiąc 49 zł i dostępu do moich obrotów, a ja już kilka razy dałem się nabrać na takie obietnice. Raport z kasy umiem przeczytać sam, a porównanie z zeszłym tygodniem robię w zeszycie za darmo."
+   ],
+   [
+    "P006",
+    "P017"
+   ]
+  ],
+  [
+   "convenience",
+   1,
+   [
+    "Po dwunastu godzinach w sklepie i łataniu grafiku nie będę jeszcze codziennie fotografować raportu i poprawiać tego, co mi aplikacja zaznaczy. Sprzedaż i liczbę paragonów widzę na raporcie sama, a to porównanie z zeszłym tygodniem to dla mnie miła ciekawostka, nie coś, za co płacę co miesiąc."
+   ],
+   [
+    "P001"
+   ]
+  ]
+ ],
+ "why_yes": [],
+ "flip": [
+  "Gdyby raport sam wpadał z kasy bez robienia zdjęć, a pierwszy miesiąc byłby za darmo na moich prawdziwych danych, żebym zobaczyła, czy coś mi to realnie mówi.",
+  "Gdyby zamiast liczb mówiła mi konkretnie, co zrobić w sklepie, np. który towar domówić albo w które dni zmienić godziny, i pokazała to na moich danych przed zapłatą.",
+  "Gdyby moja księgowa wzięła mniej albo przestała mnie ścigać o raporty, bo eksport idzie prosto do niej, czyli konkretna oszczędność większa niż te 49 zł miesięcznie.",
+  "Gdyby moja księgowa albo opiekun z sieci sami mi to polecili, bo eksport rzeczywiście oszczędza im pracę albo sieć dałaby to swoim sklepom w pakiecie.",
+  "Gdyby to samo, bez mojego robienia zdjęć, przychodziło gotowe raz w tygodniu i dało się kupić na jeden miesiąc za kilkanaście złotych, żeby sprawdzić, czy w ogóle coś z tego wynika.",
+  "Gdyby moja księgowa albo znajoma ze sklepu obok powiedziała, że tego używa, że jej to oszczędza czas i że naprawdę coś wyłapała w raportach.",
+  "Gdyby moja księgowa albo opiekun z sieci sami to polecili i powiedzieli, że eksport oszczędzi im pracy albo obniży mi rachunek w biurze.",
+  "Gdyby to samo czytało dane prosto z Subiekta bez wysyłania ich nigdzie i co tydzień mówiło mi konkretnie, co zrobić inaczej, a nie tylko pokazywało liczby, które już znam.",
+  "Gdyby moja księgowa powiedziała, że dzięki temu eksportowi zapłacę jej mniej albo że mam to wysyłać przez tę aplikację - wtedy bym spróbował.",
+  "Gdyby aplikacja łączyła sprzedaż z kasy z fakturami z hurtowni i aplikacji dostawcy i pokazywała marżę, albo miała darmowy miesiąc na moich własnych raportach, żebym sprawdziła, czy faktycznie widzi coś, czego sama nie widzę.",
+  "Gdyby to w ogóle nie wymagało mojej pracy (samo się ciągnęło z kasy bez zdjęć) i zastąpiło coś, za co już płacę albo co robię ręcznie dla księgowej.",
+  "Gdyby moja księgowa sama powiedziała, że z tym eksportem płacę jej mniej albo oszczędzam jej robotę, i to rzeczywiście wyszłoby taniej niż te 49 zł.",
+  "Gdyby biuro rachunkowe przyjmowało ten eksport zamiast papierów i przez to obniżyło mi opłatę o więcej niż kosztuje aplikacja.",
+  "Gdyby moja księgowa obniżyła mi opłatę albo przestała doliczać za przepisywanie raportów dzięki temu eksportowi, tak że oszczędność byłaby wyższa niż 49 zł miesięcznie.",
+  "Gdyby to naprawdę zdejmowało mi robotę z wieczora, na przykład gdyby księgowa sama przyjmowała z tego eksport i nie musiałabym jej nic osobno przepisywać ani wysyłać.",
+  "Gdyby aplikacja sama ciągnęła dane z kasy bez zdjęć i pokazywała coś, czego centrala mi nie daje, np. sprzedaż na zmianę konkretnego pracownika pod grafik.",
+  "Gdyby moja księgowa albo znajomy sklepikarz z okolicy używali tego od kilku miesięcy i powiedzieli, że działa i nic nie wyciekło, plus pierwszy miesiąc za darmo, żebym sprawdził na swoich raportach.",
+  "Gdyby moja księgowa powiedziała, że dzięki temu eksportowi zapłacę jej mniej albo nie będę musiała nosić papierów, i gdyby ktoś mi to ustawił, żebym nie traciła na to wieczorów.",
+  "Gdyby polecił mi to ktoś z naszej sieci albo znajomy sklepikarz, który tego używa i powie, że naprawdę zajmuje minutę dziennie i coś mu wyłapało.",
+  "Gdyby moja księgowa sama powiedziała, że dzięki temu eksportowi zapłacę jej mniej albo nie muszę jej wozić raportów, i gdyby to działało od jednego zdjęcia bez żadnego poprawiania."
+ ],
+ "purchases_first_month_per_buyer": null,
+ "price_answers": 20
+}

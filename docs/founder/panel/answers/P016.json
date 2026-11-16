@@ -1,0 +1,13 @@
+{
+  "id": "P016",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Jestem w sieci, centrala i tak widzi moją sprzedaż i daje mi zestawienia, a księgowa dostaje raporty z kasy co miesiąc. Robienie zdjęć raportów, żeby zobaczyć liczby, które już gdzieś mam, to dla mnie dodatkowa robota, a nie oszczędność.",
+  "objection": "To dubluje to, co już dostaję od centrali i z systemu kasowego, a 49 zł co miesiąc za ładniejsze podanie tych samych liczb to dla mnie za dużo.",
+  "would_change_my_mind": "Gdyby aplikacja sama ciągnęła dane z kasy bez zdjęć i pokazywała coś, czego centrala mi nie daje, np. sprzedaż na zmianę konkretnego pracownika pod grafik.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 29,
+  "price_too_expensive": 49
+}

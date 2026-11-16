@@ -1,0 +1,13 @@
+{
+  "id": "P009",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Ludzie przychodzą do mnie z osiedla, bo wiedzą, gdzie jestem, a jak czegoś nie wiem, to pytam księgową. Po piętnastu godzinach w sklepie nie będę dodawał nikogo jako menedżera w Google ani zatwierdzał zmian w telefonie dla firmy, o której pierwszy raz słyszę.",
+  "objection": "Nie wiem, czy ktokolwiek w ogóle szuka mojego sklepu w Google, a obcej firmie z internetu nie dam dostępu do swojego profilu, dopóki ktoś, komu ufam, mi tego nie poleci.",
+  "would_change_my_mind": "Gdyby moja księgowa albo biuro rachunkowe to poleciło i powiedziało, że sprawdziło tych ludzi, i gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny i tracę przez to klientów.",
+  "price_too_cheap": 30,
+  "price_cheap": 79,
+  "price_expensive": 149,
+  "price_too_expensive": 250
+}

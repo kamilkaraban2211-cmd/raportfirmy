@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skaner raportu z kasy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Układ: jedna kolumna jak taśma z kasy: 1 Zeskanuj → 2 Sprawdź → 3 Wynik, historia na dole */
+  --bg:#eef2f1;
+  --surface:#ffffff;
+  --paper:#fbfcf9;
+  --ink:#14211f;
+  --muted:#56676a;
+  --line:#d3dcda;
+  --accent:#0c6a62;
+  --accent-ink:#ffffff;
+  --accent-soft:#dff0ed;
+  --ok:#1d7440; --ok-soft:#e1f2e6;
+  --warn:#8f5600; --warn-soft:#fcf0d9;
+  --bad:#b0281f; --bad-soft:#fbe6e3;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --radius:10px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1716; --surface:#16211f; --paper:#1a2624; --ink:#e4ecea; --muted:#9db0ad; --line:#2c3b38;
+    --accent:#4fc2b5; --accent-ink:#06201d; --accent-soft:#173a36;
+    --ok:#6fd194; --ok-soft:#183325; --warn:#f0b75e; --warn-soft:#3a2c12; --bad:#ff8a80; --bad-soft:#3d1c1a;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1716; --surface:#16211f; --paper:#1a2624; --ink:#e4ecea; --muted:#9db0ad; --line:#2c3b38;
+  --accent:#4fc2b5; --accent-ink:#06201d; --accent-soft:#173a36;
+  --ok:#6fd194; --ok-soft:#183325; --warn:#f0b75e; --warn-soft:#3a2c12; --bad:#ff8a80; --bad-soft:#3d1c1a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:780px;margin:0 auto;padding:24px 16px 64px;display:flex;flex-direction:column;gap:20px}
+header h1{font-family:var(--f-display);font-weight:700;font-size:clamp(1.7rem,4vw,2.3rem);line-height:1.1;margin:0 0 6px;text-wrap:balance}
+header p{margin:0;color:var(--muted);max-width:62ch}
+.trust{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:.88rem;color:var(--muted)}
+.trust span::before{content:"✓ ";color:var(--accent);font-weight:700}
+section.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:14px}
+.step{display:flex;align-items:baseline;gap:10px}
+.step b{font-family:var(--f-mono);font-size:.8rem;color:var(--accent-ink);background:var(--accent);border-radius:999px;min-width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+h2{font-family:var(--f-display);font-weight:600;font-size:1.3rem;margin:0;text-wrap:balance}
+h3{font-family:var(--f-display);font-weight:600;font-size:1.05rem;margin:0}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button,.btn{font:inherit;font-weight:600;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:10px 16px;cursor:pointer;min-height:44px}
+button.secondary{background:transparent;color:var(--accent)}
+button.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+button.danger{background:transparent;border-color:var(--bad);color:var(--bad)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,label.drop:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;border:2px dashed var(--line);border-radius:var(--radius);padding:26px 16px;background:var(--paper);cursor:pointer}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop strong{font-size:1.05rem}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+.thumbs{display:flex;gap:10px;flex-wrap:wrap}
+.thumb{position:relative;width:84px;height:112px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--paper)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb button{position:absolute;top:4px;right:4px;min-height:0;padding:2px 7px;font-size:.8rem;background:var(--surface);color:var(--ink);border-color:var(--line)}
+.note{border-radius:8px;padding:10px 12px;font-size:.92rem}
+.note.info{background:var(--accent-soft)}
+.note.warn{background:var(--warn-soft);color:var(--ink)}
+.note.bad{background:var(--bad-soft)}
+.example-flag{display:inline-block;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:1px 6px;vertical-align:middle}
+/* formularz */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.9rem;font-weight:600}
+label.f .hint{font-weight:400;color:var(--muted);font-size:.8rem}
+input,select{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:9px 10px;min-height:42px;width:100%}
+input.num{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+input.flag{border-color:var(--warn);background:var(--warn-soft)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:.8rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+td.n,th.n{text-align:right;font-family:var(--f-mono)}
+.rates td input{min-width:90px}
+.rates td.letter input{width:52px;min-width:52px;text-align:center;text-transform:uppercase}
+.rates td.rate input{width:76px;min-width:76px}
+.checks{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.checks li{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:8px;font-size:.93rem}
+.chip{flex:none;font-family:var(--f-mono);font-size:.72rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border-radius:4px;padding:2px 7px;margin-top:2px}
+.checks li.ok{background:var(--ok-soft)} .checks li.ok .chip{background:var(--ok);color:var(--surface)}
+.checks li.warn{background:var(--warn-soft)} .checks li.warn .chip{background:var(--warn);color:var(--surface)}
+.checks li.miss{background:var(--paper);border:1px solid var(--line)} .checks li.miss .chip{background:var(--line);color:var(--ink)}
+/* wynik */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:var(--radius);padding:12px;background:var(--paper);display:flex;flex-direction:column;gap:2px}
+.tile .k{font-size:.82rem;color:var(--muted);font-weight:600}
+.tile .v{font-family:var(--f-mono);font-size:1.3rem;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .d{font-family:var(--f-mono);font-size:.85rem;font-variant-numeric:tabular-nums}
+.d.up{color:var(--ok)} .d.down{color:var(--bad)} .d.flat{color:var(--muted)}
+.bridge{display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.bar{display:flex;height:16px;border-radius:4px;overflow:hidden;background:var(--line)}
+.bar span{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.85rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:baseline}
+.comment{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:12px 14px;min-height:48px}
+.comment h4{font-family:var(--f-display);font-weight:600;font-size:.98rem;margin:10px 0 2px}
+.comment h4:first-child{margin-top:0}
+.comment p{margin:0 0 6px;max-width:68ch}
+.hist td button{min-height:34px;padding:4px 10px;font-size:.85rem}
+tr.sel td{background:var(--accent-soft)}
+.inline-confirm{display:inline-flex;gap:6px;align-items:center}
+[hidden]{display:none !important}
+@media (max-width:420px){ section.card{padding:16px} .tile .v{font-size:1.15rem} }
+@media (max-width:560px){ .hist th:nth-child(2),.hist td:nth-child(2),.hist th:nth-child(5),.hist td:nth-child(5){display:none} }
+@media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Skaner raportu z kasy</h1>
+    <p>Zrób zdjęcie raportu fiskalnego dobowego albo miesięcznego. Aplikacja odczyta kwoty, sprawdzi, czy się sumują, i porówna je z poprzednim raportem.</p>
+    <div class="trust"><span>nie odczytujemy NIP-u</span><span>zdjęcia nie są zapisywane</span><span>zapisane raporty widzisz tylko Ty</span></div>
+  </header>
+
+  <!-- 1. Zeskanuj -->
+  <section class="card" id="scan" aria-labelledby="scan-h">
+    <div class="step"><b>1</b><h2 id="scan-h">Zeskanuj raport</h2></div>
+    <label class="drop" id="drop" for="file">
+      <strong>Dodaj zdjęcie raportu</strong>
+      <span class="muted small">Dotknij, żeby zrobić zdjęcie lub wybrać plik. Długi wydruk sfotografuj w 2–3 częściach, od góry do dołu.</span>
+      <input type="file" id="file" accept="image/jpeg,image/png,image/webp" multiple>
+    </label>
+    <div class="thumbs" id="thumbs"></div>
+    <div class="row">
+      <button id="read" disabled>Odczytaj raport</button>
+      <button id="stop" class="ghost" hidden>Zatrzymaj</button>
+      <button id="manual" class="secondary">Wpisz ręcznie</button>
+      <span id="scanStatus" class="muted small" role="status" aria-live="polite"></span>
+    </div>
+    <div id="scanNote" class="note info small" hidden></div>
+  </section>
+
+  <!-- 2. Sprawdź -->
+  <section class="card" id="check" aria-labelledby="check-h" hidden>
+    <div class="step"><b>2</b><h2 id="check-h">Sprawdź odczyt</h2></div>
+    <p class="muted small" id="checkIntro">Porównaj liczby z wydrukiem. Pola zaznaczone na żółto były nieczytelne albo nie zgadzają się z sumą.</p>
+    <form id="form" novalidate>
+      <div class="grid">
+        <label class="f" for="f-kind">Rodzaj raportu
+          <select id="f-kind">
+            <option value="dobowy">Dobowy</option>
+            <option value="miesieczny">Miesięczny</option>
+            <option value="okresowy">Okresowy</option>
+          </select>
+        </label>
+        <label class="f" for="f-from">Data raportu
+          <input type="date" id="f-from">
+        </label>
+        <label class="f" for="f-to" id="l-to">Data do
+          <input type="date" id="f-to">
+        </label>
+        <label class="f" for="f-no">Nr raportu <span class="hint">opcjonalnie</span>
+          <input type="text" id="f-no" inputmode="numeric" autocomplete="off">
+        </label>
+        <label class="f" for="f-kasa">Nr unikatowy kasy <span class="hint">odróżnia kasy</span>
+          <input type="text" id="f-kasa" autocomplete="off">
+        </label>
+      </div>
+
+      <h3 style="margin-top:16px">Sprzedaż według stawek PTU</h3>
+      <div class="tablewrap">
+        <table class="rates" id="rates">
+          <thead><tr><th>Litera</th><th>Stawka %</th><th>Kwota na wydruku</th><th class="n">Sprzedaż</th><th class="n">PTU</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="row"><button type="button" class="ghost" id="addRate">Dodaj stawkę</button></div>
+
+      <h3 style="margin-top:12px">Podsumowanie z wydruku</h3>
+      <div class="grid">
+        <label class="f" for="f-total">Łączna należność (zł)
+          <input type="text" class="num" id="f-total" inputmode="decimal">
+        </label>
+        <label class="f" for="f-vat">Łączna kwota PTU (zł)
+          <input type="text" class="num" id="f-vat" inputmode="decimal">
+        </label>
+        <label class="f" for="f-rcpt">Liczba paragonów
+          <input type="text" class="num" id="f-rcpt" inputmode="numeric">
+        </label>
+        <label class="f" for="f-cnum">Paragony anulowane
+          <input type="text" class="num" id="f-cnum" inputmode="numeric">
+        </label>
+        <label class="f" for="f-cval">Wartość anulowanych (zł)
+          <input type="text" class="num" id="f-cval" inputmode="decimal">
+        </label>
+      </div>
+    </form>
+    <h3>Kontrola sum</h3>
+    <ul class="checks" id="checks"></ul>
+    <div class="row">
+      <button id="save">Zapisz raport</button>
+      <button id="discard" class="ghost">Odrzuć</button>
+      <span id="saveStatus" class="muted small" role="status" aria-live="polite"></span>
+    </div>
+  </section>
+
+  <!-- 3. Wynik -->
+  <section class="card" id="result" aria-labelledby="res-h">
+    <div class="step"><b>3</b><h2 id="res-h">Wynik</h2> <span id="exFlag" class="example-flag">Przykład</span></div>
+    <p id="exNote" class="note warn small">To przykładowe dane sklepu spożywczego. Znikną, gdy zapiszesz pierwszy własny raport.</p>
+    <div class="grid">
+      <label class="f" for="selCur">Raport
+        <select id="selCur"></select>
+      </label>
+      <label class="f" for="selBase">Porównaj z
+        <select id="selBase"></select>
+      </label>
+    </div>
+    <p class="muted small" id="periodNote"></p>
+    <div class="tiles" id="tiles"></div>
+    <div class="bridge" id="bridge"></div>
+    <div>
+      <h3>Struktura sprzedaży wg stawek PTU</h3>
+      <p class="muted small" style="margin:2px 0 8px">Stawka VAT tylko w przybliżeniu mówi, jaki towar się sprzedał (np. 5% to głównie żywność).</p>
+      <div id="mix"></div>
+    </div>
+    <div>
+      <div class="row" style="justify-content:space-between">
+        <h3>Komentarz</h3>
+        <div class="row">
+          <button id="ask" class="secondary">Skomentuj zmianę</button>
+          <button id="askStop" class="ghost" hidden>Zatrzymaj</button>
+        </div>
+      </div>
+      <p class="muted small" style="margin:4px 0 8px">Komentarz pisze AI na podstawie liczb z raportu. Raport z kasy nie zawiera kosztów, więc nie mówi nic o zysku.</p>
+      <div class="comment" id="comment" aria-live="polite"><p class="muted">Kliknij „Skomentuj zmianę”, żeby dostać krótkie wyjaśnienie i jedno pytanie do sprawdzenia.</p></div>
+    </div>
+  </section>
+
+  <!-- Historia -->
+  <section class="card" id="history" aria-labelledby="hist-h">
+    <div class="row" style="justify-content:space-between">
+      <h2 id="hist-h">Zapisane raporty</h2>
+      <button id="copyCsv" class="ghost">Kopiuj jako CSV</button>
+    </div>
+    <p id="storeNote" class="muted small"></p>
+    <div class="tablewrap">
+      <table class="hist" id="hist">
+        <thead><tr><th>Okres</th><th>Rodzaj</th><th class="n">Sprzedaż</th><th class="n">Paragony</th><th class="n">Śr. paragon</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script>
+"use strict";
+/* ---------- formatowanie i liczby ---------- */
+const PLN = new Intl.NumberFormat("pl-PL",{style:"currency",currency:"PLN",minimumFractionDigits:2});
+const NUM = new Intl.NumberFormat("pl-PL",{maximumFractionDigits:0});
+const PCT = new Intl.NumberFormat("pl-PL",{style:"percent",maximumFractionDigits:1,signDisplay:"exceptZero"});
+const PCT0 = new Intl.NumberFormat("pl-PL",{style:"percent",maximumFractionDigits:1});
+const DAYS = ["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"];
+const KIND = {dobowy:"Dobowy",miesieczny:"Miesięczny",okresowy:"Okresowy"};
+const COLORS = ["var(--accent)","#7a5cc2","#d08a1f","#3d8bd4","#8a9a97","#c2557a","#5aa36b"];
+
+function parseNum(v){
+  if (v === null || v === undefined) return null;
+  if (typeof v === "number") return Number.isFinite(v) ? v : null;
+  let s = String(v).replace(/[\s zł]/gi,"").replace(/[^0-9,.\-]/g,"");
+  if (!s) return null;
+  if (s.includes(",") && s.includes(".")) s = s.replace(/\./g,"").replace(",",".");
+  else s = s.replace(",",".");
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+const r2 = n => Math.round(n*100)/100;
+const fmtMoney = n => n == null ? "—" : PLN.format(n);
+const fmtInt = n => n == null ? "—" : NUM.format(n);
+function fmtInput(n, dec=2){ return n == null ? "" : (dec ? n.toFixed(dec).replace(".",",") : String(Math.round(n))); }
+function dayCount(r){ const a = new Date(r.dateFrom+"T12:00:00"), b = new Date((r.dateTo||r.dateFrom)+"T12:00:00"); return Math.round((b-a)/864e5)+1; }
+function fmtDate(iso){ if(!iso) return "—"; const [y,m,d] = iso.split("-"); return `${d}.${m}.${y}`; }
+function fmtPeriod(r){
+  if (!r.dateFrom) return "bez daty";
+  if (r.kind === "dobowy" || r.dateFrom === r.dateTo) { const wd = DAYS[new Date(r.dateFrom+"T12:00:00").getDay()]; return `${wd} ${fmtDate(r.dateFrom)}`; }
+  return `${fmtDate(r.dateFrom)} – ${fmtDate(r.dateTo)}`;
+}
+function el(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  if (attrs) for (const [k,v] of Object.entries(attrs)) { if (v == null || v === false) continue; if (k === "class") e.className = v; else if (k === "text") e.textContent = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? "" : v); }
+  for (const k of kids) if (k != null) e.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return e;
+}
+
+/* ---------- logika raportu (czyste funkcje) ---------- */
+function rateLineCalc(line){
+  // zwraca {gross, net, vat, expectedVat}
+  const s = line.amount, v = line.vat, rate = line.exempt ? 0 : line.rate;
+  if (s == null) return {gross:null, net:null, vat:v, expectedVat:null};
+  if (rate == null) return {gross: line.basis === "netto" ? (v!=null? s+v : null) : s, net:null, vat:v, expectedVat:null};
+  if (line.basis === "netto") { const ev = r2(s*rate/100); return {gross: r2(s + (v ?? ev)), net:s, vat:v, expectedVat:ev}; }
+  const ev = r2(s*rate/(100+rate)); return {gross:s, net:r2(s-(v ?? ev)), vat:v, expectedVat:ev};
+}
+function computeChecks(r){
+  const out = [];
+  const tolVat = (r.kind === "dobowy") ? 0.02 : Math.max(0.05, 0.012*dayCount(r));
+  let sumGross = 0, sumVat = 0, grossKnown = true, vatKnown = true;
+  for (const line of r.rates){
+    if (line.amount == null && line.vat == null) continue; // pusty wiersz pominiemy przy zapisie
+    const c = rateLineCalc(line);
+    if (c.gross == null) grossKnown = false; else sumGross += c.gross;
+    if (line.exempt || line.rate === 0) { /* brak PTU */ }
+    else if (line.vat == null) vatKnown = false; else sumVat += line.vat;
+    if (line.amount != null && line.vat != null && c.expectedVat != null && !line.exempt){
+      const diff = Math.abs(line.vat - c.expectedVat);
+      out.push(diff <= tolVat
+        ? {level:"ok", field:`rate-${line.letter}`, text:`Stawka ${line.letter} (${line.rate}%): PTU ${fmtMoney(line.vat)} zgadza się z kwotą sprzedaży.`}
+        : {level:"warn", field:`rate-${line.letter}`, text:`Stawka ${line.letter} (${line.rate}%): PTU ${fmtMoney(line.vat)}, a z kwoty sprzedaży wychodzi ${fmtMoney(c.expectedVat)}. Sprawdź obie liczby i stawkę.`});
+    }
+  }
+  sumGross = r2(sumGross); sumVat = r2(sumVat);
+  if (!r.rates.some(l => l.amount != null)) out.push({level:"miss", field:"rates", text:"Brak sprzedaży według stawek. Wpisz co najmniej jedną stawkę."});
+  if (r.total == null) out.push({level:"miss", field:"total", text:"Brak łącznej należności."});
+  else if (grossKnown && r.rates.some(l => l.amount != null)){
+    const d = r2(r.total - sumGross);
+    out.push(Math.abs(d) <= 0.01
+      ? {level:"ok", field:"total", text:`Suma stawek ${fmtMoney(sumGross)} = łączna należność.`}
+      : {level:"warn", field:"total", text:`Suma stawek ${fmtMoney(sumGross)} różni się od łącznej należności ${fmtMoney(r.total)} o ${fmtMoney(d)}. Sprawdź kwoty albo czy na wydruku są inne pozycje (np. opakowania zwrotne).`});
+  }
+  if (r.vatTotal == null) out.push({level:"miss", field:"vat", text:"Brak łącznej kwoty PTU."});
+  else if (vatKnown && r.rates.some(l => l.amount != null)){
+    const d = r2(r.vatTotal - sumVat);
+    out.push(Math.abs(d) <= 0.01
+      ? {level:"ok", field:"vat", text:`Suma PTU ze stawek ${fmtMoney(sumVat)} = łączna kwota PTU.`}
+      : {level:"warn", field:"vat", text:`Suma PTU ze stawek ${fmtMoney(sumVat)} różni się od łącznej kwoty PTU ${fmtMoney(r.vatTotal)} o ${fmtMoney(d)}.`});
+  }
+  if (r.receipts == null) out.push({level:"miss", field:"rcpt", text:"Brak liczby paragonów. Bez niej nie policzymy średniego paragonu."});
+  else if (r.receipts === 0 && (r.total||0) > 0) out.push({level:"warn", field:"rcpt", text:"Jest sprzedaż, a liczba paragonów wynosi 0."});
+  if (r.cancelledValue != null && r.total != null && r.cancelledValue > r.total) out.push({level:"warn", field:"cval", text:"Wartość anulowanych paragonów jest większa niż cała sprzedaż."});
+  if (!r.dateFrom) out.push({level:"miss", field:"from", text:"Brak daty raportu."});
+  else if (r.dateTo && r.dateTo < r.dateFrom) out.push({level:"warn", field:"to", text:"Data „do” jest wcześniejsza niż „od”."});
+  return out;
+}
+function metrics(r){
+  const vat = r.vatTotal ?? r2(r.rates.reduce((a,l)=>a+(l.vat||0),0));
+  const gross = r.total ?? r2(r.rates.reduce((a,l)=>a+(rateLineCalc(l).gross||0),0));
+  const days = dayCount(r);
+  return {
+    gross, vat, net: gross!=null && vat!=null ? r2(gross - vat) : null,
+    receipts: r.receipts, avg: r.receipts ? r2(gross / r.receipts) : null,
+    cancelled: r.cancelledValue, cancelledShare: r.cancelledValue!=null && gross ? r.cancelledValue / (gross + r.cancelledValue) : null,
+    days, perDay: days > 1 ? r2(gross/days) : null, receiptsPerDay: days > 1 && r.receipts ? r.receipts/days : null
+  };
+}
+function bridge(cur, base){
+  // S = N × A  →  ΔS = (N1 − N0)·A0 + (A1 − A0)·N1  (dokładnie)
+  const a = metrics(cur), b = metrics(base);
+  if (a.receipts == null || b.receipts == null || !a.receipts || !b.receipts) return null;
+  const fromCount = r2((a.receipts - b.receipts) * b.avg);
+  const fromAvg = r2((a.avg - b.avg) * a.receipts);
+  return {delta: r2(a.gross - b.gross), fromCount, fromAvg};
+}
+function pickBase(list, cur){
+  const earlier = list.filter(r => r.id !== cur.id && r.kind === cur.kind && r.dateFrom && cur.dateFrom && r.dateFrom < cur.dateFrom)
+                      .sort((x,y)=> y.dateFrom.localeCompare(x.dateFrom));
+  if (!earlier.length) return null;
+  if (cur.kind === "dobowy"){
+    const d = new Date(cur.dateFrom+"T12:00:00"); d.setDate(d.getDate()-7);
+    const iso = d.toISOString().slice(0,10);
+    const same = earlier.find(r => r.dateFrom === iso && (!cur.kasa || !r.kasa || r.kasa === cur.kasa));
+    if (same) return same;
+  }
+  return earlier.find(r => !cur.kasa || !r.kasa || r.kasa === cur.kasa) || earlier[0];
+}
+
+/* ---------- dane przykładowe (oznaczone) ---------- */
+const EXAMPLE = [
+  {id:"ex1", example:true, kind:"dobowy", dateFrom:"2026-11-07", dateTo:"2026-11-07", number:"0312", kasa:"",
+   rates:[{letter:"A",rate:23,exempt:false,basis:"brutto",amount:1284.60,vat:240.21},{letter:"B",rate:8,exempt:false,basis:"brutto",amount:612.40,vat:45.36},{letter:"C",rate:5,exempt:false,basis:"brutto",amount:2145.30,vat:102.16}],
+   total:4042.30, vatTotal:387.73, receipts:186, cancelledCount:2, cancelledValue:18.40},
+  {id:"ex2", example:true, kind:"dobowy", dateFrom:"2026-11-14", dateTo:"2026-11-14", number:"0318", kasa:"",
+   rates:[{letter:"A",rate:23,exempt:false,basis:"brutto",amount:1198.20,vat:224.05},{letter:"B",rate:8,exempt:false,basis:"brutto",amount:655.10,vat:48.53},{letter:"C",rate:5,exempt:false,basis:"brutto",amount:2236.90,vat:106.52}],
+   total:4090.20, vatTotal:379.10, receipts:171, cancelledCount:3, cancelledValue:41.70}
+];
+
+/* ---------- stan ---------- */
+const S = {
+  sample:null, imgLimits:null, db:null, uid:null, unsub:null,
+  saved:[], loaded:false, storeMode:"pending", // pending | db | memory
+  files:[], draft:null, flags:new Set(),
+  curId:null, baseId:null, readCtl:null, askCtl:null
+};
+const $ = id => document.getElementById(id);
+function list(){ return S.saved.length ? S.saved : EXAMPLE; }
+function isExample(){ return S.saved.length === 0; }
+
+/* ---------- 1. skanowanie ---------- */
+function renderThumbs(){
+  const box = $("thumbs"); box.replaceChildren();
+  S.files.forEach((f,i)=>{
+    const url = URL.createObjectURL(f);
+    const img = el("img",{alt:`Zdjęcie ${i+1}`, src:url}); img.onload = ()=>URL.revokeObjectURL(url);
+    box.append(el("div",{class:"thumb"}, img, el("button",{type:"button","aria-label":`Usuń zdjęcie ${i+1}`, text:"×", onclick:()=>{S.files.splice(i,1); renderThumbs();}})));
+  });
+  $("read").disabled = !S.files.length || !S.sample || !S.imgLimits;
+}
+function addFiles(fl){
+  const max = S.imgLimits?.maxCount ?? 3;
+  const types = S.imgLimits?.mediaTypes ?? ["image/jpeg","image/png","image/webp"];
+  const note = $("scanNote"); note.hidden = true;
+  for (const f of fl){
+    if (!types.includes(f.type)) { note.hidden = false; note.className="note warn small"; note.textContent = `Plik „${f.name}” to nie zdjęcie JPG, PNG ani WebP. PDF trzeba najpierw zapisać jako zdjęcie albo zrobić zrzut ekranu.`; continue; }
+    if (S.files.length >= max) { note.hidden = false; note.className="note warn small"; note.textContent = `Za jednym razem można odczytać najwyżej ${max} zdjęć.`; break; }
+    S.files.push(f);
+  }
+  renderThumbs();
+}
+$("file").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
+const drop = $("drop");
+["dragenter","dragover"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => addFiles(e.dataTransfer.files));
+
+const READ_PROMPT = `Na zdjęciach jest polski raport fiskalny z kasy rejestrującej (np. „RAPORT FISKALNY DOBOWY” albo „RAPORT FISKALNY OKRESOWY/MIESIĘCZNY”). Może być sfotografowany w kilku częściach, od góry do dołu.
+Przepisz z wydruku tylko te wartości, które na nim widać. Nie obliczaj brakujących kwot i nie zgaduj: gdy wartości nie widać albo jest niepewna, wpisz null i dodaj nazwę pola do listy "nieczytelne". Nie przepisuj NIP-u, nazwy ani adresu firmy.
+Kwoty podawaj jako liczby z kropką dziesiętną (np. 1284.60). Daty jako RRRR-MM-DD. Dla raportu dobowego data_od = data_do = data raportu.
+Dla każdej litery stawki PTU (A, B, C, D, E, F, G) podaj kwotę sprzedaży z wydruku i zaznacz, czy wydruk nazywa ją kwotą brutto (np. „SPRZEDAŻ OPODATK.”, „sprzedaż brutto”) czy netto („netto”). Stawkę zwolnioną (np. „zw”, „SP.ZW.”) oznacz "zwolniona": true.
+Odpowiedz wyłącznie obiektem JSON w tym kształcie:
+{"czy_raport_fiskalny": true, "rodzaj": "dobowy|miesieczny|okresowy", "numer_raportu": "0318", "data_od": "2026-11-14", "data_do": "2026-11-14", "nr_unikatowy_kasy": "ABC1234567", "stawki": [{"litera": "A", "stawka_proc": 23, "zwolniona": false, "kwota": 1198.20, "kwota_rodzaj": "brutto", "ptu": 224.05}], "laczna_naleznosc": 4090.20, "laczna_ptu": 379.10, "liczba_paragonow": 171, "liczba_anulowanych": 3, "wartosc_anulowanych": 41.70, "nieczytelne": ["data_od"], "uwagi": "krótka uwaga po polsku albo pusty tekst"}
+Jeśli to nie jest raport fiskalny z kasy, zwróć {"czy_raport_fiskalny": false, "uwagi": "co widać na zdjęciu"}.`;
+
+function draftFromModel(m){
+  const flags = new Set(Array.isArray(m.nieczytelne) ? m.nieczytelne.map(String) : []);
+  const map = {data_od:"from", data_do:"to", laczna_naleznosc:"total", laczna_ptu:"vat", liczba_paragonow:"rcpt", liczba_anulowanych:"cnum", wartosc_anulowanych:"cval", numer_raportu:"no", nr_unikatowy_kasy:"kasa"};
+  const f = new Set(); flags.forEach(k => { if (map[k]) f.add(map[k]); else if (/stawk|ptu|kwota/i.test(k)) f.add("rates"); });
+  const kind = ["dobowy","miesieczny","okresowy"].includes(m.rodzaj) ? m.rodzaj : "dobowy";
+  const isoOk = s => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : null;
+  const rates = (Array.isArray(m.stawki) ? m.stawki : []).filter(x => x && (x.kwota != null || x.ptu != null)).map(x => ({
+    letter: String(x.litera || "?").toUpperCase().slice(0,1), rate: x.zwolniona ? null : parseNum(x.stawka_proc), exempt: !!x.zwolniona,
+    basis: x.kwota_rodzaj === "netto" ? "netto" : "brutto", amount: parseNum(x.kwota), vat: x.zwolniona ? null : parseNum(x.ptu)
+  }));
+  rates.forEach(l => { if (l.amount == null || (!l.exempt && (l.vat == null || l.rate == null))) f.add(`rate-${l.letter}`); });
+  const from = isoOk(m.data_od), to = isoOk(m.data_do) || from;
+  const d = { id:null, kind, dateFrom:from, dateTo: kind === "dobowy" ? from : to, number: m.numer_raportu ? String(m.numer_raportu).slice(0,20) : "",
+    kasa: m.nr_unikatowy_kasy ? String(m.nr_unikatowy_kasy).slice(0,20) : "", rates,
+    total: parseNum(m.laczna_naleznosc), vatTotal: parseNum(m.laczna_ptu), receipts: parseNum(m.liczba_paragonow),
+    cancelledCount: parseNum(m.liczba_anulowanych), cancelledValue: parseNum(m.wartosc_anulowanych) };
+  return {draft:d, flags:f, note: typeof m.uwagi === "string" ? m.uwagi.slice(0,300) : ""};
+}
+
+$("read").addEventListener("click", async () => {
+  if (!S.sample || !S.files.length) return;
+  const st = $("scanStatus"), note = $("scanNote");
+  S.readCtl = new AbortController();
+  $("read").disabled = true; $("stop").hidden = false; st.textContent = "Odczytuję raport… to zwykle trwa 10–40 sekund."; note.hidden = true;
+  try {
+    const m = await S.sample.json(READ_PROMPT, {images: S.files.slice(), modelTier:"default", signal:S.readCtl.signal});
+    if (!m || typeof m !== "object" || m.czy_raport_fiskalny === false){
+      note.hidden = false; note.className = "note warn small";
+      note.textContent = "To nie wygląda na raport fiskalny z kasy. " + (m && typeof m.uwagi === "string" ? m.uwagi.slice(0,200) : "Spróbuj wyraźniejszego zdjęcia albo wpisz kwoty ręcznie.");
+      st.textContent = "";
+    } else {
+      const {draft, flags, note:uw} = draftFromModel(m);
+      openForm(draft, flags);
+      st.textContent = "Odczytano. Sprawdź liczby w kroku 2.";
+      if (uw) { note.hidden = false; note.className = "note info small"; note.textContent = "Uwaga z odczytu: " + uw; }
+      $("check").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+    }
+  } catch (e) {
+    st.textContent = "";
+    if (e && e.code === "cancelled") { st.textContent = "Zatrzymano."; }
+    else { note.hidden = false; note.className = "note bad small"; note.textContent = errCopy(e && e.code, "odczyt"); if (["not_granted","sampling_disabled","images_unavailable","not_declared","capability_disabled","capability_removed"].includes(e && e.code)) disableScan(); }
+  } finally {
+    $("stop").hidden = true; renderThumbs();
+  }
+});
+$("stop").addEventListener("click", () => S.readCtl?.abort());
+$("manual").addEventListener("click", () => {
+  openForm({id:null, kind:"dobowy", dateFrom:null, dateTo:null, number:"", kasa:"",
+    rates:[{letter:"A",rate:23,exempt:false,basis:"brutto",amount:null,vat:null},{letter:"B",rate:8,exempt:false,basis:"brutto",amount:null,vat:null},{letter:"C",rate:5,exempt:false,basis:"brutto",amount:null,vat:null}],
+    total:null, vatTotal:null, receipts:null, cancelledCount:null, cancelledValue:null}, new Set());
+  $("checkIntro").textContent = "Przepisz liczby z wydruku. Puste stawki zostaną pominięte.";
+  $("check").scrollIntoView({block:"start"});
+});
+function errCopy(code, what){
+  switch(code){
+    case "not_granted": return "Aplikacja nie ma zgody na użycie Claude. Możesz wpisać kwoty ręcznie.";
+    case "sampling_disabled": return "Claude nie jest dostępny na tym koncie. Możesz wpisać kwoty ręcznie.";
+    case "images_unavailable": return "W tym widoku nie da się wysłać zdjęcia. Wpisz kwoty ręcznie.";
+    case "image_rejected": return "Tego zdjęcia nie udało się przyjąć. Spróbuj innego pliku JPG lub PNG.";
+    case "rate_limited": return "Za dużo zapytań naraz albo wyczerpany limit. Spróbuj za chwilę.";
+    case "invalid_json": return what === "odczyt" ? "Nie udało się odczytać raportu w całości. Spróbuj wyraźniejszego zdjęcia albo wpisz kwoty ręcznie." : "Odpowiedź przyszła w złym formacie. Spróbuj ponownie.";
+    case "session_expired": return "Sesja wygasła. Zaloguj się ponownie.";
+    case "refused": return "Claude odmówił odpowiedzi na to zapytanie.";
+    default: return "Coś poszło nie tak po drodze. Spróbuj jeszcze raz.";
+  }
+}
+function disableScan(){ $("read").disabled = true; $("read").hidden = true; }
+
+/* ---------- 2. formularz ---------- */
+function openForm(d, flags){
+  S.draft = structuredClone(d); S.flags = flags || new Set();
+  $("check").hidden = false; $("saveStatus").textContent = "";
+  $("checkIntro").textContent = flags && flags.size ? "Porównaj liczby z wydrukiem. Pola zaznaczone na żółto były nieczytelne albo nie zgadzają się z sumą." : "Porównaj liczby z wydrukiem i popraw, jeśli coś się nie zgadza.";
+  $("f-kind").value = d.kind; $("f-from").value = d.dateFrom || ""; $("f-to").value = d.dateTo || "";
+  $("f-no").value = d.number || ""; $("f-kasa").value = d.kasa || "";
+  $("f-total").value = fmtInput(d.total); $("f-vat").value = fmtInput(d.vatTotal);
+  $("f-rcpt").value = fmtInput(d.receipts,0); $("f-cnum").value = fmtInput(d.cancelledCount,0); $("f-cval").value = fmtInput(d.cancelledValue);
+  renderRates(); syncKind(); refreshChecks();
+}
+function renderRates(){
+  const tb = $("rates").querySelector("tbody"); tb.replaceChildren();
+  S.draft.rates.forEach((l,i)=>{
+    const flag = S.flags.has(`rate-${l.letter}`) || S.flags.has("rates");
+    const inp = (cls, val, key, mode, label) => { const x = el("input",{type:"text", class:cls + (flag && (key==="amount"||key==="vat") ? " flag":""), value:val, inputmode:mode, "aria-label":label, id:`r${i}-${key}`}); x.addEventListener("input", ()=>{ updateRate(i,key,x.value); }); return x; };
+    const basis = el("select",{"aria-label":`Rodzaj kwoty dla stawki ${l.letter}`, id:`r${i}-basis`}, el("option",{value:"brutto", text:"brutto"}), el("option",{value:"netto", text:"netto"}));
+    basis.value = l.basis; basis.addEventListener("change", ()=>{ S.draft.rates[i].basis = basis.value; refreshChecks(); });
+    tb.append(el("tr",null,
+      el("td",{class:"letter"}, inp("", l.letter, "letter","text",`Litera stawki ${i+1}`)),
+      el("td",{class:"rate"}, inp("num", l.exempt ? "zw" : (l.rate ?? ""), "rate","decimal",`Stawka % dla ${l.letter}`)),
+      el("td",null, basis),
+      el("td",{class:"n"}, inp("num", fmtInput(l.amount), "amount","decimal",`Sprzedaż ${l.letter}`)),
+      el("td",{class:"n"}, inp("num", l.exempt ? "" : fmtInput(l.vat), "vat","decimal",`PTU ${l.letter}`)),
+      el("td",null, el("button",{type:"button", class:"ghost", "aria-label":`Usuń stawkę ${l.letter}`, text:"Usuń", onclick:()=>{ S.draft.rates.splice(i,1); renderRates(); refreshChecks(); }}))
+    ));
+  });
+}
+function updateRate(i,key,val){
+  const l = S.draft.rates[i];
+  if (key === "letter") l.letter = (val||"?").toUpperCase().slice(0,1);
+  else if (key === "rate") { if (/^z/i.test(val.trim())) { l.exempt = true; l.rate = null; l.vat = null; } else { l.exempt = false; l.rate = parseNum(val); } }
+  else l[key] = parseNum(val);
+  S.flags.delete(`rate-${l.letter}`);
+  refreshChecks();
+}
+$("addRate").addEventListener("click", ()=>{
+  const used = new Set(S.draft.rates.map(r=>r.letter)); const next = "ABCDEFG".split("").find(c=>!used.has(c)) || "?";
+  S.draft.rates.push({letter:next, rate:null, exempt:false, basis:"brutto", amount:null, vat:null}); renderRates(); refreshChecks();
+});
+const FIELD = {"f-total":["total",2,"total"],"f-vat":["vatTotal",2,"vat"],"f-rcpt":["receipts",0,"rcpt"],"f-cnum":["cancelledCount",0,"cnum"],"f-cval":["cancelledValue",2,"cval"]};
+for (const [id,[key,,flag]] of Object.entries(FIELD)) $(id).addEventListener("input", e => { S.draft[key] = parseNum(e.target.value); S.flags.delete(flag); refreshChecks(); });
+$("f-from").addEventListener("input", e => { S.draft.dateFrom = e.target.value || null; if (S.draft.kind === "dobowy") S.draft.dateTo = S.draft.dateFrom; S.flags.delete("from"); refreshChecks(); });
+$("f-to").addEventListener("input", e => { S.draft.dateTo = e.target.value || null; S.flags.delete("to"); refreshChecks(); });
+$("f-no").addEventListener("input", e => S.draft.number = e.target.value.slice(0,20));
+$("f-kasa").addEventListener("input", e => S.draft.kasa = e.target.value.trim().slice(0,20));
+$("f-kind").addEventListener("change", e => { S.draft.kind = e.target.value; syncKind(); refreshChecks(); });
+function syncKind(){
+  const daily = S.draft.kind === "dobowy";
+  $("l-to").hidden = daily; if (daily) S.draft.dateTo = S.draft.dateFrom;
+  $("f-from").previousSibling.textContent = daily ? "Data raportu" : "Data od";
+}
+function refreshChecks(){
+  const checks = computeChecks(S.draft);
+  const ul = $("checks"); ul.replaceChildren();
+  const order = {warn:0, miss:1, ok:2};
+  checks.sort((a,b)=>order[a.level]-order[b.level]).forEach(c => ul.append(el("li",{class:c.level}, el("span",{class:"chip", text: c.level==="ok"?"zgadza się": c.level==="warn"?"sprawdź":"brak"}), el("span",{text:c.text}))));
+  const warnFields = new Set(checks.filter(c=>c.level!=="ok").map(c=>c.field));
+  const mark = (id, f) => $(id).classList.toggle("flag", S.flags.has(f) || warnFields.has(f));
+  mark("f-total","total"); mark("f-vat","vat"); mark("f-rcpt","rcpt"); mark("f-cnum","cnum"); mark("f-cval","cval"); mark("f-from","from"); mark("f-to","to");
+  S.draft.rates.forEach((l,i)=>{ const bad = warnFields.has(`rate-${l.letter}`) || S.flags.has(`rate-${l.letter}`); ["amount","vat"].forEach(k=>{ const x=$(`r${i}-${k}`); if (x) x.classList.toggle("flag", bad); }); });
+  const hasRates = S.draft.rates.some(l=>l.amount!=null);
+  $("save").disabled = !S.draft.dateFrom || !hasRates;
+}
+$("discard").addEventListener("click", ()=>{ S.draft = null; $("check").hidden = true; $("scanStatus").textContent = ""; });
+$("save").addEventListener("click", async ()=>{
+  const d = structuredClone(S.draft);
+  d.rates = d.rates.filter(l => l.amount != null);
+  if (d.kind === "dobowy") d.dateTo = d.dateFrom;
+  if (d.total == null) d.total = r2(d.rates.reduce((a,l)=>a+(rateLineCalc(l).gross||0),0));
+  if (d.vatTotal == null) d.vatTotal = r2(d.rates.reduce((a,l)=>a+(l.exempt?0:(l.vat||0)),0));
+  const dup = S.saved.find(r => r.kind === d.kind && r.dateFrom === d.dateFrom && r.dateTo === d.dateTo && (r.kasa||"") === (d.kasa||"") && r.id !== d.id);
+  const st = $("saveStatus");
+  if (dup && !st.dataset.confirm){ st.dataset.confirm = "1"; st.textContent = "Raport z tej daty i kasy jest już zapisany. Kliknij „Zapisz raport” jeszcze raz, żeby dodać drugi."; return; }
+  delete st.dataset.confirm;
+  const doc = {type:"raport", kind:d.kind, dateFrom:d.dateFrom, dateTo:d.dateTo, number:d.number||"", kasa:d.kasa||"", rates:d.rates,
+    total:d.total, vatTotal:d.vatTotal, receipts:d.receipts, cancelledCount:d.cancelledCount, cancelledValue:d.cancelledValue, savedAt:new Date().toISOString()};
+  $("save").disabled = true; st.textContent = "Zapisuję…";
+  try {
+    let id;
+    if (S.storeMode === "db"){ const ref = S.db.collection("data/users/"+S.uid).doc(); await ref.set(doc); id = ref.id; upsertLocal({...doc, id}); }
+    else { id = "m" + Date.now(); upsertLocal({...doc, id}); }
+    const newest = S.saved.filter(r => r.kind === doc.kind).sort((a,b)=>(b.dateFrom||"").localeCompare(a.dateFrom||""))[0];
+    S.curId = newest ? newest.id : id; S.baseId = null;
+    S.draft = null; S.files = []; renderThumbs(); $("check").hidden = true; $("scanStatus").textContent = "Zapisano raport.";
+    $("scanNote").hidden = true;
+    renderAll(); $("result").scrollIntoView({block:"start"});
+  } catch(e){
+    st.textContent = e && e.code === "quota_exceeded" ? "Brak miejsca na kolejne raporty. Usuń starsze raporty i spróbuj ponownie." : "Nie udało się zapisać. Spróbuj ponownie.";
+    $("save").disabled = false;
+  }
+});
+function upsertLocal(r){ const i = S.saved.findIndex(x=>x.id===r.id); if (i>=0) S.saved[i]=r; else S.saved.push(r); S.saved.sort((a,b)=>(a.dateFrom||"").localeCompare(b.dateFrom||"")); }
+
+/* ---------- 3. wynik ---------- */
+function deltaEl(cur, base, fmt, invert){
+  if (cur == null || base == null) return el("span",{class:"d flat", text:"brak porównania"});
+  const d = cur - base, rel = base ? d/Math.abs(base) : null;
+  const cls = Math.abs(rel ?? 0) < 0.005 ? "flat" : ((d > 0) !== !!invert ? "up" : "down");
+  const sign = d > 0 ? "+" : d < 0 ? "−" : "±";
+  return el("span",{class:`d ${cls}`, text:`${sign}${fmt(Math.abs(d))}${rel!=null ? ` (${PCT.format(rel)})` : ""}`});
+}
+function renderResult(){
+  const L = list();
+  $("exFlag").hidden = !isExample(); $("exNote").hidden = !isExample();
+  if (!L.length) return;
+  const sorted = [...L].sort((a,b)=>(b.dateFrom||"").localeCompare(a.dateFrom||""));
+  if (!S.curId || !L.find(r=>r.id===S.curId)) S.curId = sorted[0].id;
+  const cur = L.find(r=>r.id===S.curId);
+  const selC = $("selCur"); selC.replaceChildren(...sorted.map(r=>el("option",{value:r.id, text:`${fmtPeriod(r)} · ${KIND[r.kind]}${r.kasa ? " · kasa " + r.kasa : ""}`})));
+  selC.value = cur.id;
+  const auto = pickBase(L, cur);
+  if (S.baseId === null || !L.find(r=>r.id===S.baseId) || S.baseId === cur.id) S.baseId = auto ? auto.id : "";
+  const selB = $("selBase");
+  selB.replaceChildren(el("option",{value:"", text:"bez porównania"}), ...sorted.filter(r=>r.id!==cur.id).map(r=>el("option",{value:r.id, text:`${fmtPeriod(r)} · ${KIND[r.kind]}${auto && r.id===auto.id ? " (podobny okres)" : ""}`})));
+  selB.value = S.baseId || "";
+  const base = L.find(r=>r.id===S.baseId) || null;
+  const a = metrics(cur), b = base ? metrics(base) : null;
+
+  // uwagi o porównywalności
+  const notes = [];
+  if (base){
+    if (base.kind !== cur.kind) notes.push("Porównujesz raporty różnego rodzaju.");
+    if (cur.kind === "dobowy" && base.dateFrom){ const wa = new Date(cur.dateFrom+"T12:00:00").getDay(), wb = new Date(base.dateFrom+"T12:00:00").getDay(); if (wa !== wb) notes.push(`Inny dzień tygodnia (${DAYS[wa]} i ${DAYS[wb]}), a sprzedaż zwykle zależy od dnia.`); }
+    if (a.days !== b.days) notes.push(`Okresy mają różną długość (${a.days} i ${b.days} dni). Porównuj też wartości na dzień.`);
+    if (cur.kasa && base.kasa && cur.kasa !== base.kasa) notes.push("To raporty z różnych kas.");
+  }
+  $("periodNote").textContent = base ? `${fmtPeriod(cur)} w porównaniu z: ${fmtPeriod(base)}. ` + notes.join(" ") : "Dodaj drugi raport tego samego rodzaju, żeby zobaczyć zmianę.";
+
+  const tiles = $("tiles"); tiles.replaceChildren();
+  const tile = (k, v, d) => tiles.append(el("div",{class:"tile"}, el("span",{class:"k", text:k}), el("span",{class:"v", text:v}), d || el("span",{class:"d flat", text:" "})));
+  tile("Sprzedaż brutto", fmtMoney(a.gross), b && deltaEl(a.gross, b.gross, fmtMoney));
+  tile("Sprzedaż netto", fmtMoney(a.net), b && deltaEl(a.net, b.net, fmtMoney));
+  tile("Paragony", fmtInt(a.receipts), b && deltaEl(a.receipts, b.receipts, fmtInt));
+  tile("Średni paragon", fmtMoney(a.avg), b && deltaEl(a.avg, b.avg, fmtMoney));
+  tile("Anulowane", a.cancelled==null ? "—" : `${fmtMoney(a.cancelled)}`, el("span",{class:"d flat", text: a.cancelledShare!=null ? `${PCT0.format(a.cancelledShare)} wartości paragonów` + (cur.cancelledCount!=null ? ` · ${cur.cancelledCount} szt.` : "") : " "}));
+  if (a.perDay != null || (b && b.perDay != null)) tile("Sprzedaż na dzień", fmtMoney(a.perDay ?? a.gross), b && deltaEl(a.perDay ?? a.gross, b.perDay ?? b.gross, fmtMoney));
+
+  const br = $("bridge"); br.replaceChildren();
+  if (base){
+    const x = bridge(cur, base);
+    if (x){
+      const sgn = n => (n>0?"+":n<0?"−":"") + fmtMoney(Math.abs(n));
+      br.append(el("h3",{text:"Skąd wzięła się zmiana"}),
+        el("div",{text:`Sprzedaż zmieniła się o ${sgn(x.delta)}. Z tego ${sgn(x.fromCount)} wynika ze zmiany liczby paragonów, a ${sgn(x.fromAvg)} ze zmiany średniej wartości paragonu.`}),
+        el("div",{class:"muted small", text:"To rachunek, nie przyczyna. Paragon to transakcja, nie klient: jedna osoba może mieć dwa paragony, a dwie osoby jeden."}));
+    }
+  }
+  renderMix(cur, base);
+  const c = cur.comment && cur.comment.baseId === (base ? base.id : "") ? cur.comment : null;
+  if (!S.askCtl) renderComment(c ? c.text : null);
+}
+function renderMix(cur, base){
+  const box = $("mix"); box.replaceChildren();
+  const mk = (r, label) => {
+    const lines = r.rates.map(l => ({k: l.exempt ? `${l.letter} zw.` : `${l.letter} ${l.rate ?? "?"}%`, g: rateLineCalc(l).gross || 0}));
+    const tot = lines.reduce((a,l)=>a+l.g,0) || 1;
+    const bar = el("div",{class:"bar", role:"img", "aria-label": `${label}: ` + lines.map(l=>`${l.k} ${PCT0.format(l.g/tot)}`).join(", ")});
+    lines.forEach((l,i)=> { const s = el("span"); s.style.width = (l.g/tot*100)+"%"; s.style.background = COLORS[i % COLORS.length]; bar.append(s); });
+    const leg = el("div",{class:"legend"}, ...lines.map((l,i)=>{ const sw = el("i"); sw.style.background = COLORS[i % COLORS.length]; return el("span",null, sw, `${l.k}: ${PCT0.format(l.g/tot)}`); }));
+    box.append(el("div",{class:"small", style:"margin-top:6px;font-weight:600", text:label}), bar, leg);
+  };
+  mk(cur, fmtPeriod(cur)); if (base) mk(base, fmtPeriod(base));
+}
+$("selCur").addEventListener("change", e => { S.curId = e.target.value; S.baseId = null; renderAll(); });
+$("selBase").addEventListener("change", e => { S.baseId = e.target.value; renderAll(); });
+
+/* komentarz AI */
+function renderComment(text){
+  const box = $("comment"); box.replaceChildren();
+  if (!text){ box.append(el("p",{class:"muted", text:"Kliknij „Skomentuj zmianę”, żeby dostać krótkie wyjaśnienie i jedno pytanie do sprawdzenia."})); return; }
+  for (const raw of text.split(/\n+/)){
+    const line = raw.replace(/\*\*/g,"").trim(); if (!line) continue;
+    if (/^#{1,4}\s/.test(line)) box.append(el("h4",{text: line.replace(/^#{1,4}\s*/,"")}));
+    else box.append(el("p",{text: line.replace(/^[-•]\s*/,"• ")}));
+  }
+}
+function reportForPrompt(r){
+  const m = metrics(r);
+  return { okres: fmtPeriod(r), rodzaj: r.kind, liczba_dni: m.days, sprzedaz_brutto: m.gross, sprzedaz_netto: m.net, kwota_ptu: m.vat,
+    paragony: r.receipts, sredni_paragon: m.avg, anulowane_szt: r.cancelledCount, anulowane_zl: r.cancelledValue,
+    sprzedaz_na_dzien: m.perDay, stawki: r.rates.map(l => ({litera:l.letter, stawka: l.exempt ? "zw" : l.rate, sprzedaz_brutto: rateLineCalc(l).gross})) };
+}
+$("ask").addEventListener("click", async ()=>{
+  if (!S.sample) return;
+  const L = list(); const cur = L.find(r=>r.id===S.curId); const base = L.find(r=>r.id===S.baseId) || null;
+  const x = base ? bridge(cur, base) : null;
+  const data = { raport: reportForPrompt(cur), poprzedni: base ? reportForPrompt(base) : null, rozklad_zmiany: x ? {zmiana_sprzedazy: x.delta, z_liczby_paragonow: x.fromCount, ze_sredniego_paragonu: x.fromAvg} : null,
+    uwagi_o_porownywalnosci: $("periodNote").textContent, dane_przykladowe: isExample() };
+  const prompt = `Jesteś doradcą właściciela małego sklepu w Polsce. Poniżej są liczby z raportu fiskalnego z kasy${base ? " i z raportu, z którym go porównujemy" : ""}, już sprawdzone przez właściciela.
+Napisz krótki komentarz po polsku, prostym językiem, najwyżej 160 słów, w czterech częściach z nagłówkami zaczynającymi się od "## ":
+## Co się zmieniło
+## Co to wyjaśnia
+## Co może za tym stać (do sprawdzenia)
+## Jedno pytanie na teraz
+Zasady:
+- Opieraj się tylko na podanych liczbach. Nie wymyślaj zdarzeń, pogody ani konkurencji.
+- Liczba paragonów to liczba transakcji, nie klientów.
+- Możliwe przyczyny podawaj jako hipotezy do sprawdzenia, nigdy jako fakt.
+- Nie mów o zysku ani marży: raport z kasy nie zawiera kosztów zakupu towaru.
+- Stawka VAT tylko w przybliżeniu oznacza rodzaj towaru (5% to głównie żywność, 23% m.in. napoje, chemia, alkohol).
+- Jeśli zmiana jest mniejsza niż około 3%, powiedz wprost, że może to być zwykła różnica między dniami.
+- Jeśli okresy są słabo porównywalne, powiedz to.
+${base ? "" : "- Nie ma raportu do porównania: skomentuj tylko strukturę sprzedaży, średni paragon i anulowane paragony, a w pierwszej części napisz, że do oceny zmiany potrzebny jest drugi raport.\n"}- Bez emoji, bez pogrubień, bez tabel. Nie obiecuj wzrostu sprzedaży.
+Dane (JSON):
+${JSON.stringify(data)}`;
+  S.askCtl = new AbortController();
+  $("ask").disabled = true; $("askStop").hidden = false;
+  $("comment").replaceChildren(el("p",{class:"muted", text:"Myślę…"}));
+  try {
+    const {text} = await S.sample(prompt, {modelTier:"default", signal:S.askCtl.signal, onText:({text})=>renderComment(text)});
+    renderComment(text);
+    if (!isExample() && S.storeMode === "db"){
+      try { await S.db.collection("data/users/"+S.uid).doc(cur.id).update({comment:{baseId: base ? base.id : "", text, at:new Date().toISOString()}}); } catch(_){}
+    }
+    if (!isExample()) cur.comment = {baseId: base ? base.id : "", text};
+  } catch(e){
+    if (e && e.code === "cancelled") { if (e.text) renderComment(e.text); else renderComment(null); }
+    else { renderComment(e && e.text ? e.text : null); $("comment").append(el("p",{class:"small", style:"color:var(--bad)", text: errCopy(e && e.code, "komentarz")})); if (["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(e && e.code)) $("ask").hidden = true; }
+  } finally {
+    S.askCtl = null; $("ask").disabled = false; $("askStop").hidden = true;
+  }
+});
+$("askStop").addEventListener("click", ()=> S.askCtl?.abort());
+
+/* ---------- historia ---------- */
+function renderHistory(){
+  const tb = $("hist").querySelector("tbody"); tb.replaceChildren();
+  const L = [...list()].sort((a,b)=>(b.dateFrom||"").localeCompare(a.dateFrom||""));
+  for (const r of L){
+    const m = metrics(r);
+    const actions = el("td",{class:"n"});
+    const show = el("button",{type:"button", class:"ghost", text:"Pokaż", onclick:()=>{ S.curId = r.id; S.baseId = null; renderAll(); $("result").scrollIntoView({block:"start"}); }});
+    actions.append(show);
+    if (!r.example){
+      const del = el("button",{type:"button", class:"danger", text:"Usuń"});
+      del.addEventListener("click", ()=>{
+        const yes = el("button",{type:"button", class:"danger", text:"Tak, usuń"});
+        const no = el("button",{type:"button", class:"ghost", text:"Anuluj", onclick:()=>renderHistory()});
+        yes.addEventListener("click", async ()=>{ yes.disabled = true; try { if (S.storeMode === "db") await S.db.collection("data/users/"+S.uid).doc(r.id).delete(); S.saved = S.saved.filter(x=>x.id!==r.id); if (S.curId===r.id) S.curId=null; S.baseId=null; renderAll(); } catch(_){ yes.disabled=false; yes.textContent="Nie udało się. Spróbuj ponownie"; } });
+        actions.replaceChildren(el("span",{class:"inline-confirm"}, yes, no));
+      });
+      actions.append(" ", del);
+    }
+    tb.append(el("tr",{class: r.id === S.curId ? "sel" : null},
+      el("td",{text: fmtPeriod(r)}), el("td",{text: KIND[r.kind] + (r.example ? " (przykład)" : "")}),
+      el("td",{class:"n", text: fmtMoney(m.gross)}), el("td",{class:"n", text: fmtInt(r.receipts)}), el("td",{class:"n", text: fmtMoney(m.avg)}), actions));
+  }
+  const sn = $("storeNote");
+  sn.textContent = S.storeMode === "db" ? "Raporty są zapisane na Twoim koncie i widzisz je tylko Ty." :
+                   S.storeMode === "memory" ? "Zapis na koncie nie działa w tym widoku: raporty znikną po zamknięciu strony. Skopiuj je jako CSV, jeśli chcesz je zachować." :
+                   "Łączę z zapisanymi raportami…";
+  $("copyCsv").disabled = isExample();
+}
+$("copyCsv").addEventListener("click", async ()=>{
+  const head = ["rodzaj","data_od","data_do","nr_raportu","kasa","sprzedaz_brutto","kwota_ptu","sprzedaz_netto","paragony","sredni_paragon","anulowane_szt","anulowane_zl"];
+  const rows = S.saved.map(r => { const m = metrics(r); return [r.kind, r.dateFrom, r.dateTo, r.number, r.kasa, m.gross, m.vat, m.net, r.receipts, m.avg, r.cancelledCount, r.cancelledValue].map(v => v == null ? "" : String(v).replace(".",",")).join(";"); });
+  const csv = [head.join(";"), ...rows].join("\n");
+  try { await navigator.clipboard.writeText(csv); $("copyCsv").textContent = "Skopiowano"; setTimeout(()=>$("copyCsv").textContent="Kopiuj jako CSV", 2000); }
+  catch(_){ $("copyCsv").textContent = "Kopiowanie zablokowane"; }
+});
+
+function renderAll(){ renderResult(); renderHistory(); }
+
+/* ---------- start: możliwości i zapis ---------- */
+renderAll(); renderThumbs();
+(async ()=>{
+  if (!window.claude || typeof window.claude.use !== "function"){ S.storeMode = "memory"; noScan(); renderAll(); return; }
+  claude.use("sample").then(async s => {
+    S.sample = s;
+    if (!s){ noScan(); $("ask").hidden = true; return; }
+    const lim = await s.limits().catch(()=>null);
+    S.imgLimits = lim && lim.images ? lim.images : null;
+    if (!S.imgLimits) noScan();
+    else $("file").setAttribute("accept", S.imgLimits.mediaTypes.join(","));
+    renderThumbs();
+  });
+  const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
+  const uid = user ? await user.id() : null;
+  if (!db || !uid){ S.storeMode = "memory"; renderAll(); return; }
+  S.db = db; S.uid = uid; S.storeMode = "db";
+  const timer = setTimeout(()=>{ $("storeNote").textContent = "Nie udało się jeszcze wczytać zapisanych raportów. Sprawdź połączenie."; }, 10000);
+  S.unsub = db.collection("data/users/"+uid).onSnapshot(snap => {
+    if (!snap.metadata.fromCache) clearTimeout(timer);
+    S.saved = snap.docs.filter(d=>d.exists && d.data().type === "raport").map(d => ({...structuredClone(d.data()), id:d.id}))
+      .sort((a,b)=>(a.dateFrom||"").localeCompare(b.dateFrom||""));
+    S.loaded = true; renderAll();
+  }, err => { clearTimeout(timer); S.storeMode = "memory"; renderAll(); });
+})();
+function noScan(){
+  $("read").hidden = true; $("drop").hidden = true;
+  const n = $("scanNote"); n.hidden = false; n.className = "note warn small";
+  n.textContent = "Odczyt zdjęć nie działa w tym widoku. Otwórz aplikację w Claude albo wpisz kwoty ręcznie.";
+}
+</script>
+</body>
+</html>

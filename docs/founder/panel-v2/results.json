@@ -1,0 +1,144 @@
+{
+ "business": "RaportFirmy.pl — środowisko pracy właściciela mikrofirmy handlowej: rozpoznanie sklepu po NIP, wybór celu, przygotowanie kroku i przegląd wyniku; abonament 99 zł brutto/mies.",
+ "seed": 483380,
+ "dealt": 20,
+ "answered": 20,
+ "skipped": [],
+ "buys": 0,
+ "passes": 20,
+ "buy_rate": 0.0,
+ "by_segment": [
+  [
+   "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)",
+   6,
+   0.0
+  ],
+  [
+   "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)",
+   6,
+   0.0
+  ],
+  [
+   "Niezależny sklep spożywczy (bez szyldu sieci)",
+   8,
+   0.0
+  ]
+ ],
+ "by_behaviour": [
+  [
+   "Sceptyk wobec abonamentów i AI",
+   3,
+   0.0
+  ],
+  [
+   "Patrzy w program sklepowy",
+   2,
+   0.0
+  ],
+  [
+   "Liczy każdy stały koszt",
+   3,
+   0.0
+  ],
+  [
+   "Ufa księgowej i centrali",
+   3,
+   0.0
+  ],
+  [
+   "Robię wszystko sam",
+   5,
+   0.0
+  ],
+  [
+   "Kupuje z polecenia",
+   2,
+   0.0
+  ],
+  [
+   "Sam ogarnia internet",
+   2,
+   0.0
+  ]
+ ],
+ "by_income": [
+  [
+   "$71,000 to $102,000",
+   7,
+   0.0
+  ],
+  [
+   "$102,000 and up",
+   7,
+   0.0
+  ],
+  [
+   "under $71,000",
+   6,
+   0.0
+  ]
+ ],
+ "why_not": [
+  [
+   "need",
+   10,
+   [
+    "Moi klienci to w większości stali bywalcy z okolicy, znają godziny i dzwonią, jak czegoś nie wiedzą. Może wpiszę ten NIP z ciekawości, ale 149 zł za poprawki w Google, których efektu nie zobaczę w kasie, to dla mnie wydatek bez dowodu.",
+    "Darmowe sprawdzenie zrobię chętnie, bo nic nie kosztuje. Ale jak mi pokażecie, że godziny w Google i na Facebooku się różnią, to sam to poprawię wieczorem w kwadrans, a 149 zł zostanie w kasie. Sami piszecie, że nie obiecujecie więcej klientów, więc nie widzę, za co konkretnie mam zapłacić."
+   ],
+   [
+    "P002",
+    "P003"
+   ]
+  ],
+  [
+   "trust",
+   7,
+   [
+    "Takich od wizytówek Google miałem już kilku i każdy zaczynał od 'za darmo'. Do tego jestem pod szyldem sieci, więc profil i tak w dużej części ogarnia centrala; może wpiszę ten NIP z ciekawości, ale 149 zł i dawanie komuś obcemu dostępu menedżera do mojego Facebooka to nie w tym tygodniu.",
+    "Nikt z moich znajomych sklepikarzy tego nie używał ani mi nie polecił, a ja nie wpuszczam obcej firmy jako menedżera do mojego Google i Facebooka tylko dlatego, że wyskoczyła mi reklama. Ewentualnie wieczorem wpiszę NIP w ten darmowy krok, ale za 149 zł na razie nie zapłacę."
+   ],
+   [
+    "P001",
+    "P006"
+   ]
+  ],
+  [
+   "habit",
+   3,
+   [
+    "U mnie takimi rzeczami jak wizytówka w Google zajmuje się centrala albo opiekun z sieci, i jak coś nie gra, to do nich dzwonię. Nie będę wpuszczać obcej firmy jako menedżera mojego profilu, póki opiekun mi tego nie poleci.",
+    "Ja takie rzeczy załatwiam przez opiekuna z sieci, a centrala i tak pilnuje szyldu i wizytówki w Google. Najwyżej wpiszę ten NIP za darmo z ciekawości, ale 149 zł obcej firmie bez pytania centrali nie zapłacę."
+   ],
+   [
+    "P004",
+    "P007"
+   ]
+  ]
+ ],
+ "why_yes": [],
+ "flip": [
+  "Gdyby darmowy raport pokazał czarno na białym, że w Google mam złe godziny albo telefon i klienci przez to odchodzą, a centrala albo inny sklep z naszej sieci potwierdził, że z nimi współpracował.",
+  "Gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny albo stary telefon i ludzie przez to odbijają się od zamkniętych drzwi, wtedy zapłaciłbym, żeby ktoś to za mnie załatwił.",
+  "Gdyby sprawdzenie pokazało dużo więcej niż jedną złą godzinę, np. że klienci dzwonią pod stary numer albo Google pokazuje, że sklep jest zamknięty, i do tego konkretny przykład podobnego sklepu, któremu po poprawkach przybyło telefonów albo wyznaczeń trasy. Wtedy 149 zł płatne po zrobieniu bym rozważył.",
+  "Gdyby to polecił mój opiekun z sieci albo centrala powiedziała, że to u nich sprawdzone i dozwolone.",
+  "Gdyby darmowe sprawdzenie zajęło minutę i pokazało czarno na białym, że Google podaje złe godziny albo stary telefon, wtedy zapłaciłabym te 149 zł, żeby mieć to z głowy.",
+  "Gdyby znajomy właściciel sklepu z okolicy powiedział mi, że mu to zrobili, było dobrze i nikt potem nie dzwonił z ofertami.",
+  "Gdyby centrala albo moja księgowa poleciła tę usługę i potwierdziła, że mogę ją zlecić, a darmowe sprawdzenie pokazało czarno na białym, że klienci widzą u mnie złe godziny albo zły telefon.",
+  "Gdyby polecił mi to ktoś znajomy, np. przedstawiciel z mojej hurtowni albo inny sklepikarz, który to zrobił i u którego nic złego się nie stało.",
+  "Gdyby moja księgowa albo biuro rachunkowe to poleciło i powiedziało, że sprawdziło tych ludzi, i gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny i tracę przez to klientów.",
+  "Gdyby darmowy raport pokazał rzeczy, których sama nie umiem znaleźć ani poprawić, np. że Google sam podmienia mi dane albo że jest zduplikowana wizytówka, której nie mogę usunąć.",
+  "Gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google stoją u mnie złe godziny albo stary numer i klienci przez to idą gdzie indziej, a centrala potwierdziła, że mogę to zlecić.",
+  "Gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny albo stary telefon i ktoś przez to do mnie nie trafił, a ktoś znajomy z branży potwierdził, że z nimi robił i było uczciwie.",
+  "Gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny albo zły telefon i klienci przez to odchodzą pod zamknięte drzwi, to za jakieś 50–80 zł bym się zgodziła.",
+  "Gdyby sprawdzenie pokazało coś, czego sama nie umiem naprawić, na przykład zdublowaną albo przejętą wizytówkę, której nie da się odzyskać, albo gdyby ktoś mi pokazał na liczbach, że przez złe dane realnie tracę klientów.",
+  "Gdyby darmowe sprawdzenie pokazało mi czarno na białym, że w Google mam złe godziny albo telefon i przez to ludzie mnie omijają, a ta osoba z panelu zadzwoniła i przeprowadziła mnie przez dodanie jej jako menedżera w kilka minut, to bym zapłaciła.",
+  "Gdyby darmowy raport pokazał coś konkretnego, czego sam nie widzę, np. że Google podmienia mi godziny albo że trzy sklepy obok podają informacje, przez które klienci idą do nich.",
+  "Gdyby inny właściciel sklepu, którego znam z okolicy albo z mojej branży, powiedział mi, że to zrobili, wziął 149 zł i naprawdę dali mu spokój bez wciskania abonamentu.",
+  "Gdyby to darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny albo zły telefon i ktoś przez to do mnie nie trafił — wtedy bym zapłaciła, żeby mieć to z głowy.",
+  "Gdyby polecił mi to kolega z sieci albo opiekun z hurtowni i powiedział, że u niego to zrobili i centrala nie miała nic przeciwko.",
+  "Gdyby darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny albo stary telefon i przez to ludzie odchodzą, a cena była bliżej 50-70 zł, to może bym dał komuś to zrobić, żeby nie siedzieć nad tym wieczorem."
+ ],
+ "purchases_first_month_per_buyer": null,
+ "price_answers": 20
+}

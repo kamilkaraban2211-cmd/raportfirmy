@@ -1,0 +1,13 @@
+{
+  "id": "P004",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "U mnie takimi rzeczami jak wizytówka w Google zajmuje się centrala albo opiekun z sieci, i jak coś nie gra, to do nich dzwonię. Nie będę wpuszczać obcej firmy jako menedżera mojego profilu, póki opiekun mi tego nie poleci.",
+  "objection": "Boję się, że wpiszą jakieś ogólniki napisane przez komputer, które do mojego sklepu nie pasują, a do tego narobię sobie kłopotu z centralą, że ktoś z zewnątrz grzebie w danych pod naszym szyldem.",
+  "would_change_my_mind": "Gdyby to polecił mój opiekun z sieci albo centrala powiedziała, że to u nich sprawdzone i dozwolone.",
+  "price_too_cheap": 30,
+  "price_cheap": 80,
+  "price_expensive": 200,
+  "price_too_expensive": 350
+}

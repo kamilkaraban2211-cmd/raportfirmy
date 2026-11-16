@@ -1,0 +1,13 @@
+{
+  "id": "P018",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Do mnie przychodzą ludzie z osiedla, którzy znają mnie od lat i wiedzą, kiedy jestem otwarta — mało kto szuka mnie w Google. Sprawdzenie za darmo może bym kiedyś kliknęła, ale 149 zł za poprawianie czegoś, co mi nie przeszkadza, to nie teraz.",
+  "objection": "Nie wierzę, że to zrobi mi różnicę w kasie — moi klienci to stali sąsiedzi, a do tego boję się, że jakiś komputer napisze o moim sklepie ogólniki, które nie pasują, i jeszcze będę musiała to wieczorem czytać i poprawiać.",
+  "would_change_my_mind": "Gdyby to darmowe sprawdzenie pokazało czarno na białym, że w Google mam złe godziny albo zły telefon i ktoś przez to do mnie nie trafił — wtedy bym zapłaciła, żeby mieć to z głowy.",
+  "price_too_cheap": 30,
+  "price_cheap": 60,
+  "price_expensive": 120,
+  "price_too_expensive": 200
+}

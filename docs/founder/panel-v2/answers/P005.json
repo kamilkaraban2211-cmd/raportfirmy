@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Godziny w Google ustawiłam sama i klienci jakoś trafiają, więc nie czuję, że coś mi tu ucieka. Dobrze, że to jednorazowo, a nie abonament, ale wieczorem mam zamówienia i grafik, a nie przeglądanie wizytówek.",
+  "objection": "Nie wiem, czy w ogóle mam jakiś problem. Płacić 149 zł za poprawienie czegoś, co pewnie jest w porządku, i jeszcze dawać obcym dostęp do mojej strony na Facebooku, to mnie nie przekonuje.",
+  "would_change_my_mind": "Gdyby darmowe sprawdzenie zajęło minutę i pokazało czarno na białym, że Google podaje złe godziny albo stary telefon, wtedy zapłaciłabym te 149 zł, żeby mieć to z głowy.",
+  "price_too_cheap": 29,
+  "price_cheap": 79,
+  "price_expensive": 199,
+  "price_too_expensive": 299
+}

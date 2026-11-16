@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raport z kasy i tak widzę co wieczór, a ile paragonów i jaki obrót było tydzień temu, mam w zeszycie albo w głowie. Za 49 zł miesięcznie dostaję ładniejsze liczby, ale ani jednego klienta więcej w sklepie, i sami piszą, że wzrostu sprzedaży nie obiecują.",
+  "objection": "Nie widzę, jak to się przełoży na złotówki. Wiedza, że spadła liczba paragonów, a nie ich wartość, nic mi nie daje, jeśli nie wiem, co z tym zrobić. To kolejna stała opłata, 588 zł rocznie, a w zamian kolejna rzecz do pstrykania po zamknięciu.",
+  "would_change_my_mind": "Gdyby moja księgowa wzięła mniej albo przestała mnie ścigać o raporty, bo eksport idzie prosto do niej, czyli konkretna oszczędność większa niż te 49 zł miesięcznie.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 29,
+  "price_too_expensive": 45
+}
