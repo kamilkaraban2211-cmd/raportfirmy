@@ -1,0 +1,13 @@
+{
+  "id": "P007",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Raz w miesiącu zanoszę papiery do biura i to działa od lat, a jak coś nie gra, to mówi mi księgowa albo opiekun z sieci. Nie potrzebuję jeszcze jednej aplikacji, żeby robić zdjęcie raportu, który i tak oddaję.",
+  "objection": "Za co mam płacić, skoro księgowa i centrala już to za mnie pilnują? Do tego to nic nie mówi o zysku ani nie przyprowadzi mi klienta do sklepu, więc nie wiem, co z tego realnie będę miał.",
+  "would_change_my_mind": "Gdyby moja księgowa albo centrala sieci sama poleciła tę aplikację i powiedziała, że jej to ułatwi i potanieje mi biuro, albo gdyby sieć dawała ją w pakiecie.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 35
+}

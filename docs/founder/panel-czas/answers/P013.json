@@ -1,0 +1,13 @@
+{
+  "id": "P013",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raz w miesiącu i tak zanoszę księgowej teczkę z fakturami, więc raport z kasy wrzucam do tej samej teczki i ona to sama przepisuje w ramach abonamentu, który już płacę. Za 29 zł miesięcznie nie widzę żadnej złotówki zwrotu, tylko kolejną stałą opłatę.",
+  "objection": "Księgowa i tak mi to robi, a ja i tak muszę do niej iść z resztą papierów. Za co mam płacić drugi raz, za zdjęcie jednej kartki?",
+  "would_change_my_mind": "Gdyby moja księgowa powiedziała, że przez to obniży mi opłatę za biuro o więcej niż koszt aplikacji, albo sama by ją opłacała.",
+  "price_too_cheap": 3,
+  "price_cheap": 9,
+  "price_expensive": 19,
+  "price_too_expensive": 29
+}

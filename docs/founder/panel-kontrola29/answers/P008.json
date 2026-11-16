@@ -1,0 +1,13 @@
+{
+  "id": "P008",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Utarg i liczbę paragonów widzę codziennie w Subiekcie, raporty też tam mam, tylko rzadko coś z nich wynika. Robienie zdjęć raportu z kasy, żeby dostać prawie to samo w innej aplikacji, to dla mnie dodatkowa robota, a nie pomoc.",
+  "objection": "Nie znam tej firmy, a to są dane o sprzedaży mojego sklepu. Mogą pisać, że NIP-u nie czytają i zdjęć nie trzymają, ale skąd mam wiedzieć, że tak jest? I po co mi to, skoro program sklepowy już to liczy.",
+  "would_change_my_mind": "Gdyby to się samo podpinało pod Subiekt bez zdjęć i co tydzień mówiło mi jasno jedną rzecz do zrobienia w sklepie, a polecił to ktoś, komu ufam, np. moja księgowa albo hurtownia.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 39,
+  "price_too_expensive": 60
+}

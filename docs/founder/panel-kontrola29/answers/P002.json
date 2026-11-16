@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Utarg i tak sprawdzam codziennie w kasie i w Subiekcie, raporty mam, a z tych liczb rzadko coś dla sklepu wynika. Robienie jeszcze zdjęć paragonów fiskalnych, żeby dostać te same liczby ładniej ułożone, to dla mnie dodatkowa robota, a nie pomoc.",
+  "objection": "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie? Sami piszecie, że nie liczy zysku i nie obiecuje wzrostu sprzedaży, więc za co właściwie płacę co miesiąc?",
+  "would_change_my_mind": "Gdyby ktoś na moich własnych raportach z ostatnich tygodni pokazał mi coś, czego nie widzę w Subiekcie, i co bym realnie zmienił w sklepie, np. że w konkretne dni spada liczba klientów, a nie wartość paragonu.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 25,
+  "price_too_expensive": 40
+}

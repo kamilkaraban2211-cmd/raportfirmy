@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raport miesięczny z kasy to jedna kartka raz w miesiącu, dziś robię jej zdjęcie telefonem i wysyłam księgowej na WhatsAppie za darmo w dwie minuty. Za oszczędzenie dwóch minut miesięcznie nie będę płacić abonamentu i instalować kolejnej aplikacji, kiedy i tak siedzę przy papierach do nocy.",
+  "objection": "Moja prawdziwa robota wieczorem to zamówienia i papiery dla sieci, a nie raport z kasy. A te podpowiedzi o „zmianie sprzedaży” to pewnie będą ogólniki, które sama widzę za ladą codziennie, nie potrzebuję, żeby mi telefon to mówił.",
+  "would_change_my_mind": "Gdyby moja księgowa sama powiedziała, że chce dostawać zestawienia przez tę aplikację i dzięki temu obniży mi fakturę albo przestanie do mnie dzwonić z pytaniami o sumy.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 35
+}

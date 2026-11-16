@@ -1,0 +1,13 @@
+{
+  "id": "P012",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raport dobowy i tak mam w ręku co wieczór, widzę z niego utarg i wiem, czy był dobry dzień. Po dwunastu godzinach w sklepie nie będę jeszcze robił zdjęć i czytał komentarzy w aplikacji, a za kolejny abonament płacić nie chcę.",
+  "objection": "Nie widzę, co mi to da poza tym, co już widzę na pasku z kasy. Średni paragon i porównanie z zeszłym tygodniem to fajne liczby, ale nic z nimi nie zrobię, a to kolejna rzecz do pamiętania codziennie i kolejne 29 zł co miesiąc.",
+  "would_change_my_mind": "Gdyby moja księgowa sama poprosiła o ten eksport i powiedziała, że przez to zapłacę jej mniej albo oszczędzę czas na przepisywaniu raportów.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 35
+}

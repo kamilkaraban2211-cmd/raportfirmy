@@ -1,0 +1,154 @@
+{
+ "business": "RaportFirmy.pl — środowisko pracy właściciela mikrofirmy handlowej: rozpoznanie sklepu po NIP, wybór celu, przygotowanie kroku i przegląd wyniku; abonament 99 zł brutto/mies.",
+ "seed": 483380,
+ "dealt": 20,
+ "answered": 20,
+ "skipped": [],
+ "buys": 0,
+ "passes": 20,
+ "buy_rate": 0.0,
+ "by_segment": [
+  [
+   "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)",
+   6,
+   0.0
+  ],
+  [
+   "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)",
+   6,
+   0.0
+  ],
+  [
+   "Niezależny sklep spożywczy (bez szyldu sieci)",
+   8,
+   0.0
+  ]
+ ],
+ "by_behaviour": [
+  [
+   "Sceptyk wobec abonamentów i AI",
+   3,
+   0.0
+  ],
+  [
+   "Patrzy w program sklepowy",
+   2,
+   0.0
+  ],
+  [
+   "Liczy każdy stały koszt",
+   3,
+   0.0
+  ],
+  [
+   "Ufa księgowej i centrali",
+   3,
+   0.0
+  ],
+  [
+   "Robię wszystko sam",
+   5,
+   0.0
+  ],
+  [
+   "Kupuje z polecenia",
+   2,
+   0.0
+  ],
+  [
+   "Sam ogarnia internet",
+   2,
+   0.0
+  ]
+ ],
+ "by_income": [
+  [
+   "$71,000 to $102,000",
+   7,
+   0.0
+  ],
+  [
+   "$102,000 and up",
+   7,
+   0.0
+  ],
+  [
+   "under $71,000",
+   6,
+   0.0
+  ]
+ ],
+ "why_not": [
+  [
+   "need",
+   13,
+   [
+    "Po dwunastu godzinach w sklepie i łataniu grafiku nie będę jeszcze co wieczór fotografować raportu z kasy. Raport i tak idzie do księgowej, a to, czy sprzedaż spadła, widzę po kasie i po ruchu w sklepie.",
+    "Utarg i tak sprawdzam codziennie w kasie i w Subiekcie, raporty mam, a z tych liczb rzadko coś dla sklepu wynika. Robienie jeszcze zdjęć paragonów fiskalnych, żeby dostać te same liczby ładniej ułożone, to dla mnie dodatkowa robota, a nie pomoc."
+   ],
+   [
+    "P001",
+    "P002"
+   ]
+  ],
+  [
+   "habit",
+   4,
+   [
+    "Raport z kasy i tak idzie do mojej księgowej, a sprzedaż i tak widzę w systemie od centrali i w hurtowni. Nie widzę, po co płacić 29 zł miesięcznie za kolejną aplikację, która powie mi to, co już wiem albo co powie mi opiekun z sieci.",
+    "Raporty z kasy i tak raz w miesiącu idą do biura rachunkowego, a resztę liczb dostaję od opiekuna z sieci. Nie widzę, po co miałbym jeszcze płacić za aplikację, która mówi mi to samo innymi słowami."
+   ],
+   [
+    "P004",
+    "P007"
+   ]
+  ],
+  [
+   "trust",
+   2,
+   [
+    "Nikt z moich znajomych sklepikarzy tego nie używa ani nie polecał, a ja nie biorę nowych usług z reklamy. Raport z kasy i tak wkładam do segregatora dla księgowej, sumy kasa liczy sama, więc nie widzę, po co mam co miesiąc za to płacić.",
+    "Kolejna firma z internetu, która chce co miesiąc moje pieniądze i dane o sprzedaży, a 'zdjęć nie przechowujemy' to tylko zdanie na stronie, nie umiem tego sprawdzić. Ile sprzedałem, widzę na raporcie, a tydzień do tygodnia porównam sam w zeszycie albo zrobi to księgowa."
+   ],
+   [
+    "P006",
+    "P017"
+   ]
+  ],
+  [
+   "convenience",
+   1,
+   [
+    "Po dwunastu godzinach za ladą nie będę jeszcze fotografować raportu i poprawiać kwot w aplikacji. Ile sprzedałam, widzę na raporcie od razu, a raporty i tak zawożę księgowej."
+   ],
+   [
+    "P015"
+   ]
+  ]
+ ],
+ "why_yes": [],
+ "flip": [
+  "Gdyby raport wpadał do aplikacji sam, bez robienia zdjęć, i gdyby księgowa powiedziała, że ten eksport faktycznie oszczędza mi pieniądze albo czas na rozliczeniu.",
+  "Gdyby ktoś na moich własnych raportach z ostatnich tygodni pokazał mi coś, czego nie widzę w Subiekcie, i co bym realnie zmienił w sklepie, np. że w konkretne dni spada liczba klientów, a nie wartość paragonu.",
+  "Gdyby ktoś mi pokazał na konkretnym sklepie takim jak mój, że dzięki temu podjął decyzję, która dała więcej niż 29 zł miesięcznie, albo gdyby księgowa powiedziała, że ten eksport oszczędza mi na jej rachunku.",
+  "Gdyby moja księgowa albo opiekun z sieci sami mi to polecili, bo oszczędzi im to pracy i będą to ode mnie brać w tej formie.",
+  "Gdyby moja księgowa powiedziała, że z tym eksportem płacę jej mniej albo ona tego wymaga, to bym wzięła.",
+  "Gdyby znajoma z innego sklepu albo moja księgowa powiedziała, że sama tego używa od kilku miesięcy i że jej to oszczędza czas przy rozliczeniach.",
+  "Gdyby moja księgowa albo centrala sieci sama to poleciła i powiedziała, że dzięki temu eksportowi mniej mi naliczy albo szybciej zrobi rozliczenie.",
+  "Gdyby to się samo podpinało pod Subiekt bez zdjęć i co tydzień mówiło mi jasno jedną rzecz do zrobienia w sklepie, a polecił to ktoś, komu ufam, np. moja księgowa albo hurtownia.",
+  "Gdyby moja księgowa sama powiedziała, że jej to oszczędza robotę i mam jej to wysyłać zamiast papierów, a robiło by się to jednym zdjęciem bez poprawiania.",
+  "Gdyby łączyła raport z kasy z fakturami z hurtowni i pokazywała mi marżę albo wprost mówiła, co zamówić mniej, a co więcej.",
+  "Gdyby to szło samo, bez robienia zdjęć, i gdyby eksport naprawdę zastąpił mi to, co teraz wysyłam księgowej, tak że mam mniej papierów, a nie więcej.",
+  "Gdyby moja księgowa sama poprosiła o ten eksport i powiedziała, że przez to zapłacę jej mniej albo oszczędzę czas na przepisywaniu raportów.",
+  "Gdyby moja księgowa powiedziała, że z tym eksportem weźmie ode mnie mniej za miesiąc niż kosztuje aplikacja, albo gdyby apka wyłapywała pomyłki kasjerek, które realnie kosztują mnie pieniądze.",
+  "Gdyby to realnie zastąpiło mi coś, za co już płacę, np. księgowa wzięłaby ode mnie mniej za ten eksport albo pokazało konkretnie, gdzie tracę pieniądze, a nie tylko ile sprzedałam.",
+  "Gdyby to się działo samo, bez mojego zdjęcia co wieczór, np. kasa wysyła dane sama, a ja raz w tygodniu dostaję krótki SMS z tym, co ważne.",
+  "Darmowy miesiąc na moich własnych raportach, żebym sam zobaczył, czy rozbicie zmiany sprzedaży na liczbę i wartość paragonów mówi mi coś, czego nie widzę w zestawieniach od centrali.",
+  "Gdyby moja księgowa albo ktoś znajomy z branży sam tego używał i polecił, a do tego dało się przez miesiąc sprawdzić to na moich raportach bez podawania karty.",
+  "Gdyby moja księgowa powiedziała, że z tym eksportem nie muszę już nosić raportów do biura i zapłacę jej mniej, to bym spróbowała.",
+  "Gdyby polecił mi to znajomy sklepikarz albo ktoś z mojej sieci, i to jako sprawdzone u niego od kilku miesięcy, a nie reklama.",
+  "Gdyby moja księgowa powiedziała, że z tego eksportu ma mniej roboty i przez to wezmę taniej za biuro, albo gdyby to szło samo bez robienia zdjęć."
+ ],
+ "purchases_first_month_per_buyer": null,
+ "price_answers": 20
+}

@@ -1,0 +1,222 @@
+[
+ {
+  "id": "P001",
+  "name": "Yara",
+  "age": 29,
+  "segment": "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)",
+  "income": 74000,
+  "behaviour": "Sceptyk wobec abonamentów i AI",
+  "behaviour_how": "Słyszał już wiele obietnic od sprzedawców 'wizytówek Google' i pozycjonowania; zakłada, że to kolejny naciągacz.",
+  "objection": "Nie mam czasu na kolejną aplikację po dwunastu godzinach w sklepie",
+  "habit": "zatrudniasz dwie osoby na zmiany i sam łatasz grafik"
+ },
+ {
+  "id": "P002",
+  "name": "Emil",
+  "age": 62,
+  "segment": "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)",
+  "income": 104000,
+  "behaviour": "Patrzy w program sklepowy",
+  "behaviour_how": "Codziennie sprawdza utarg w kasie lub programie (np. Subiekt); raporty ma, ale rzadko z nich wyciąga decyzje.",
+  "objection": "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie?",
+  "habit": "towar zamawiasz w hurtowni i przez aplikację dostawcy"
+ },
+ {
+  "id": "P003",
+  "name": "Noah",
+  "age": 47,
+  "segment": "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)",
+  "income": 65000,
+  "behaviour": "Liczy każdy stały koszt",
+  "behaviour_how": "Każdą miesięczną opłatę ogląda trzy razy; płaci tylko wtedy, gdy widzi konkretny zwrot w złotówkach.",
+  "objection": "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie?",
+  "habit": "zatrudniasz dwie osoby na zmiany i sam łatasz grafik"
+ },
+ {
+  "id": "P004",
+  "name": "Aria",
+  "age": 61,
+  "segment": "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)",
+  "income": 83000,
+  "behaviour": "Ufa księgowej i centrali",
+  "behaviour_how": "Z pytaniami idzie do biura rachunkowego albo opiekuna z sieci; to, co dostaje od nich, zwykle mu wystarcza.",
+  "objection": "Sztuczna inteligencja napisze jakieś ogólniki, które nie pasują do mojego sklepu",
+  "habit": "towar zamawiasz w hurtowni i przez aplikację dostawcy"
+ },
+ {
+  "id": "P005",
+  "name": "Ada",
+  "age": 31,
+  "segment": "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)",
+  "income": 61000,
+  "behaviour": "Robię wszystko sam",
+  "behaviour_how": "Stoi za ladą większość dnia, papiery i zamówienia robi wieczorem, na nowe narzędzia brakuje czasu.",
+  "objection": "Po jednym miesiącu wszystko będzie poprawione, po co płacić dalej?",
+  "habit": "zatrudniasz dwie osoby na zmiany i sam łatasz grafik"
+ },
+ {
+  "id": "P006",
+  "name": "Chloe",
+  "age": 54,
+  "segment": "Niezależny sklep spożywczy (bez szyldu sieci)",
+  "income": 71000,
+  "behaviour": "Kupuje z polecenia",
+  "behaviour_how": "Zaczyna korzystać z usługi dopiero, gdy poleci ją znajomy przedsiębiorca albo ktoś z sieci.",
+  "objection": "Po jednym miesiącu wszystko będzie poprawione, po co płacić dalej?",
+  "habit": "otwierasz sklep o 6:00 i zamykasz o 21:00, papiery robisz wieczorem przy kuchennym stole"
+ },
+ {
+  "id": "P007",
+  "name": "Malik",
+  "age": 59,
+  "segment": "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)",
+  "income": 102000,
+  "behaviour": "Ufa księgowej i centrali",
+  "behaviour_how": "Z pytaniami idzie do biura rachunkowego albo opiekuna z sieci; to, co dostaje od nich, zwykle mu wystarcza.",
+  "objection": "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie?",
+  "habit": "raz w miesiącu oddajesz dokumenty do biura rachunkowego"
+ },
+ {
+  "id": "P008",
+  "name": "Tess",
+  "age": 54,
+  "segment": "Niezależny sklep spożywczy (bez szyldu sieci)",
+  "income": 107000,
+  "behaviour": "Patrzy w program sklepowy",
+  "behaviour_how": "Codziennie sprawdza utarg w kasie lub programie (np. Subiekt); raporty ma, ale rzadko z nich wyciąga decyzje.",
+  "objection": "Nie chcę podawać NIP-u i danych sprzedaży nieznanej firmie",
+  "habit": "towar zamawiasz w hurtowni i przez aplikację dostawcy"
+ },
+ {
+  "id": "P009",
+  "name": "Levi",
+  "age": 39,
+  "segment": "Niezależny sklep spożywczy (bez szyldu sieci)",
+  "income": 53000,
+  "behaviour": "Ufa księgowej i centrali",
+  "behaviour_how": "Z pytaniami idzie do biura rachunkowego albo opiekuna z sieci; to, co dostaje od nich, zwykle mu wystarcza.",
+  "objection": "Nie mam czasu na kolejną aplikację po dwunastu godzinach w sklepie",
+  "habit": "otwierasz sklep o 6:00 i zamykasz o 21:00, papiery robisz wieczorem przy kuchennym stole"
+ },
+ {
+  "id": "P010",
+  "name": "Zara",
+  "age": 59,
+  "segment": "Niezależny sklep spożywczy (bez szyldu sieci)",
+  "income": 71000,
+  "behaviour": "Sam ogarnia internet",
+  "behaviour_how": "Prowadzi fanpage sklepu, sam poprawia wizytówkę Google, chętnie testuje nowe aplikacje.",
+  "objection": "99 zł co miesiąc za coś, co mogę zrobić sam w godzinę",
+  "habit": "towar zamawiasz w hurtowni i przez aplikację dostawcy"
+ },
+ {
+  "id": "P011",
+  "name": "Grace",
+  "age": 36,
+  "segment": "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)",
+  "income": 126000,
+  "behaviour": "Robię wszystko sam",
+  "behaviour_how": "Stoi za ladą większość dnia, papiery i zamówienia robi wieczorem, na nowe narzędzia brakuje czasu.",
+  "objection": "Sztuczna inteligencja napisze jakieś ogólniki, które nie pasują do mojego sklepu",
+  "habit": "otwierasz sklep o 6:00 i zamykasz o 21:00, papiery robisz wieczorem przy kuchennym stole"
+ },
+ {
+  "id": "P012",
+  "name": "Harper",
+  "age": 53,
+  "segment": "Niezależny sklep spożywczy (bez szyldu sieci)",
+  "income": 54000,
+  "behaviour": "Sceptyk wobec abonamentów i AI",
+  "behaviour_how": "Słyszał już wiele obietnic od sprzedawców 'wizytówek Google' i pozycjonowania; zakłada, że to kolejny naciągacz.",
+  "objection": "Nie mam czasu na kolejną aplikację po dwunastu godzinach w sklepie",
+  "habit": "zatrudniasz dwie osoby na zmiany i sam łatasz grafik"
+ },
+ {
+  "id": "P013",
+  "name": "Nadia",
+  "age": 52,
+  "segment": "Niezależny sklep spożywczy (bez szyldu sieci)",
+  "income": 58000,
+  "behaviour": "Liczy każdy stały koszt",
+  "behaviour_how": "Każdą miesięczną opłatę ogląda trzy razy; płaci tylko wtedy, gdy widzi konkretny zwrot w złotówkach.",
+  "objection": "Księgowa albo centrala sieci i tak mi to robi",
+  "habit": "raz w miesiącu oddajesz dokumenty do biura rachunkowego"
+ },
+ {
+  "id": "P014",
+  "name": "Lena",
+  "age": 38,
+  "segment": "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)",
+  "income": 59000,
+  "behaviour": "Liczy każdy stały koszt",
+  "behaviour_how": "Każdą miesięczną opłatę ogląda trzy razy; płaci tylko wtedy, gdy widzi konkretny zwrot w złotówkach.",
+  "objection": "Znowu ktoś chce mi sprzedać wizytówkę Google albo pozycjonowanie",
+  "habit": "towar zamawiasz w hurtowni i przez aplikację dostawcy"
+ },
+ {
+  "id": "P015",
+  "name": "Elena",
+  "age": 47,
+  "segment": "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)",
+  "income": 71000,
+  "behaviour": "Robię wszystko sam",
+  "behaviour_how": "Stoi za ladą większość dnia, papiery i zamówienia robi wieczorem, na nowe narzędzia brakuje czasu.",
+  "objection": "Nie mam czasu na kolejną aplikację po dwunastu godzinach w sklepie",
+  "habit": "klienci często dzwonią z pytaniem, do której jesteś otwarty"
+ },
+ {
+  "id": "P016",
+  "name": "Dana",
+  "age": 48,
+  "segment": "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)",
+  "income": 129000,
+  "behaviour": "Sam ogarnia internet",
+  "behaviour_how": "Prowadzi fanpage sklepu, sam poprawia wizytówkę Google, chętnie testuje nowe aplikacje.",
+  "objection": "Księgowa albo centrala sieci i tak mi to robi",
+  "habit": "zatrudniasz dwie osoby na zmiany i sam łatasz grafik"
+ },
+ {
+  "id": "P017",
+  "name": "Finn",
+  "age": 46,
+  "segment": "Specjalistyczny sklep niespożywczy (np. zoologiczny, papierniczy, ogrodniczy, odzieżowy)",
+  "income": 108000,
+  "behaviour": "Sceptyk wobec abonamentów i AI",
+  "behaviour_how": "Słyszał już wiele obietnic od sprzedawców 'wizytówek Google' i pozycjonowania; zakłada, że to kolejny naciągacz.",
+  "objection": "Nie chcę podawać NIP-u i danych sprzedaży nieznanej firmie",
+  "habit": "zatrudniasz dwie osoby na zmiany i sam łatasz grafik"
+ },
+ {
+  "id": "P018",
+  "name": "Mira",
+  "age": 61,
+  "segment": "Niezależny sklep spożywczy (bez szyldu sieci)",
+  "income": 82000,
+  "behaviour": "Robię wszystko sam",
+  "behaviour_how": "Stoi za ladą większość dnia, papiery i zamówienia robi wieczorem, na nowe narzędzia brakuje czasu.",
+  "objection": "Sztuczna inteligencja napisze jakieś ogólniki, które nie pasują do mojego sklepu",
+  "habit": "raz w miesiącu oddajesz dokumenty do biura rachunkowego"
+ },
+ {
+  "id": "P019",
+  "name": "Callum",
+  "age": 59,
+  "segment": "Sklep pod szyldem sieci franczyzowej lub partnerskiej (np. sieć hurtowni)",
+  "income": 105000,
+  "behaviour": "Kupuje z polecenia",
+  "behaviour_how": "Zaczyna korzystać z usługi dopiero, gdy poleci ją znajomy przedsiębiorca albo ktoś z sieci.",
+  "objection": "Nie mam czasu na kolejną aplikację po dwunastu godzinach w sklepie",
+  "habit": "towar zamawiasz w hurtowni i przez aplikację dostawcy"
+ },
+ {
+  "id": "P020",
+  "name": "Seth",
+  "age": 61,
+  "segment": "Niezależny sklep spożywczy (bez szyldu sieci)",
+  "income": 73000,
+  "behaviour": "Robię wszystko sam",
+  "behaviour_how": "Stoi za ladą większość dnia, papiery i zamówienia robi wieczorem, na nowe narzędzia brakuje czasu.",
+  "objection": "99 zł co miesiąc za coś, co mogę zrobić sam w godzinę",
+  "habit": "zatrudniasz dwie osoby na zmiany i sam łatasz grafik"
+ }
+]

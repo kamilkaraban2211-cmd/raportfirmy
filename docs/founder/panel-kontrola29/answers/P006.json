@@ -1,0 +1,13 @@
+{
+  "id": "P006",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Nikt z moich znajomych sklepikarzy tego nie używa ani nie polecał, a ja nie biorę nowych usług z reklamy. Raport z kasy i tak wkładam do segregatora dla księgowej, sumy kasa liczy sama, więc nie widzę, po co mam co miesiąc za to płacić.",
+  "objection": "Po miesiącu będę wiedziała, jak mi idzie sprzedaż i ile mam paragonów, i co dalej? Płacić 29 zł co miesiąc za to, że ktoś mi przepisze kartkę, którą i tak mam? Do tego wieczorem przy stole nie mam siły robić zdjęć i poprawiać zaznaczeń.",
+  "would_change_my_mind": "Gdyby znajoma z innego sklepu albo moja księgowa powiedziała, że sama tego używa od kilku miesięcy i że jej to oszczędza czas przy rozliczeniach.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 35
+}

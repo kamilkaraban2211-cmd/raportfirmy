@@ -1,0 +1,13 @@
+{
+  "id": "P017",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Raport z kasy nosze ksiegowej raz w miesiacu i to mnie kosztuje kwadrans, wiec nie jest to moj problem numer jeden. Do tego mam wyslac obroty sklepu firmie, o ktorej pierwszy raz slysze i ktora chce ode mnie abonament bez darmowej wersji - znam ten schemat z 'wizytowek Google'.",
+  "objection": "Napisac 'zdjec nie przechowujemy, NIP-u nie odczytujemy' moze kazdy. Kto za tym stoi, gdzie sa serwery i co sie stanie z moimi danymi sprzedazy, jak firma zniknie albo ktos ja kupi? Na stronie tego nie widze.",
+  "would_change_my_mind": "Gdyby moja wlasna ksiegowa sama mi to polecila i powiedziala, ze juz od niej tak przychodza raporty innych klientow, a w umowie byla jasna firma z adresem i zapis o usunieciu danych po rezygnacji.",
+  "price_too_cheap": 9,
+  "price_cheap": 15,
+  "price_expensive": 29,
+  "price_too_expensive": 49
+}

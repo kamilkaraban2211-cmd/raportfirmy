@@ -1,0 +1,13 @@
+{
+  "id": "P001",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Po dwunastu godzinach w sklepie i łataniu grafiku nie będę jeszcze co wieczór fotografować raportu z kasy. Raport i tak idzie do księgowej, a to, czy sprzedaż spadła, widzę po kasie i po ruchu w sklepie.",
+  "objection": "Kolejny abonament i kolejna aplikacja, którą trzeba codziennie karmić, a w zamian dostaję liczby, które już mam na papierku z kasy. Bez darmowej wersji płacę za to, żeby sprawdzić, czy w ogóle będę z tego korzystać.",
+  "would_change_my_mind": "Gdyby raport wpadał do aplikacji sam, bez robienia zdjęć, i gdyby księgowa powiedziała, że ten eksport faktycznie oszczędza mi pieniądze albo czas na rozliczeniu.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 35
+}

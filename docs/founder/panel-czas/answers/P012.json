@@ -1,0 +1,13 @@
+{
+  "id": "P012",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Słyszałem już tyle obietnic od tych od wizytówek i pozycjonowania, że kolejna apka na abonament z AI brzmi mi jak to samo w innym opakowaniu. Raport z kasy i tak raz w miesiącu wożę albo daję księgowej, więc nie widzę, za co miałbym co miesiąc płacić.",
+  "objection": "Że to kolejny abonament, o którym zapomnę, a który będzie schodził z konta, i że po dwunastu godzinach w sklepie nie będę miał głowy ani do zdjęć, ani do żadnych powiadomień. Nie wiem też, kto za tym stoi i co naprawdę robią z moimi danymi.",
+  "would_change_my_mind": "Gdyby moja własna księgowa powiedziała, że z tym jej i mnie jest łatwiej i taniej, i sama mi to ustawiła, tak żebym nie musiał nic konfigurować.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 35
+}

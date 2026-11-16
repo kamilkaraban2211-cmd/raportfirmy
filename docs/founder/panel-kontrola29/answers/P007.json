@@ -1,0 +1,13 @@
+{
+  "id": "P007",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "habit",
+  "reason": "Raporty z kasy i tak raz w miesiącu idą do biura rachunkowego, a resztę liczb dostaję od opiekuna z sieci. Nie widzę, po co miałbym jeszcze płacić za aplikację, która mówi mi to samo innymi słowami.",
+  "objection": "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie? Wiedza, że średni paragon spadł, nie przyprowadzi mi nikogo do drzwi, a sama aplikacja mówi, że niczego takiego nie obiecuje.",
+  "would_change_my_mind": "Gdyby moja księgowa albo centrala sieci sama to poleciła i powiedziała, że dzięki temu eksportowi mniej mi naliczy albo szybciej zrobi rozliczenie.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 35
+}

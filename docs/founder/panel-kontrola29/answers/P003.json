@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raport z kasy i tak widzę codziennie, a to, że wiem, czy spadła liczba paragonów czy ich wartość, nie przyprowadzi mi ani jednego klienta do sklepu. Sami piszą, że nie obiecują wzrostu sprzedaży, więc za co mam płacić co miesiąc?",
+  "objection": "Nie widzę, jak te liczby zamienią się w złotówki w kasie. To kolejna stała opłata za wiedzę, którą mniej więcej już mam, a nie za coś, co ściągnie ludzi do sklepu.",
+  "would_change_my_mind": "Gdyby ktoś mi pokazał na konkretnym sklepie takim jak mój, że dzięki temu podjął decyzję, która dała więcej niż 29 zł miesięcznie, albo gdyby księgowa powiedziała, że ten eksport oszczędza mi na jej rachunku.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 20,
+  "price_too_expensive": 30
+}

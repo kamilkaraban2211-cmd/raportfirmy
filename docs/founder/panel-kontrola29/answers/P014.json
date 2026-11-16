@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raport dobowy i tak widzę co wieczór na kasie, a ile sprzedałam i ile było paragonów wiem bez aplikacji. Za 29 zł co miesiąc dostaję ładniej podane liczby, które już mam, a nie widzę z tego ani złotówki zwrotu.",
+  "objection": "Sami piszą, że nie liczy zysku ani marży i nie zwiększy sprzedaży, to za co właściwie płacę? Kolejny stały koszt, który po dwóch miesiącach przestanę otwierać, a do tego jeszcze codzienne pstrykanie zdjęć raportu.",
+  "would_change_my_mind": "Gdyby to realnie zastąpiło mi coś, za co już płacę, np. księgowa wzięłaby ode mnie mniej za ten eksport albo pokazało konkretnie, gdzie tracę pieniądze, a nie tylko ile sprzedałam.",
+  "price_too_cheap": 5,
+  "price_cheap": 9,
+  "price_expensive": 19,
+  "price_too_expensive": 29
+}

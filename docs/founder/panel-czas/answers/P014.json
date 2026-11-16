@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Raport miesięczny z kasy i tak wkładam do koperty dla księgowej, to mi zajmuje pięć minut raz w miesiącu. Za 29 zł co miesiąc nie widzę tu żadnej złotówki zwrotu, tylko kolejną stałą opłatę i kolejną aplikację w telefonie.",
+  "objection": "Co ja konkretnie zaoszczędzę w złotówkach? Księgowa bierze tyle samo, czy dostanie kartkę, czy zestawienie z aplikacji, a powiadomienia o spadku sprzedaży widzę sama po tym, co zostaje w szufladzie.",
+  "would_change_my_mind": "Gdyby moja księgowa powiedziała, że z tym zestawieniem obniży mi opłatę za biuro rachunkowe o więcej niż koszt aplikacji.",
+  "price_too_cheap": 5,
+  "price_cheap": 9,
+  "price_expensive": 15,
+  "price_too_expensive": 25
+}

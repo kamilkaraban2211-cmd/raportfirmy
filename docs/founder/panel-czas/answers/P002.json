@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "need",
+  "reason": "Utarg i tak sprawdzam codziennie w programie, a raport z kasy raz w miesiącu zanoszę księgowej i ona sobie z tym radzi. Sami piszecie, że to nie da mi więcej klientów ani nie policzy marży, więc nie widzę, za co miałbym płacić co miesiąc.",
+  "objection": "Skąd mam wiedzieć, że to przełoży się na klientów w sklepie? Skoro nie obiecujecie wzrostu sprzedaży, to dla mnie to kolejna aplikacja do papierów, a papiery i tak ogarnia księgowa.",
+  "would_change_my_mind": "Gdyby moja księgowa sama powiedziała, że woli dostawać zestawienie z tej aplikacji i przez to weźmie ode mnie mniej albo mniej będzie mnie ciągać o wydruki.",
+  "price_too_cheap": 5,
+  "price_cheap": 12,
+  "price_expensive": 25,
+  "price_too_expensive": 40
+}

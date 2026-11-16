@@ -36,6 +36,25 @@ Zasady wysyłki:
 - **Treść bez straszenia.** Słowo „kara” pada tylko wtedy, gdy jest w treści przepisu, z kwotą i źródłem, nigdy jako przynęta.
 - **Każde powiadomienie da się wyłączyć w dwóch dotknięciach, osobno dla każdego rodzaju momentu.**
 
+## 2a. Agent dopasowany do nastroju klienta
+
+Agent ma wyczuwać, w jakim momencie jest właściciel, i do tego dopasować ton, długość i to, czy w ogóle się odzywa. Robi to **wyłącznie na podstawie tego, co klient sam napisze lub kliknie, i tego, co dzieje się w jego sprawach**. Nigdy na podstawie twarzy, głosu, sposobu pisania na klawiaturze ani innych danych biometrycznych.
+
+| Sygnał (jawny) | Jak agent go rozumie | Co robi |
+|---|---|---|
+| Dwa razy „Nie teraz” w tygodniu albo wybór „Mam urwanie głowy” | Brak czasu | Wstrzymuje wszystko poza terminami w przepisach i raportem dla księgowej. Wraca po 7 dniach jednym zdaniem: „Wracam z 2 sprawami, gdy będziesz gotowy.” |
+| Spadek sprzedaży kilka tygodni z rzędu (M4) | Trudny okres | Zaczyna od faktu bez oceny, daje jeden mały krok. **W tym czasie nie proponuje żadnego płatnego planu ani dodatku.** |
+| Dobry tydzień (wzrost, zamknięta sprawa) | Dobry moment | Krótkie potwierdzenie. Dopiero wtedy, i tylko za zgodą na propozycje, może zapytać o próbę czegoś nowego. |
+| Wiadomość w rodzaju „znowu to samo”, „nie działa”, wielkie litery | Frustracja | Jedno zdanie przeprosin bez tłumaczenia się, najkrótsza droga do rozwiązania i przycisk „połącz z człowiekiem”. Żadnej oferty. |
+| Wybór stylu w ustawieniach: „konkretnie” albo „po ludzku” | Preferencja | Konkretnie: liczba, termin, przycisk. Po ludzku: jedno zdanie kontekstu przed liczbą. |
+| Godzina, o której klient zwykle otwiera aplikację | Rytm dnia | Wysyła w tym oknie. Nigdy po 21:00. |
+
+**Zasady:**
+- Agent nie nazywa emocji klienta („widzę, że jesteś zły”). Dopasowuje działanie, nie diagnozuje.
+- **Nastrój nigdy nie służy do sprzedaży.** W trudnym okresie i przy frustracji propozycje handlowe są blokowane w kodzie, a nie tylko w treści.
+- Przechowujemy tylko ustawienia klienta (styl, „wstrzymaj do dnia X”), a nie etykiety nastroju. Klient widzi je i zmienia w jednym miejscu.
+- Prawnie: system AI rozpoznawania emocji w AI Act to system oparty na danych biometrycznych, a jego używanie wymaga informowania osób (art. 50 ust. 3). Agent nie korzysta z takich danych, więc z założenia nie jest takim systemem. Mimo to zasady powyżej są potrzebne, bo wykorzystywanie słabości lub trudnej sytuacji do wpływania na decyzje to obszar zakazu z art. 5. Do potwierdzenia z prawnikiem.
+
 ## 3. Warunki prawne UE i Polski, które kształtują agenta
 
 (Stan na 16.11.2026. Do potwierdzenia z prawnikiem przed startem.)
@@ -62,6 +81,8 @@ Trzy wersje:
 > Dla właściciela małego sklepu, który boi się przeoczyć termin albo błąd w Google, raportfirmy.pl to strażnik, który pilnuje za niego, w przeciwieństwie do szukania informacji na własną rękę.
 
 **Rekomendacja: A do pozyskiwania, B jako obietnica dla właściciela.** Dowody: księgowa to najczęstszy warunek zakupu (12 z 20, 16.11; ok. 77 ze 100, 10.11), a „te liczby już mam” to najczęstszy powód odmowy (13 z 20, 16.11), więc obietnica musi brzmieć „odzywa się tylko z czymś nowym”. Wersję C odradzam: ukryte zagrożenia odebrano jako metodę naciągaczy (~89 ze 100, 10.11).
+
+**Test 16.11 (`czas-dla-siebie.md`): obietnica „czas dla siebie”.** Te same 20 osób, 29 zł: 0/20 kupuje w obu wersjach. Obietnica trafia, ale nie w raport z kasy: raport miesięczny zajmuje właścicielom 2–15 minut w miesiącu, a wieczory zabierają im **grafik pracowników i zamówienia** (6 z 20 mówi to samo z siebie, w wersji kontrolnej 3). 19 z 20 jako warunek zmiany zdania wskazuje księgową lub biuro, najczęściej polecenie połączone z niższą opłatą za biuro. **Wniosek: „czas dla siebie” to obietnica marki dla właściciela, przypięta do zamówień (KSeF + kasa) i ewentualnie grafiku; skaner sprzedajemy przez biuro jako oszczędność biura (wersja A).**
 
 ## 5. Kanały
 

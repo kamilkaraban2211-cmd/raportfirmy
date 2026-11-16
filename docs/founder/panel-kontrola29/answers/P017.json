@@ -1,0 +1,13 @@
+{
+  "id": "P017",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Kolejna firma z internetu, która chce co miesiąc moje pieniądze i dane o sprzedaży, a 'zdjęć nie przechowujemy' to tylko zdanie na stronie, nie umiem tego sprawdzić. Ile sprzedałem, widzę na raporcie, a tydzień do tygodnia porównam sam w zeszycie albo zrobi to księgowa.",
+  "objection": "Nie wiem, kim są ludzie za RaportFirmy.pl ani co naprawdę robią z moimi obrotami. Już raz dałem się złapać na 'wizytówkę Google' z abonamentem, którego potem nie dało się wypowiedzieć.",
+  "would_change_my_mind": "Gdyby moja księgowa albo ktoś znajomy z branży sam tego używał i polecił, a do tego dało się przez miesiąc sprawdzić to na moich raportach bez podawania karty.",
+  "price_too_cheap": 5,
+  "price_cheap": 10,
+  "price_expensive": 25,
+  "price_too_expensive": 40
+}

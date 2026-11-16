@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "trust",
+  "reason": "Nikt mi tego nie polecił, ani znajomy, ani nikt z sieci, a z reklamy nic nie biorę. Raport z kasy i tak oddaję księgowej, działa to od lat, więc nie będę po dwunastu godzinach w sklepie uczył się kolejnej aplikacji obok tej od dostawcy.",
+  "objection": "Nie znam tej firmy, a mam jej dać zdjęcia raportów z kasy. Do tego to kolejna apka do pilnowania, a ja już mam aplikację hurtowni i ledwo starcza mi czasu.",
+  "would_change_my_mind": "Gdyby polecił mi to znajomy sklepikarz albo ktoś z mojej sieci powiedział, że sam używa i działa, a moja księgowa potwierdziła, że takie zestawienie jej pasuje.",
+  "price_too_cheap": 5,
+  "price_cheap": 15,
+  "price_expensive": 29,
+  "price_too_expensive": 45
+}
