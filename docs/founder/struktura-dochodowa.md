@@ -6,19 +6,21 @@ Liczby: [`struktura-liczby.md`](struktura-liczby.md), wygenerowane przez `strukt
 
 ## 1. Wynik
 
-| Scenariusz (rok 1) | Zysk | Godziny pracy | Zysk na godzinę | Zysk w 12. miesiącu |
-|---|---:|---:|---:|---:|
-| A. Plan startu (`launch.md`), ręcznie | 106 zł | 197 | 1 zł | 9 zł |
-| B. Plan startu z agentami | −906 zł | 87 | −10 zł | −75 zł |
-| C. Pełna struktura, ręcznie | 8 141 zł | 355 | 23 zł | 1 455 zł |
-| D. Pełna struktura z agentami | 6 815 zł | 176 | 39 zł | 1 320 zł |
-| **E. Pełna struktura z agentami, jedno nowe biuro co miesiąc** | **13 482 zł** | 264 | **51 zł** | **2 324 zł** (89 zł/h) |
+| Scenariusz (rok 1) | Zysk | Godziny pracy | Zysk na godzinę | Zysk po koszcie czasu właściciela (60 zł/h) | Zysk w 12. miesiącu |
+|---|---:|---:|---:|---:|---:|
+| A. Plan startu (`launch.md`), ręcznie | 106 zł | 197 | 1 zł | −11 731 zł | 9 zł |
+| B. Plan startu z agentami | −906 zł | 87 | −10 zł | −6 155 zł | −75 zł |
+| C. Pełna struktura, ręcznie | 8 141 zł | 355 | 23 zł | −13 133 zł | 1 455 zł |
+| D. Pełna struktura z agentami | 6 815 zł | 176 | 39 zł | −3 748 zł | 1 320 zł |
+| **E. Pełna struktura z agentami, jedno nowe biuro co miesiąc** | **13 482 zł** | 264 | **51 zł** | −2 353 zł | **2 324 zł** (89 zł/h) |
 
-Trzy wnioski:
+Cztery wnioski:
 
 1. **Sama naprawa za 149 zł nie jest firmą.** Przy 30 sprawdzeniach miesięcznie i liniach sukcesu z testu (30% rozbieżności, 30% zleceń) wychodzi 2,7 zlecenia i 397 zł przychodu miesięcznie. To pokrywa koszty stałe i nic więcej. Próg „ok. 3 zlecenia” z `launch.md` jest prawdziwy, ale oznacza zero, nie zysk.
 2. **Agenci sami nie dają zysku, dają czas.** Scenariusz B zarabia mniej niż A, bo dochodzi serwer, a zleceń jest tyle samo. Wąskim gardłem nie są godziny, tylko liczba sklepów, do których docieramy przez kogoś zaufanego. Agenci mają sens dopiero wtedy, gdy zwolniony czas idzie na pozyskiwanie biur (D → E: te same narzędzia, dwa razy więcej biur, dwa razy większy zysk, o połowę więcej godzin).
 3. **Zysk robi przychód powtarzalny od biur.** W scenariuszu E w 12. miesiącu 70% przychodu to abonamenty (biura 1 788 zł, opieka 234 zł), a naprawy i trudne sprawy to 886 zł. Naprawa jest produktem wejściowym, który płaci za własne pozyskanie.
+
+4. **Czas właściciela jest największym kosztem i w roku 1 nie zwraca się w żadnym scenariuszu.** Wcześniejsze kalkulacje go pomijały (`cfo.md`: „nie wliczałem czasu założycieli”, `launch.md`: „bez wyceny Twojego czasu”). Liczony po 60 zł za godzinę, czyli stawce przyjętej w `cfo-sources.md` dla wsparcia, zamienia każdy wynik roczny w stratę. Na plus wychodzi dopiero pod koniec roku: w scenariuszu E od 7. miesiąca (766 zł w 12. miesiącu), w D okolice zera (9 zł w 12. miesiącu). Bez agentów (C) godzina pracy nigdy nie zarabia 60 zł. Stawkę ustawia się w `struktura.json` (`stawka_godziny_wlasciciela`).
 
 Skala jest na razie mała: około 2 300 zł miesięcznie po roku przy 26 godzinach pracy. To dochód dodatkowy, nie etat. Etatem staje się przy kilkudziesięciu biurach albo wyższej cenie planu „Biuro” (punkt 4).
 
@@ -91,6 +93,7 @@ Decyzje do podjęcia przez CEO (dopisane do listy w `ZARYS-APLIKACJI.md` §12):
 | Koszty stałe, wydatki startowe | 380 zł/mies., 1 700 zł | `cfo-sources.md` plus dojazdy 50 zł z `marketing.md` |
 | Prowizja płatności | 1,49% + 0,30 zł | `cfo-sources.md` (PayU) |
 | Własne sprawdzenia | 30 miesięcznie | skala testu z `launch.md` |
+| Stawka godziny właściciela | 60 zł | `cfo-sources.md` (stawka wsparcia); do ustalenia przez CEO |
 | Cena trudnej sprawy, cena planu „Biuro” | 490 zł brutto, 149 zł netto | **hipotezy tego dokumentu** |
 | Udział trudnych spraw, nieopłacone, przejście do opieki, rezygnacje, sklepy na biuro, nowe rozbieżności u pilnowanych | 20%, 10%/25%, 25%, 4%, 15, 4% | **szacunki bez danych** |
 | Minuty z agentami, koszt AI, serwer | patrz `struktura.json` | **szacunki bez danych** |

@@ -1,6 +1,7 @@
 {
  "opis": "Struktura dochodowa raportfirmy.pl. Wszystkie wartości oznaczone [S] to szacunki do zastąpienia wynikami testu 17.11-20.12.2026. Kwoty w zł.",
  "vat_payer": true,
+ "stawka_godziny_wlasciciela": 60,
  "ceny_brutto": {
   "naprawa": 149,
   "trudna_sprawa": 490,

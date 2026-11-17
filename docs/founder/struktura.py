@@ -67,24 +67,26 @@ def report(cfg):
     out = ["# Struktura dochodowa: liczby z kalkulatora", "",
            "Wygenerowane przez `struktura.py` z `struktura.json`. Kwoty netto w zł. "
            "Zysk jest liczony przed wynagrodzeniem właściciela i przed podatkiem dochodowym, "
-           "dlatego obok stoi liczba godzin pracy i zysk na godzinę.", ""]
+           "dlatego obok stoi liczba godzin pracy i zysk na godzinę. Ostatnia kolumna odejmuje czas właściciela "
+           "jako koszt: godziny razy `stawka_godziny_wlasciciela` z pliku wejściowego.", ""]
+    rate = cfg.get("stawka_godziny_wlasciciela", 0)
     res = [(sc, run(cfg, sc)) for sc in cfg["scenariusze"]]
     start = sum(cfg["start"].values())
     out += ["## Rok 1 (12 miesięcy od startu)", "",
-            "| Scenariusz | Przychód | Zysk | Po wydatkach startowych | Godziny pracy | Zysk na godzinę |",
-            "|---|---:|---:|---:|---:|---:|"]
+            f"| Scenariusz | Przychód | Zysk | Po wydatkach startowych | Godziny pracy | Zysk na godzinę | Zysk po koszcie czasu właściciela ({f(rate)} zł/h) |",
+            "|---|---:|---:|---:|---:|---:|---:|"]
     for sc, r in res:
         R, P, H = (sum(x[k] for x in r) for k in ("revenue", "profit", "hours"))
-        out.append(f"| {sc['nazwa']} | {f(R)} | {f(P)} | {f(P - start)} | {f(H)} | {f(P / H)} zł |")
+        out.append(f"| {sc['nazwa']} | {f(R)} | {f(P)} | {f(P - start)} | {f(H)} | {f(P / H)} zł | {f(P - H * rate)} |")
     out += ["", "## Miesiąc 12 (stan docelowy pierwszego roku)", "",
-            "| Scenariusz | Naprawy | Trudne sprawy | Opieka | Biura | Przychód | Koszty zmienne | Koszty stałe | Zysk | Godziny | Zysk na godzinę | Przychód powtarzalny |",
-            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+            "| Scenariusz | Naprawy | Trudne sprawy | Opieka | Biura | Przychód | Koszty zmienne | Koszty stałe | Zysk | Godziny | Zysk na godzinę | Przychód powtarzalny | Zysk po koszcie czasu właściciela |",
+            "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for sc, r in res:
         x = r[-1]; v = x["rev"]
         rec = (v["opieka"] + v["biura"]) / x["revenue"] if x["revenue"] else 0
         out.append(f"| {sc['nazwa']} | {f(v['naprawy'])} | {f(v['trudne'])} | {f(v['opieka'])} | {f(v['biura'])} | "
                    f"{f(x['revenue'])} | {f(x['var'])} | {f(x['fixed'])} | {f(x['profit'])} | {f(x['hours'], 1)} | "
-                   f"{f(x['profit'] / x['hours'])} zł | {f(rec * 100)}% |")
+                   f"{f(x['profit'] / x['hours'])} zł | {f(rec * 100)}% | {f(x['profit'] - x['hours'] * rate)} |")
     for sc, r in res:
         out += ["", f"## {sc['nazwa']}: miesiąc po miesiącu", "",
                 "| Mies. | Sprawdzenia | Zlecenia | Klienci opieki | Biura | Przychód | Zysk | Narastająco po starcie | Godziny |",

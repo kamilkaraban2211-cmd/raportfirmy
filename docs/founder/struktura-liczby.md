@@ -1,26 +1,26 @@
 # Struktura dochodowa: liczby z kalkulatora
 
-Wygenerowane przez `struktura.py` z `struktura.json`. Kwoty netto w zł. Zysk jest liczony przed wynagrodzeniem właściciela i przed podatkiem dochodowym, dlatego obok stoi liczba godzin pracy i zysk na godzinę.
+Wygenerowane przez `struktura.py` z `struktura.json`. Kwoty netto w zł. Zysk jest liczony przed wynagrodzeniem właściciela i przed podatkiem dochodowym, dlatego obok stoi liczba godzin pracy i zysk na godzinę. Ostatnia kolumna odejmuje czas właściciela jako koszt: godziny razy `stawka_godziny_wlasciciela` z pliku wejściowego.
 
 ## Rok 1 (12 miesięcy od startu)
 
-| Scenariusz | Przychód | Zysk | Po wydatkach startowych | Godziny pracy | Zysk na godzinę |
-|---|---:|---:|---:|---:|---:|
-| A. Plan startu, wszystko ręcznie | 4 762 | 106 | -1 594 | 197 | 1 zł |
-| B. Plan startu z agentami | 4 762 | -906 | -2 606 | 87 | -10 zł |
-| C. Pełna struktura, ręcznie | 12 879 | 8 141 | 6 441 | 355 | 23 zł |
-| D. Pełna struktura z agentami | 12 879 | 6 815 | 5 115 | 176 | 39 zł |
-| E. Pełna struktura z agentami, jedno nowe biuro co miesiąc | 19 913 | 13 482 | 11 782 | 264 | 51 zł |
+| Scenariusz | Przychód | Zysk | Po wydatkach startowych | Godziny pracy | Zysk na godzinę | Zysk po koszcie czasu właściciela (60 zł/h) |
+|---|---:|---:|---:|---:|---:|---:|
+| A. Plan startu, wszystko ręcznie | 4 762 | 106 | -1 594 | 197 | 1 zł | -11 731 |
+| B. Plan startu z agentami | 4 762 | -906 | -2 606 | 87 | -10 zł | -6 155 |
+| C. Pełna struktura, ręcznie | 12 879 | 8 141 | 6 441 | 355 | 23 zł | -13 133 |
+| D. Pełna struktura z agentami | 12 879 | 6 815 | 5 115 | 176 | 39 zł | -3 748 |
+| E. Pełna struktura z agentami, jedno nowe biuro co miesiąc | 19 913 | 13 482 | 11 782 | 264 | 51 zł | -2 353 |
 
 ## Miesiąc 12 (stan docelowy pierwszego roku)
 
-| Scenariusz | Naprawy | Trudne sprawy | Opieka | Biura | Przychód | Koszty zmienne | Koszty stałe | Zysk | Godziny | Zysk na godzinę | Przychód powtarzalny |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| A. Plan startu, wszystko ręcznie | 235 | 161 | 0 | 0 | 397 | 8 | 380 | 9 | 16,4 | 1 zł | 0% |
-| B. Plan startu z agentami | 235 | 161 | 0 | 0 | 397 | 12 | 460 | -75 | 7,3 | -10 zł | 0% |
-| C. Pełna struktura, ręcznie | 432 | 296 | 234 | 894 | 1 856 | 21 | 380 | 1 455 | 42,1 | 35 zł | 61% |
-| D. Pełna struktura z agentami | 432 | 296 | 234 | 894 | 1 856 | 76 | 460 | 1 320 | 21,9 | 60 zł | 61% |
-| E. Pełna struktura z agentami, jedno nowe biuro co miesiąc | 526 | 360 | 234 | 1 788 | 2 909 | 124 | 460 | 2 324 | 26,0 | 89 zł | 70% |
+| Scenariusz | Naprawy | Trudne sprawy | Opieka | Biura | Przychód | Koszty zmienne | Koszty stałe | Zysk | Godziny | Zysk na godzinę | Przychód powtarzalny | Zysk po koszcie czasu właściciela |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| A. Plan startu, wszystko ręcznie | 235 | 161 | 0 | 0 | 397 | 8 | 380 | 9 | 16,4 | 1 zł | 0% | -978 |
+| B. Plan startu z agentami | 235 | 161 | 0 | 0 | 397 | 12 | 460 | -75 | 7,3 | -10 zł | 0% | -513 |
+| C. Pełna struktura, ręcznie | 432 | 296 | 234 | 894 | 1 856 | 21 | 380 | 1 455 | 42,1 | 35 zł | 61% | -1 071 |
+| D. Pełna struktura z agentami | 432 | 296 | 234 | 894 | 1 856 | 76 | 460 | 1 320 | 21,9 | 60 zł | 61% | 9 |
+| E. Pełna struktura z agentami, jedno nowe biuro co miesiąc | 526 | 360 | 234 | 1 788 | 2 909 | 124 | 460 | 2 324 | 26,0 | 89 zł | 70% | 766 |
 
 ## A. Plan startu, wszystko ręcznie: miesiąc po miesiącu
 
