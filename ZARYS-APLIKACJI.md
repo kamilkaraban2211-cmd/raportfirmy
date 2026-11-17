@@ -118,6 +118,8 @@ Etap 3: `RaportKasowy` (tylko kwoty, daty, nr kasy) · `FakturaZakupowa` (pola z
 | **2. Setki klientów** | AI w UE (Amazon Bedrock, Frankfurt), Zero Data Retention, pseudonimizacja analiz, test penetracyjny raz w roku, strona „Bezpieczeństwo” dla biur, automatyczne usuwanie danych po rezygnacji. |
 | **3. Postęp** | Odczyt w telefonie (do serwera trafiają same liczby), KSeF i chmury kas zamiast zdjęć, passkeys, hybrydowe TLS z ML-KEM, gdy obsłużą je biblioteki, przegląd przepisów i zagrożeń co pół roku. |
 
+Drugi składnik (kod z aplikacji w telefonie, TOTP) jest opisany w [`docs/totp-2fa.md`](docs/totp-2fa.md).
+
 Statyczne makiety (`index.html`, `pilot/`, `skaner/`) pokazują proces. Produkcja wymaga serwera, kont, płatności i umów.
 
 ## 10. Prawo (sprawdzić z prawnikiem przed startem; to nie jest porada prawna)
