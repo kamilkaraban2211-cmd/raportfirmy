@@ -45,6 +45,10 @@ Na darmowym planie GitHub Pages działa tylko dla repozytoriów publicznych.
 - Nie wysyła SMS-ów, nie przyjmuje płatności, nie łączy się z Google ani Facebookiem.
 - Dopóki `CARETAKER` w `index.html` jest pusty, przy formularzu i na ekranie zlecenia widać informację, że to wersja testowa: zgłoszenie nie trafia do nikogo i nikt nie zadzwoni.
 
+## Zasada nadrzędna: czas właściciela
+
+Najważniejsze w produkcie jest czas właściciela sklepu: celem jest odzyskanie do godziny dziennie. Każda nowa funkcja i każdy ekran są oceniane przez liczbę kroków, pól do wypełnienia i minut, które zabierają. Jeśli funkcja dodaje krok, musi zaoszczędzić więcej czasu, niż zabiera.
+
 ## Zasady produktu zapisane w kodzie
 
 - „Wszystko się zgadza” to pełnoprawny wynik: wtedy nie ma oferty.
