@@ -106,3 +106,41 @@ python3 docs/founder/struktura.py docs/founder/struktura.json --out docs/founder
 ```
 
 Ograniczenia: model nie liczy podatku dochodowego, ZUS ani czasu na budowę oprogramowania. Nie jest to porada podatkowa ani prawna; formę działalności, VAT i umowy z biurami sprawdza księgowy i prawnik.
+
+## 7. Kierunek wskazany przez CEO 17.11: zamówienia u innych przedsiębiorców w jednej aplikacji
+
+**Teza:** największy niepoliczony koszt małej firmy to czas właściciela, a ten czas ucieka na składanie zamówień u innych firm. raportfirmy.pl ma być jedną aplikacją dla biznesu, w której robi się to w jednym miejscu.
+
+**Co już na to wskazuje w repozytorium** (symulowane panele, nie prawdziwi właściciele):
+- `czas-dla-siebie.md`: 6 z 20 osób samo wskazuje grafik i zamówienia jako to, co zabiera wieczory. Raport z kasy to dla nich 2–15 minut w miesiącu.
+- `ZARYS-APLIKACJI.md` §11: „Kasa + Zakupy (KSeF)” jest zaplanowane na 2028 pod warunkiem, że rozmowy potwierdzą oszczędność czasu na zamówieniach.
+- `sposoby-i-bezpieczenstwo.md`: faktury zakupowe są w KSeF w ustrukturyzowanej postaci od 1.02.2026. Za zgodą właściciela agent wie, u kogo i co sklep kupuje, bez udziału dostawcy.
+
+**Co jest na rynku** (trzy wyszukiwania 17.11, nie przegląd rynku):
+- Platformy pojedynczych hurtowni i dystrybutorów: [eurocash.pl](https://www.money.pl/gielda/wiadomosci/artykul/handel-eurocash-pl-e-commerce-platforma,125,0,2416765.html) (od 2018 r.), aplikacja Eurocash Cash&Carry, [Infinite eHurtownia](https://www.wiadomoscihandlowe.pl/horeca-i-qsr/nowa-odslona-ehurtowni-jeszcze-wieksze-wsparcie-dla-dystrybutorow-w-walce-o-klientow-2524611). Każda obsługuje zamówienia u jednego dostawcy, więc właściciel z kilkoma dostawcami nadal ma kilka kanałów.
+- Model „jedna aplikacja, wszyscy moi dostawcy” działa za granicą w gastronomii: [Choco](https://choco.com/us/faq). Zamawiający nie płaci, płacą dostawcy za plany. Dostawca nie musi mieć konta, bo zamówienie trafia do niego e-mailem, SMS-em albo do jego systemu. To nie jest giełda nowych dostawców, tylko obsługa relacji, które już istnieją.
+- Odpowiednika dla małych sklepów w Polsce nie znalazłem. To nie jest dowód, że go nie ma.
+
+**Struktura dochodu (hipoteza do sprawdzenia):**
+
+| Kto | Płaci | Dlaczego |
+|---|---|---|
+| Sklep (zamawiający) | 0 zł | Panele: 0/20 płaci za narzędzie. Darmowe wejście buduje liczbę zamówień. |
+| Dostawca (lokalna hurtownia, piekarnia, producent) | abonament, cena do ustalenia | Dostaje zamówienia w jednym formacie zamiast telefonów i SMS-ów. Zapłaci dopiero, gdy istotna część jego odbiorców zamawia przez aplikację. |
+| Biuro rachunkowe | plan „Biuro” z §2 | Kanał zaufania. Wśród jego klientów są obie strony: zamawiający i dostawcy. |
+
+Kolejność budowy wynika z tego, że dostawca nie zapłaci, zanim zobaczy zamówienia. Najpierw narzędzie dla sklepu, które działa bez udziału dostawcy: lista dostawców i ostatnich zakupów z KSeF, „zamów to, co zwykle”, wysyłka zamówienia kanałem, który dostawca już przyjmuje. Dopiero potem oferta dla dostawców.
+
+**Czego nie robimy:** nie pośredniczymy w płatnościach (faktura i zapłata zostają między stronami; usługi płatnicze są regulowane, do sprawdzenia z prawnikiem), nie negocjujemy cen i nie zastępujemy aplikacji dużej hurtowni tam, gdzie właściciel jest z niej zadowolony.
+
+**Jak to sprawdzić bez budowania:** do każdej z 30 grudniowych wizyt z `launch.md` dodać cztery pytania i zapisać odpowiedzi w arkuszu wyników:
+1. U ilu dostawców zamawiasz w zwykłym tygodniu?
+2. Jak składasz każde zamówienie: telefon, przedstawiciel, SMS, aplikacja hurtowni, osobiście?
+3. Ile godzin w tygodniu to zajmuje i o jakiej porze?
+4. Które zamówienie jest najbardziej uciążliwe i dlaczego?
+
+Do tego 2–3 rozmowy z lokalnymi dostawcami: jak przyjmują zamówienia, ile czasu im to zajmuje, ile jest pomyłek.
+
+Proponowana linia sukcesu (do zatwierdzenia przez CEO przed wizytami): co najmniej 10 z 30 właścicieli zamawia u 3 lub więcej dostawców różnymi kanałami i poświęca na to co najmniej 3 godziny tygodniowo, a co najmniej 1 dostawca mówi, że zapłaciłby za zamówienia w jednym formacie.
+
+**Czego ten dokument jeszcze nie liczy:** kalkulator nie ma linii „Zamówienia”, bo nie ma liczby, na której można ją oprzeć: ceny dla dostawcy, liczby zamówień na sklep ani kosztu budowy. Dopisać po rozmowach. „Sklep w porządku” zostaje wejściem do sklepu; zamówienia są kandydatem na główny produkt powtarzalny zamiast pozycji z 2028 r. `ZARYS-APLIKACJI.md` nie został zmieniony.
