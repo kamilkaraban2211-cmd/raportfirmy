@@ -1,0 +1,140 @@
+{
+ "opis": "Struktura dochodowa raportfirmy.pl. Wszystkie wartości oznaczone [S] to szacunki do zastąpienia wynikami testu 17.11-20.12.2026. Kwoty w zł.",
+ "vat_payer": true,
+ "ceny_brutto": {
+  "naprawa": 149,
+  "trudna_sprawa": 490,
+  "opieka_mies": 49
+ },
+ "biuro_netto_mies": 149,
+ "biuro_platne_od_miesiaca": 6,
+ "lejek": {
+  "odsetek_rozbieznosci": 0.3,
+  "zlecenia_na_pokazany_wynik": 0.3,
+  "udzial_trudnych_spraw": 0.2,
+  "nieoplacone_lub_nieudane_naprawa": 0.1,
+  "nieoplacone_lub_nieudane_trudna": 0.25,
+  "opieka_po_zleceniu": 0.25,
+  "opieka_rezygnacje_mies": 0.04,
+  "nowe_rozbieznosci_u_pilnowanych_mies": 0.04,
+  "sklepow_na_biuro": 15
+ },
+ "minuty": {
+  "recznie": {
+   "sprawdzenie": 15,
+   "wizyta_z_wynikiem": 20,
+   "naprawa": 105,
+   "trudna_sprawa": 240,
+   "opieka_mies": 20,
+   "biuro_mies": 60,
+   "pozyskanie_biura": 360,
+   "wdrozenie_biura": 180
+  },
+  "z_agentami": {
+   "sprawdzenie": 3,
+   "wizyta_z_wynikiem": 20,
+   "naprawa": 40,
+   "trudna_sprawa": 150,
+   "opieka_mies": 5,
+   "biuro_mies": 30,
+   "pozyskanie_biura": 360,
+   "wdrozenie_biura": 120
+  }
+ },
+ "koszt_ai": {
+  "sprawdzenie": 0.1,
+  "zlecenie": 0.5,
+  "pilnowanie_sklep_mies": 0.5
+ },
+ "platnosc": {
+  "procent": 0.0149,
+  "stala": 0.3
+ },
+ "koszty_stale_mies": {
+  "hosting": 20,
+  "domena_i_poczta": 10,
+  "ksiegowosc": 300,
+  "dojazdy": 50
+ },
+ "koszty_stale_agenci_mies": {
+  "serwer_i_sms": 80
+ },
+ "start": {
+  "dokumenty_prawne": 1500,
+  "marketing": 200
+ },
+ "wlasne_sprawdzenia_mies": [
+  30,
+  30,
+  30,
+  30,
+  30,
+  30,
+  30,
+  30,
+  30,
+  30,
+  30,
+  30
+ ],
+ "biura_narastajaco": [
+  1,
+  1,
+  1,
+  2,
+  2,
+  3,
+  3,
+  4,
+  4,
+  5,
+  5,
+  6
+ ],
+ "scenariusze": [
+  {
+   "nazwa": "A. Plan startu, wszystko ręcznie",
+   "tryb": "recznie",
+   "biura": false,
+   "opieka": false
+  },
+  {
+   "nazwa": "B. Plan startu z agentami",
+   "tryb": "z_agentami",
+   "biura": false,
+   "opieka": false
+  },
+  {
+   "nazwa": "C. Pełna struktura, ręcznie",
+   "tryb": "recznie",
+   "biura": true,
+   "opieka": true
+  },
+  {
+   "nazwa": "D. Pełna struktura z agentami",
+   "tryb": "z_agentami",
+   "biura": true,
+   "opieka": true
+  },
+  {
+   "nazwa": "E. Pełna struktura z agentami, jedno nowe biuro co miesiąc",
+   "tryb": "z_agentami",
+   "biura": true,
+   "opieka": true,
+   "biura_narastajaco": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ]
+  }
+ ]
+}

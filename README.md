@@ -1,6 +1,6 @@
 # RaportFirmy.pl — „Sklep w porządku”
 
-**Zarys kompletnej aplikacji (ścieżka, moduły, ceny, agenci, dane, bezpieczeństwo, prawo, mapa drogowa): [`ZARYS-APLIKACJI.md`](ZARYS-APLIKACJI.md).** Plan startu: [`docs/founder/launch.md`](docs/founder/launch.md).
+**Zarys kompletnej aplikacji (ścieżka, moduły, ceny, agenci, dane, bezpieczeństwo, prawo, mapa drogowa): [`ZARYS-APLIKACJI.md`](ZARYS-APLIKACJI.md).** Plan startu: [`docs/founder/launch.md`](docs/founder/launch.md). Z czego firma ma żyć: [`docs/founder/struktura-dochodowa.md`](docs/founder/struktura-dochodowa.md).
 
 Statyczna aplikacja (bez serwera i bez budowania). Wersja testowa na przykładowych danych.
 

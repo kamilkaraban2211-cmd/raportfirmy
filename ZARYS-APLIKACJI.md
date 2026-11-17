@@ -153,7 +153,8 @@ Statyczne makiety (`index.html`, `pilot/`, `skaner/`) pokazują proces. Produkcj
 5. Co znaczy „rozwój” dla klienta w pierwszej wersji, czyli który wskaźnik pokazujemy jako sukces.
 6. Zakres synchronizacji danych w abonamencie w pierwszej wersji.
 7. Repozytorium jest publiczne: przełączyć na prywatne (zawiera ceny, koszty i plany).
+8. Struktura dochodowa (`docs/founder/struktura-dochodowa.md`, 17.11): cena i termin planu „Biuro” (model: 149 zł netto za biuro, od startu zamiast II półrocza 2027), status VAT.
 
 ---
 
-**Źródła w repozytorium:** `docs/founder/launch.md` (plan startu), `offer.md`, `marketing.md` (momenty, nastrój, pozycjonowanie), `sposoby-i-bezpieczenstwo.md`, `cfo.md`, `pricing.md`, `czas-dla-siebie.md`, panele `panel*/`. Wyniki paneli to symulacja: pokazują obiekcje, nie przewidują sprzedaży.
+**Źródła w repozytorium:** `docs/founder/launch.md` (plan startu), `struktura-dochodowa.md` (wszystkie linie przychodu razem, z czasem pracy), `offer.md`, `marketing.md` (momenty, nastrój, pozycjonowanie), `sposoby-i-bezpieczenstwo.md`, `cfo.md`, `pricing.md`, `czas-dla-siebie.md`, panele `panel*/`. Wyniki paneli to symulacja: pokazują obiekcje, nie przewidują sprzedaży.
