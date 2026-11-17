@@ -21,7 +21,7 @@ jobs:
       - name: Prepare site
         run: |
           mkdir _site
-          cp index.html _site/
+          cp index.html wspolne.css _site/
           cp -r pilot _site/
           cp -r skaner _site/
       - uses: actions/configure-pages@v5
