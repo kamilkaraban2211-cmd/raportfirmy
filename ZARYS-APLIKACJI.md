@@ -54,7 +54,7 @@ Wersja ostateczna z 16.11.2026. Zbiera decyzje i wnioski z prac od 6 do 16.11.20
 | | Zlecenia | Kolejka, wycena trudnych spraw, limit w miesiącu, lista oczekujących | `index.html`: panel opiekuna (makieta) |
 | | Status i teczka | Link z SMS-a, 3 stany, akceptacja, potwierdzenia zmian | `index.html`: makieta |
 | | Rejestr metod | Typ błędu, źródło, metoda, czas. Zasób, którego konkurencja nie skopiuje | `index.html`: makieta |
-| | Płatności | Po wykonaniu: BLIK, Apple Pay, Google Pay, karta (Stripe Checkout) albo przelew; faktura w KSeF z księgowości | `platnosci/` (bramka) + ekran „Gotowe” w `index.html`; do wdrożenia konto Stripe i adres bramki |
+| | Płatności i faktury | Po wykonaniu: Przelewy24 (BLIK, Apple Pay, Google Pay, karta, przelew); faktura VAT FA(3) do KSeF automatycznie po płatności | `platnosci/` (bramka + KSeF) + ekran „Gotowe” w `index.html`; do wdrożenia konto Przelewy24, token KSeF, adres bramki |
 | **2. Po pilocie** | Opieka (abonament) | Pilnowanie zmian w Google i na Facebooku, kontrola okresowa, sezonowe godziny | brak |
 | | Agent momentów | Proaktywne powiadomienia M1–M5, najwyżej 2 w tygodniu, dopasowane do nastroju | brak (opis w `docs/founder/marketing.md`) |
 | | Raport firmy | Produkt jednorazowy: przepisy dotyczące firmy (z zatwierdzonej biblioteki notek), rynek w liczbach GUS, widoczność w sieci | brak |
@@ -127,7 +127,7 @@ Statyczne makiety (`index.html`, `pilot/`, `skaner/`) pokazują proces. Produkcj
 - **AI Act:** art. 50 (informacja o AI, od 2.08.2026) i art. 5 (zakaz manipulacji).
 - **Cyber Resilience Act:** zgłaszanie aktywnie wykorzystywanych podatności od 11.09.2026; pełne wymagania od 11.12.2027.
 - **KSC/NIS2:** samoidentyfikacja i zapisany wynik.
-- **KSeF:** uprawnienia nadaje podatnik. Token działa do końca 2026, potem certyfikat. Dostęp tylko do odczytu.
+- **KSeF:** uprawnienia nadaje podatnik. Do odczytu faktur zakupowych: dostęp tylko do odczytu. Do wystawiania naszych faktur: osobny token z uprawnieniem do wystawiania (`platnosci/README.md`).
 - **Usługi w profilach klientów:** pisemne upoważnienie, zakres zmian, usunięcie nas po zleceniu.
 - **Przekazanie danych do USA (API Claude):** DPA z klauzulami standardowymi; do AI wysyłamy bez NIP-u i nazwy firmy.
 

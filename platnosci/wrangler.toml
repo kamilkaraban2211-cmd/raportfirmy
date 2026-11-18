@@ -6,13 +6,31 @@ compatibility_date = "2026-11-01"
 ALLOWED_ORIGIN = "https://raportfirmy.pl"
 RETURN_URL = "https://raportfirmy.pl/"
 MAX_AMOUNT_GROSZ = "500000"
+# Przelewy24
+P24_MERCHANT_ID = "UZUPELNIJ"
+P24_POS_ID = "UZUPELNIJ"          # zwykle ten sam numer co P24_MERCHANT_ID
+P24_SANDBOX = "1"                 # "1" = sandbox.przelewy24.pl; usuń przed startem
+# Faktura VAT w KSeF (bez tych pól faktury wystawia księgowość ręcznie)
+KSEF_ENV = "test"                 # test | demo | prod
+SELLER_NIP = ""
+SELLER_NAME = ""
+SELLER_ADDR1 = ""                 # ulica i numer
+SELLER_ADDR2 = ""                 # kod pocztowy i miejscowość
+VAT_RATE = ""                     # "23" albo "zw" (zwolnienie podmiotowe)
+VAT_EXEMPT_BASIS = "Art. 113 ust. 1 ustawy z dnia 11 marca 2004 r. o podatku od towarów i usług"
+INVOICE_SERIES = "RF"             # numer: RF/RRRR/MM/0001
 
 # Utwórz: npx wrangler kv namespace create PAYMENTS_KV  i wpisz id poniżej.
 [[kv_namespaces]]
 binding = "PAYMENTS_KV"
 id = "UZUPELNIJ_ID_KV"
 
+# Dokończenie faktur czekających na KSeF.
+[triggers]
+crons = ["*/10 * * * *"]
+
 # Sekrety (nie wpisuj ich tutaj):
-#   npx wrangler secret put STRIPE_SECRET_KEY
-#   npx wrangler secret put STRIPE_WEBHOOK_SECRET
+#   npx wrangler secret put P24_CRC
+#   npx wrangler secret put P24_API_KEY
 #   npx wrangler secret put OPERATOR_TOKEN
+#   npx wrangler secret put KSEF_TOKEN

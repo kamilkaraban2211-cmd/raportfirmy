@@ -96,7 +96,7 @@ ok((await text()).includes("Średni czas pracy na zlecenie: 45 min"), "rejestr r
 await op(); await page.goto(url + "#zlecenie");
 t = await text();
 ok(t.includes("Zostało tylko zapłacić") && t.includes("Teczka zmian") && t.includes("Jak usunąć nas"), "gotowe + teczka");
-ok(t.includes("nie przyjmujemy płatności") && await page.locator('[data-act="pay"]').count() === 0, "wersja testowa: bez przycisku płatności online");
+ok(t.includes("nie przyjmujemy płatności") && await page.locator('[data-form="pay"]').count() === 0, "wersja testowa: bez przycisku płatności online");
 ok(await page.locator(".stage.on").innerText() === "Gotowe", "etap 3");
 await op(); await page.click('[data-act="op-paid"]'); await op(); await page.goto(url + "#zlecenie");
 ok((await text()).includes("Gotowe i opłacone"), "opłacone");
@@ -148,7 +148,7 @@ await op(); await page.waitForTimeout(200);
 ok(await page.evaluate(() => window.__x === 0), "dane klienta są escapowane");
 await op();
 
-// płatności online: BLIK, Apple Pay, Google Pay, karta przez bramkę (atrapa) i Stripe Checkout
+// płatności online: BLIK, Apple Pay, Google Pay, karta przez bramkę (atrapa) i Przelewy24; faktura VAT w KSeF
 {
   const pctx = await browser.newContext({ viewport: { width: 390, height: 800 } });
   await pctx.addInitScript(() => { window.RF_CONFIG = { paymentsApi: "https://pay.test" }; });
@@ -159,11 +159,12 @@ await op();
     const req = route.request(), u = new URL(req.url());
     const cors = { "access-control-allow-origin": "*", "content-type": "application/json" };
     if (u.pathname === "/due"){ gw.dueAuth.push(req.headers()["authorization"]); const b = JSON.parse(req.postData()); gw.due[b.orderId] = { amount: b.amount, status: "due" }; return route.fulfill({ status: 200, headers: cors, body: JSON.stringify({ status: "due", payLink: "https://pay.test/zaplac/" + b.orderId }) }); }
-    if (u.pathname === "/checkout"){ const b = JSON.parse(req.postData()); gw.checkoutBodies.push(b); return route.fulfill({ status: 200, headers: cors, body: JSON.stringify({ url: "https://checkout.stripe.com/c/pay/cs_test_1" }) }); }
-    if (u.pathname === "/status"){ const r = gw.due[u.searchParams.get("zlecenie")]; return route.fulfill({ status: 200, headers: cors, body: JSON.stringify({ status: r ? r.status : "none" }) }); }
+    if (u.pathname === "/checkout"){ const b = JSON.parse(req.postData()); gw.checkoutBodies.push(b); return route.fulfill({ status: 200, headers: cors, body: JSON.stringify({ url: "https://sandbox.przelewy24.pl/trnRequest/TOK1" }) }); }
+    if (u.pathname === "/status"){ const r = gw.due[u.searchParams.get("zlecenie")]; return route.fulfill({ status: 200, headers: cors, body: JSON.stringify({ status: r ? r.status : "none", invoice: r && r.invoice || null }) }); }
+    if (/^\/faktura\/.+\.xml$/.test(u.pathname)) return route.fulfill({ status: req.headers()["authorization"] === "Bearer klucz-opiekuna" ? 200 : 401, headers: { ...cors, "content-type": "application/xml" }, body: "<Faktura/>" });
     return route.fulfill({ status: 404, headers: cors, body: "{}" });
   });
-  await pctx.route("https://checkout.stripe.com/**", route => route.fulfill({ status: 200, contentType: "text/html", body: "<p>Stripe Checkout (atrapa)</p>" }));
+  await pctx.route("https://sandbox.przelewy24.pl/**", route => route.fulfill({ status: 200, contentType: "text/html", body: "<p>Przelewy24 (atrapa)</p>" }));
   const ptext = () => pp.locator("main").innerText();
   await pp.goto(url + "#start");
   ok((await pp.locator(".testbar").innerText()).includes("bramki płatności"), "pasek testowy mówi, co jest wysyłane");
@@ -172,7 +173,7 @@ await op();
   await pp.check('input[name="pick-telefon"][value="+48 22 000 00 01"]');
   await pp.fill("#c-name", "Anna"); await pp.fill("#c-phone", "600100200"); await pp.check('input[name="consent"]');
   await pp.click('[data-form="order"] button[type=submit]');
-  ok(await pp.locator('[data-act="pay"]').count() === 0, "brak przycisku płatności przed wykonaniem");
+  ok(await pp.locator('[data-form="pay"]').count() === 0, "brak przycisku płatności przed wykonaniem");
   await pp.click('[data-act="mode"]');
   ok((await ptext()).includes("Płatności online"), "panel: sekcja płatności online");
   await pp.fill("#opk", "klucz-opiekuna"); await pp.click('[data-form="opkey"] button[type=submit]');
@@ -194,24 +195,50 @@ await op();
   ok(pt.includes("Nie doliczamy opłat"), "bez dopłat za metodę");
   ok(pt.includes("6-cyfrowy kod") && pt.includes("2 minuty"), "instrukcja BLIK");
   ok(pt.includes("Zapłać 149 zł"), "przycisk z kwotą");
+  ok(pt.includes("Przelewy24") && pt.includes("KSeF"), "operator płatności i KSeF nazwane");
   await noHScrollOn(pp, "płatność");
-  await pp.click('[data-act="pay"]');
-  await pp.waitForURL(/checkout\.stripe\.com/);
-  ok(gw.checkoutBodies.length === 1 && gw.checkoutBodies[0].orderId === oid && gw.checkoutBodies[0].amount === undefined, "klient wysyła tylko numer zlecenia, nie kwotę");
-  // powrót bez potwierdzenia: nadal do zapłaty (adres powrotu niczego nie przesądza)
-  await pp.goto(url.replace("index.html", "index.html?platnosc=ok&zlecenie=" + oid) + "#zlecenie");
+  // walidacja: e-mail i dane do faktury (domyślnie faktura na firmę)
+  await pp.click('[data-form="pay"] button[type=submit]');
+  pt = await ptext();
+  ok(pt.includes("Podaj adres e-mail") && pt.includes("Sprawdź NIP") && pt.includes("Podaj nazwę firmy") && pt.includes("Podaj ulicę"), "walidacja e-maila i danych do faktury");
+  ok(gw.checkoutBodies.length === 0, "bez poprawnych danych nic nie idzie do bramki");
+  await pp.fill("#pay-email", "anna@example.pl");
+  await pp.fill("#pay-nip", "123-456-78-91");
+  await pp.click('[data-form="pay"] button[type=submit]');
+  ok((await ptext()).includes("Sprawdź NIP"), "NIP z błędną sumą kontrolną odrzucony");
+  ok(await pp.inputValue("#pay-email") === "anna@example.pl", "pola zostają po błędzie");
+  await pp.fill("#pay-nip", "774-000-14-54"); await pp.fill("#pay-name", "Sklep Kwadrat Anna Nowak");
+  await pp.fill("#pay-addr1", "ul. Lipowa 12"); await pp.fill("#pay-addr2", "00-002 Warszawa");
+  await pp.click('[data-form="pay"] button[type=submit]');
+  await pp.waitForURL(/sandbox\.przelewy24\.pl\/trnRequest\//);
+  const cb = gw.checkoutBodies[0];
+  ok(gw.checkoutBodies.length === 1 && cb.orderId === oid && cb.amount === undefined, "klient wysyła numer zlecenia, nie kwotę");
+  ok(cb.email === "anna@example.pl" && cb.invoice.want === true && cb.invoice.nip === "774-000-14-54" && cb.invoice.name === "Sklep Kwadrat Anna Nowak", "dane do faktury idą do bramki");
+  // powrót z Przelewy24 bez potwierdzenia: nadal do zapłaty (adres powrotu niczego nie przesądza)
+  await pp.goto(url.replace("index.html", "index.html?platnosc=powrot&zlecenie=" + oid) + "#zlecenie");
+  ok(await pp.evaluate(() => !JSON.stringify(localStorage).includes("7740001454") && !JSON.stringify(localStorage).includes("774-000") && !JSON.stringify(localStorage).includes("anna@example.pl")), "NIP i e-mail nie trafiają do pamięci przeglądarki");
   await pp.waitForSelector("text=Nie mamy jeszcze potwierdzenia", { timeout: 20000 });
-  ok(await pp.evaluate(() => S.orders[0].status === "done"), "sam powrót ze Stripe nie oznacza opłacenia");
+  ok((await ptext()).includes("Jeśli przerwałeś płatność, nic nie zostało pobrane"), "przerwana płatność: jasny komunikat");
+  ok(await pp.evaluate(() => S.orders[0].status === "done"), "sam powrót z Przelewy24 nie oznacza opłacenia");
   ok(!pp.url().includes("platnosc="), "parametry płatności usunięte z adresu");
-  // anulowanie
-  await pp.goto(url.replace("index.html", "index.html?platnosc=anulowana&zlecenie=" + oid) + "#zlecenie");
-  ok((await ptext()).includes("Nic nie zostało pobrane"), "anulowana płatność: jasny komunikat");
-  // webhook potwierdził
-  gw.due[oid].status = "paid";
-  await pp.goto(url.replace("index.html", "index.html?platnosc=ok&zlecenie=" + oid) + "#zlecenie");
+  // bramka potwierdziła; faktura w drodze do KSeF, potem w KSeF
+  gw.due[oid].status = "paid"; gw.due[oid].invoice = { state: "sent", number: "RF/2026/11/0001", ksefNumber: null };
+  await pp.goto(url.replace("index.html", "index.html?platnosc=powrot&zlecenie=" + oid) + "#zlecenie");
   await pp.waitForSelector("text=Gotowe i opłacone");
-  ok((await ptext()).includes("Płatność potwierdzona"), "potwierdzona płatność online");
+  pt = await ptext();
+  ok(pt.includes("Płatność potwierdzona"), "potwierdzona płatność online");
   ok(await pp.evaluate(() => S.orders[0].paidVia === "online"), "źródło płatności: online");
+  ok(pt.includes("w trakcie przetwarzania") && pt.includes("RF/2026/11/0001"), "faktura: numer i stan w KSeF");
+  gw.due[oid].invoice = { state: "issued", number: "RF/2026/11/0001", ksefNumber: "5260250274-20261118-0100A0B1C2D3-4E" };
+  await pp.click('[data-act="check-inv"]');
+  await pp.waitForSelector("text=Faktura VAT jest w KSeF.");
+  ok((await ptext()).includes("5260250274-20261118-0100A0B1C2D3-4E"), "faktura: numer KSeF");
+  await noHScrollOn(pp, "opłacone z fakturą");
+  await pp.click('[data-act="mode"]');
+  ok((await ptext()).includes("Faktura VAT jest w KSeF") && await pp.locator('[data-act="op-inv-xml"]').count() === 1, "panel opiekuna: faktura i XML dla księgowej");
+  const dl = pp.waitForEvent("download");
+  await pp.click('[data-act="op-inv-xml"]');
+  ok((await dl).suggestedFilename() === "RF-2026-11-0001.xml", "pobranie XML faktury");
   await pctx.close();
 }
 

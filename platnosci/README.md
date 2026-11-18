@@ -1,80 +1,101 @@
-# Płatności: BLIK, Apple Pay, Google Pay, karta
+# Płatności (Przelewy24) i faktura VAT w KSeF
 
-Bramka `worker.js` (Cloudflare Worker) tworzy płatność w **Stripe Checkout**. Klient płaci na stronie `checkout.stripe.com`, a nie u nas. Dzięki temu Stripe odpowiada za przyciski Apple Pay i Google Pay, weryfikację domeny Apple Pay, silne uwierzytelnienie (3-D Secure / SCA), pole kodu BLIK i dane kart (PCI DSS). Do nas trafia tylko potwierdzenie.
+Bramka `worker.js` (Cloudflare Worker) robi dwie rzeczy:
+
+1. **Płatność przez Przelewy24.** Klient płaci na stronie `secure.przelewy24.pl`: BLIK, Apple Pay, Google Pay, karta albo szybki przelew. Przyciski portfeli, weryfikację domeny Apple Pay, silne uwierzytelnienie (3-D Secure), pole kodu BLIK i dane kart obsługuje Przelewy24 (PayPro S.A.). Do nas trafia tylko podpisane powiadomienie.
+2. **Faktura VAT w KSeF** (`ksef.js`). Po potwierdzonej płatności bramka wystawia fakturę FA(3) na NIP podany przez klienta i wysyła ją do KSeF 2.0. Nabywca dostaje ją w KSeF; jego księgowa pobiera ją stamtąd.
 
 ```
 Opiekun: „Wprowadzono” ──POST /due (klucz opiekuna, kwota w groszach)──► bramka (KV)
-Klient:  „Zapłać 149 zł” albo link z SMS-a /zaplac/Z-XXXXXX ──► bramka ──► Stripe Checkout
-                                                   BLIK · Apple Pay · Google Pay · karta
-Stripe ──webhook (podpisany)──► bramka: status „opłacone”
-Klient wraca na stronę ──GET /status──► „Gotowe i opłacone”
+Klient:  „Zapłać 149 zł” (e-mail + dane do faktury) albo link z SMS-a /zaplac/Z-XXXXXX
+         ──► bramka ──POST /transaction/register──► Przelewy24: BLIK · Apple Pay · Google Pay · karta · przelew
+Przelewy24 ──powiadomienie (podpis SHA-384)──► bramka ──PUT /transaction/verify──► „opłacone”
+bramka ──► numer RF/RRRR/MM/0001 ──► XML FA(3) ──► KSeF (token, sesja interaktywna) ──► numer KSeF
+Klient wraca na stronę ──GET /status──► „Gotowe i opłacone”, numer faktury i numer KSeF
 ```
 
 ## Zasady zapisane w kodzie
 
 | Zasada | Gdzie |
 |---|---|
-| Płatność dopiero po wykonaniu. Bez wpisu `/due` od opiekuna nie da się otworzyć płatności. | `sessionFor()` |
-| Kwotę ustala serwer. Przeglądarka klienta wysyła tylko numer zlecenia. | `/checkout`, test „klient wysyła tylko numer zlecenia” |
-| Ta sama kwota dla każdej metody, bez dopłat. Komunikat na stronie i przy przycisku Stripe. | `NO_SURCHARGE`, `payBox()` |
-| „Opłacone” ustawia tylko podpisany webhook Stripe (HMAC SHA-256, okno 5 min) przy zgodnej kwocie i walucie PLN. Sam powrót ze Stripe niczego nie przesądza. | `handleWebhook()`, `handlePayReturn()` |
-| Rozbieżna kwota blokuje kolejne płatności do decyzji opiekuna (`review`). | `handleWebhook()` |
-| Brak podwójnych sesji: drugi klik otwiera tę samą sesję; klucz idempotencji dla Stripe. | `openSession()` |
-| Do Stripe nie idzie NIP, nazwa sklepu ani telefon. | test „bez danych osobowych” |
-| CORS tylko dla własnej domeny; `/due` tylko z kluczem opiekuna. Klucz w panelu trzymany w `sessionStorage`, nie w `localStorage`. | `cors()`, `opkey` |
-| Gdy bramka nie działa, klient widzi przelew jako drogę zastępczą. | `pay()`, odpowiedź 502 |
+| Płatność dopiero po wykonaniu. Bez wpisu `/due` od opiekuna nie da się zarejestrować transakcji. | `startPayment()` |
+| Kwotę ustala serwer. Przeglądarka klienta wysyła tylko numer zlecenia, e-mail i dane do faktury. | `/checkout` |
+| Ta sama kwota dla każdej metody, bez dopłat. | `NO_SURCHARGE`, `payBox()` |
+| „Opłacone” tylko po powiadomieniu z poprawnym podpisem SHA-384, znanej sesji, zgodnej kwocie i udanym `verify`. Sam powrót z Przelewy24 niczego nie przesądza. | `handleNotification()`, `handlePayReturn()` |
+| Rozbieżna kwota: bez `verify` (Przelewy24 zwraca środki płacącemu), blokada kolejnych płatności do decyzji opiekuna. | `handleNotification()` |
+| Faktura tylko dla opłaconego zlecenia; numer kolejny w serii miesięcznej, nadawany raz i zapisywany przed wysyłką, więc ponowienie nie tworzy drugiego numeru. Duplikat w KSeF (440) jest traktowany jako faktura już przyjęta. | `processInvoice()` |
+| KSeF chwilowo niedostępny: faktura czeka w kolejce, harmonogram (co 10 min) kończy wysyłkę. Odrzucona faktura: opiekun widzi błąd i może wysłać ponownie. | `scheduled()`, `/faktura/<id>/ponow` |
+| NIP i dane nabywcy trafiają tylko do bramki i do KSeF. Nie idą do Przelewy24, do adresu strony ani do pamięci przeglądarki. `/status` ich nie zwraca. E-mail idzie tylko do Przelewy24 i nie jest zapisywany. | testy „bez NIP-u”, e2e „pamięć przeglądarki” |
+| CORS tylko dla własnej domeny; `/due` i XML faktury tylko z kluczem opiekuna (trzymanym w `sessionStorage`). | `cors()`, `isOperator()` |
+| Gdy bramka nie działa, klient widzi przelew jako drogę zastępczą. | odpowiedź 502 |
+
+Faktura FA(3) z generatora jest sprawdzana w testach oficjalnym schematem MF (`xsd/fa3.xsd`, `schemat_FA(3)_v1-0E`) dla VAT 23% i dla zwolnienia z art. 113. Atrapa KSeF w testach naprawdę odszyfrowuje token (RSA-OAEP SHA-256) i fakturę (AES-256-CBC) i sprawdza skróty SHA-256 i rozmiary.
 
 ## Wdrożenie (kolejno)
 
-1. **Konto Stripe** dla firmy z siedzibą w Polsce (dane firmy, rachunek PLN, beneficjent rzeczywisty). Ustaw w profilu publiczną nazwę firmy, tak jak na fakturze: Apple Pay i BLIK pokazują ją klientowi przy płatności.
-2. **Metody płatności** w panelu Stripe (Settings → Payment methods):
-   - **BLIK**: włącz. Działa tylko w PLN; konto Stripe musi być w EOG.
-   - **Karty** i w nich **Apple Pay** oraz **Google Pay**: włącz. Akceptujesz przy tym [warunki Apple Pay dla sprzedawców](https://stripe.com/apple-pay/legal) i [warunki Google Pay API](https://payments.developers.google.com/terms/sellertos).
-   - Weryfikacji domeny Apple Pay **nie trzeba**: płatność odbywa się na domenie Stripe. Trzeba by ją dodać dopiero przy przejściu na formularz osadzony na naszej stronie (Payment Element); wtedy plik `/.well-known/apple-developer-merchantid-domain-association` z panelu Stripe musi być na każdej domenie z płatnością.
-3. **Bramka** (z katalogu `platnosci/`):
-   ```bash
-   npx wrangler kv namespace create PAYMENTS_KV
-   ```
-   Wpisz zwrócone `id` w `wrangler.toml`, ustaw `ALLOWED_ORIGIN` i `RETURN_URL` na adres strony klienta, potem:
-   ```bash
-   npx wrangler secret put STRIPE_SECRET_KEY
-   ```
-   ```bash
-   npx wrangler secret put OPERATOR_TOKEN
-   ```
-   ```bash
-   npx wrangler deploy
-   ```
-4. **Webhook** w Stripe (Developers → Webhooks): adres `https://<bramka>/webhook`, zdarzenia `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`. Sekret podpisu:
-   ```bash
-   npx wrangler secret put STRIPE_WEBHOOK_SECRET
-   ```
-5. **Strona**: w `index.html` ustaw `PAYMENTS_API = "https://<bramka>"`. Opiekun wpisuje `OPERATOR_TOKEN` w panelu („Płatności online”).
-6. **Próba w trybie testowym** (klucz `sk_test_…`): BLIK z kodem testowym z dokumentacji Stripe, karta `4242 4242 4242 4242`, Apple Pay na iPhonie z Safari, Google Pay w Chrome z dodaną kartą. Dopiero potem klucze produkcyjne.
+### 1. Przelewy24
+1. Konto firmowe w Przelewy24. Przed aktywacją Przelewy24 sprawdza stronę: regulamin, dane firmy i kontakt, ceny brutto, czas realizacji, reklamacje (lista na dole).
+2. W panelu Przelewy24 włącz **BLIK**, **Apple Pay**, **Google Pay** i karty. Apple Pay i Google Pay włącza się osobno; Przelewy24 prowadzi przez akceptację warunków Apple i Google. Weryfikacji domeny Apple Pay po naszej stronie **nie trzeba**: płatność odbywa się na domenie Przelewy24.
+3. Z panelu (Moje dane → Dane API i konfiguracja) przepisz: ID sprzedawcy, ID sklepu, **klucz CRC** i **klucz do raportów** (to `P24_API_KEY`). Najpierw konto **sandbox**.
 
-## Zasady marek i przepisy: lista kontrolna przed startem
+### 2. KSeF
+1. Właściciel firmy loguje się do Aplikacji Podatnika KSeF i generuje **token KSeF** z uprawnieniem **wystawianie faktur** (`InvoiceWrite`). Token to `KSEF_TOKEN`.
+2. Najpierw środowisko `test` (dowolny NIP testowy), potem `demo`, na końcu `prod`.
+3. Ustal z księgową: **stawka VAT** (`23` albo `zw`), podstawę zwolnienia, serię numerów (`INVOICE_SERIES`) i to, czy faktury z bramki to jedyna seria dla tej usługi.
 
-**Apple Pay** ([Apple Pay Marketing Guidelines](https://developer.apple.com/apple-pay/marketing/), [HIG](https://developer.apple.com/design/human-interface-guidelines/apple-pay))
-- [x] Nazwa zawsze „Apple Pay”, nie tłumaczona, nie odmieniana w środku nazwy („przez Apple Pay”).
-- [x] Na naszej stronie bez logo Apple Pay i bez własnego przycisku; oficjalny przycisk pokazuje Stripe tylko na obsługiwanych urządzeniach.
-- [x] Apple Pay nie jest gorzej traktowane od innych metod i nie ma dopłaty.
-- [ ] Nazwa firmy w Stripe zgodna z tą, którą klient zna (paragon, SMS).
+### 3. Bramka (katalog `platnosci/`)
+```bash
+npx wrangler kv namespace create PAYMENTS_KV
+```
+Wpisz `id` w `wrangler.toml`, uzupełnij `[vars]` (Przelewy24, dane sprzedawcy, `VAT_RATE`, `KSEF_ENV`), potem sekrety:
+```bash
+npx wrangler secret put P24_CRC
+```
+```bash
+npx wrangler secret put P24_API_KEY
+```
+```bash
+npx wrangler secret put OPERATOR_TOKEN
+```
+```bash
+npx wrangler secret put KSEF_TOKEN
+```
+```bash
+npx wrangler deploy
+```
+Adres powiadomień (`/p24/status`) bramka podaje Przelewy24 przy każdej transakcji; w panelu nic nie trzeba ustawiać. Harmonogram co 10 minut (`[triggers]`) dokańcza faktury.
+
+### 4. Strona
+W `index.html` ustaw `PAYMENTS_API = "https://<bramka>"`. Opiekun wpisuje `OPERATOR_TOKEN` w panelu („Płatności online”).
+
+### 5. Próba
+Sandbox Przelewy24 + KSeF `test`: zlecenie → „Wprowadzono” → płatność BLIK testowa → status „opłacone” → faktura z numerem KSeF. Potem produkcja z jednym prawdziwym zleceniem.
+
+Bez `KSEF_TOKEN` i danych sprzedawcy bramka przyjmuje płatności, a faktura ma stan „manual”: wystawia ją księgowa.
+
+## Lista kontrolna przed startem
+
+**Apple Pay** ([zasady marketingowe](https://developer.apple.com/apple-pay/marketing/))
+- [x] Nazwa „Apple Pay”, nietłumaczona; bez logo i własnego przycisku na naszej stronie; przycisk pokazuje Przelewy24 tylko na obsługiwanych urządzeniach.
+- [x] Bez dopłaty i bez gorszego traktowania niż inne metody.
 
 **Google Pay** ([zasady marki](https://developers.google.com/pay/api/web/guides/brand-guidelines), [Acceptable Use Policy](https://payments.developers.google.com/terms/aup))
-- [x] Nazwa „Google Pay”, bez logo na naszej stronie; przycisk i dostępność ocenia Stripe.
-- [x] Usługa (naprawa danych w profilach) nie należy do kategorii zakazanych w AUP.
+- [x] Nazwa „Google Pay”, bez logo na naszej stronie.
+- [x] Usługa nie należy do kategorii zakazanych.
 
-**BLIK** ([Polski Standard Płatności](https://www.blik.com))
-- [x] Nazwa „BLIK” wielkimi literami.
-- [x] Instrukcja: 6-cyfrowy kod z aplikacji banku, potwierdzenie w aplikacji, ważny 2 minuty.
-- [x] Tylko PLN. Kwota w groszach, minimum 2 zł (Stripe).
-- [ ] Limit transakcji BLIK ustala bank klienta; przy trudnych sprawach powyżej limitu zaproponuj kartę albo przelew.
+**BLIK**
+- [x] Nazwa „BLIK”; instrukcja: 6-cyfrowy kod z aplikacji banku, potwierdzenie w aplikacji, ważny 2 minuty; tylko PLN.
+- [ ] Limit transakcji BLIK ustala bank klienta; przy wysokich kwotach trudnych spraw zaproponuj kartę albo przelew.
 
-**Przepisy** (sprawdzić z prawnikiem; to nie jest porada prawna)
-- [x] Cena brutto podana przed zgodą i przed płatnością; płatność po wykonaniu.
-- [x] Bez opłat za metodę płatności (art. 38a ustawy o usługach płatniczych / PSD2).
-- [x] SCA po stronie Stripe i portfeli.
-- [ ] **Faktura**: Stripe nie wystawia faktur w KSeF. Fakturę wystawia księgowość w KSeF po potwierdzeniu płatności (numer zlecenia jest w `metadata.order_id` płatności Stripe).
-- [ ] Regulamin usługi z informacją o metodach płatności, operatorze (Stripe Payments Europe, Limited) i zwrotach; link w Stripe (Settings → Public details).
-- [ ] Polityka prywatności: Stripe jako odrębny administrator danych płatniczych.
-- [ ] Zwroty: z panelu Stripe, na tę samą metodę (BLIK na rachunek, Apple Pay i Google Pay na kartę). Terminy zwrotów sprawdzić w dokumentacji Stripe dla BLIK.
+**Przelewy24** (wymagania przy aktywacji konta; sprawdzić aktualną listę w umowie)
+- [ ] Regulamin usługi na stronie: dane firmy, opis usługi, cena brutto, metody płatności, operator płatności (PayPro S.A.), termin realizacji, reklamacje i zwroty.
+- [ ] Dane kontaktowe i firmowe widoczne na stronie.
+- [x] Cena brutto przed płatnością; płatność po wykonaniu.
+
+**Faktura i KSeF** (sprawdzić z księgową)
+- [x] FA(3) zgodna ze schematem MF; NIP sprzedawcy i nabywcy z sumą kontrolną; data wystawienia, data wykonania usługi (P_6), data zapłaty, „zapłacono”.
+- [x] Kwota brutto na fakturze równa zapłaconej; VAT wyliczony od brutto (149 zł = 121,14 zł netto + 27,86 zł VAT).
+- [ ] Stawka VAT i ewentualna podstawa zwolnienia potwierdzone przez księgową.
+- [ ] Faktury dla płatności przelewem (poza bramką) wystawia księgowa w tej samej lub osobnej serii.
+- [ ] Korekty faktur: ręcznie w programie księgowej / Aplikacji Podatnika (bramka nie robi korekt).
+- [ ] Polityka prywatności: Przelewy24 (PayPro S.A.) jako odrębny administrator danych płatniczych; NIP i dane nabywcy przetwarzane do faktury.
