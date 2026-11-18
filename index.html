@@ -87,11 +87,17 @@ footer{max-width:860px;margin:0 auto;padding:0 16px 40px;font-size:.82rem;color:
 <script>
 "use strict";
 /* RaportFirmy.pl — „Sklep w porządku”. Ścieżka klienta w trzech stanach + lekki panel opiekuna.
-   Wersja na danych testowych: brak prawdziwych źródeł (Google, Facebook, rejestry), płatności i wysyłki SMS. */
+   Wersja na danych testowych: brak prawdziwych źródeł (Google, Facebook, rejestry) i wysyłki SMS.
+   Płatności online działają po ustawieniu PAYMENTS_API (bramka w platnosci/). */
 const LS_KEY = "rf-sklep-v1";
 const PRICE_SIMPLE = 149;
 const CARETAKER = { name:"", phone:"" }; // uzupełnić przed uruchomieniem usługi; puste = wersja testowa
 const LIVE = !!(CARETAKER.name && CARETAKER.phone);
+/* Płatności online (BLIK, Apple Pay, Google Pay, karta) przez bramkę platnosci/worker.js i Stripe Checkout.
+   Pusty adres = wersja testowa: płatność odnotowuje opiekun. Instrukcja: platnosci/README.md */
+const PAYMENTS_API = "";
+const PAY_API = String((window.RF_CONFIG && window.RF_CONFIG.paymentsApi) || PAYMENTS_API).replace(/\/+$/, "");
+const OP_KEY_SS = "rf-op-key";
 const TESTNOTE = LIVE ? "" : `<p class="testnote" role="note"><b>To jest wersja testowa.</b> Zgłoszenie zostaje tylko w tej przeglądarce i nie trafia do nikogo. Nikt nie zadzwoni i nic nie zapłacisz.</p>`;
 const WHO = () => LIVE ? `Opiekun: ${esc(CARETAKER.name)}, tel. ${esc(CARETAKER.phone)}` : "Opiekun zostanie wskazany z imienia, nazwiska i telefonu przed uruchomieniem usługi";
 const TODAY = () => new Date().toISOString();
@@ -157,7 +163,7 @@ function fresh(){ return { v:1, view:"start", mode:"client", shopId:null, query:
 let S = fresh();
 try { const raw = localStorage.getItem(LS_KEY); if (raw){ const p = JSON.parse(raw); if (p && p.v === 1) S = Object.assign(fresh(), p); } } catch (e) { /* bez pamięci przeglądarki też działa */ }
 function save(){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { /* tryb bez pamięci */ } }
-const UI = { flash:null, err:{}, noData:false };
+const UI = { flash:null, err:{}, noData:false, paying:false };
 function log(o, text){ o.history.push({ at:TODAY(), text }); }
 const myOrder = () => S.orders.find(o => o.shopId === S.shopId && !["cancelled"].includes(o.status)) || null;
 const activeThisMonth = () => { const m = TODAY().slice(0, 7); return S.orders.filter(o => o.createdAt.slice(0, 7) === m && !["cancelled","waitlist","failed"].includes(o.status)).length; };
@@ -194,7 +200,7 @@ function move(o, to, text){ if (!NEXT[o.status].includes(to)) return false; o.st
 
 /* ---------- Widoki klienta ---------- */
 function header(){
-  return `<div class="testbar" role="note"><span><b>Wersja testowa.</b> Dane sklepów są przykładowe. Nic nie jest wysyłane ani pobierane.</span>
+  return `<div class="testbar" role="note"><span><b>Wersja testowa.</b> Dane sklepów są przykładowe. ${PAY_API ? "Wysyłamy tylko numer zlecenia i kwotę do bramki płatności." : "Nic nie jest wysyłane ani pobierane."}</span>
     <span class="row"><button class="btn sm" data-act="mode">${S.mode === "client" ? "Pokaż panel opiekuna" : "Wróć do widoku klienta"}</button><button class="btn sm" data-act="reset">Wyczyść dane testowe</button></span></div>
   <header class="top"><div class="top-in"><a class="brand" href="#start">Raport<span>Firmy</span>.pl</a><span class="small muted">Sklep w porządku</span></div></header>`;
 }
@@ -293,7 +299,7 @@ function vZlecenie(){
         <div class="row"><button class="btn primary big" data-act="accept">Akceptuję</button></div>
         <form class="stack" data-form="reject" novalidate><div class="field"><label for="rej">Coś się nie zgadza? Napisz co</label><input id="rej" name="note" type="text">${errFor("note")}</div><div><button class="btn" type="submit">Odeślij do poprawy</button></div></form></section>`; break;
     case "accepted": now = `<section class="card accent"><h2>Teraz: wprowadzamy zmiany</h2><p>Nie musisz nic robić. Damy znać, gdy będzie gotowe.</p></section>`; break;
-    case "done": now = `<section class="card good"><h2>Gotowe. Zostało tylko zapłacić</h2><p class="price">${zl(o.price)}</p><p>Dane do przelewu podaje opiekun. W tej wersji testowej płatność odnotowuje opiekun w swoim panelu.</p></section>`; break;
+    case "done": now = payBox(o); break;
     case "paid": now = `<section class="card good"><h2>Gotowe i opłacone</h2><p>Dziękujemy. Ponowna kontrola: ${fmtD(o.recheckAt)}. Nie dzwonimy z ofertami.</p></section>`; break;
     case "failed": now = `<section class="card bad"><h2>Nie udało się. Nic nie płacisz</h2><p>${esc(o.note || "Opiekun wyjaśni przyczynę telefonicznie.")}</p></section>`; break;
     default: now = `<section class="card"><h2>Zlecenie anulowane</h2><p>Nic nie płacisz.</p><div><a class="btn" href="#wynik">Wróć do wyniku</a></div></section>`;
@@ -309,6 +315,60 @@ function vZlecenie(){
     ${["failed","cancelled"].includes(o.status) ? "" : stagesBar(o)}${TESTNOTE}${now}${price}${folder}${!done && !["failed","cancelled","proposed"].includes(o.status) && o.changes.length ? `<section class="card"><h3>Zakres zlecenia</h3>${changesList(o)}</section>` : ""}${hist}${cancel}`;
 }
 
+/* ---------- Płatność (po wykonaniu) ---------- */
+function payBox(o){
+  const methods = `<p>Zapłać BLIK-iem, przez Apple Pay, Google Pay albo kartą. Kwota jest taka sama dla każdej metody. Nie doliczamy opłat.</p>`;
+  const online = PAY_API ? `<div><button class="btn primary big" data-act="pay" ${UI.paying ? "disabled aria-busy=\"true\"" : ""}>${UI.paying ? "Otwieram stronę płatności…" : "Zapłać " + o.price.toLocaleString("pl-PL") + " zł"}</button></div>
+      <ul class="small muted"><li>Płatność obsługuje Stripe na bezpiecznej stronie checkout.stripe.com. Nie widzimy danych karty ani kodu BLIK.</li>
+        <li>BLIK: wpisz 6-cyfrowy kod z aplikacji banku i potwierdź płatność w aplikacji. Kod jest ważny 2 minuty.</li>
+        <li>Apple Pay i Google Pay pokażą się, jeśli Twoje urządzenie i przeglądarka je obsługują.</li></ul>
+      <div><button class="btn link" data-act="check-pay">Już zapłaciłem. Sprawdź płatność</button></div>`
+    : `<p class="small muted">W tej wersji testowej nie przyjmujemy płatności. Płatność odnotowuje opiekun w swoim panelu.</p>`;
+  return `<section class="card good"><h2>Gotowe. Zostało tylko zapłacić</h2><p class="price">${zl(o.price)}</p>${methods}${online}<p class="small muted">Wolisz przelew? Dane do przelewu poda opiekun.</p></section>`;
+}
+function opKey(){ try { return sessionStorage.getItem(OP_KEY_SS) || ""; } catch (e) { return ""; } }
+async function api(path, opts = {}){
+  const r = await fetch(PAY_API + path, { ...opts, headers:{ "content-type":"application/json", ...(opts.headers || {}) } });
+  const data = await r.json().catch(() => ({}));
+  return { ok:r.ok, status:r.status, data };
+}
+async function payStatus(o){ try { const r = await api("/status?zlecenie=" + encodeURIComponent(o.id)); return r.ok ? r.data.status : null; } catch (e) { return null; } }
+function markPaidOnline(o){ if (o.status === "done" && move(o, "paid", "Płatność online potwierdzona przez operatora płatności.")){ o.paidVia = "online"; return true; } return o.status === "paid"; }
+async function checkPay(o, tries = 1){
+  for (let i = 0; i < tries; i++){
+    const st = await payStatus(o);
+    if (st === "paid"){ markPaidOnline(o); UI.flash = ["Płatność potwierdzona. Dziękujemy.", "good"]; return render(); }
+    if (st === "pending"){ UI.flash = ["Płatność jest w toku. Bank jeszcze ją potwierdza. Sprawdź za chwilę."]; return render(); }
+    if (st === "review"){ UI.flash = ["Płatność wymaga sprawdzenia przez opiekuna. Nic więcej nie płać.", "bad"]; return render(); }
+    if (i < tries - 1) await new Promise(r => setTimeout(r, 2000));
+  }
+  UI.flash = [tries > 1 ? "Nie mamy jeszcze potwierdzenia płatności. Jeśli zapłaciłeś, odśwież za minutę." : "Nie widzimy jeszcze płatności za to zlecenie."]; render();
+}
+async function registerDue(o){
+  if (!PAY_API) return;
+  o.payErr = ""; o.payLink = "";
+  try {
+    const r = await api("/due", { method:"POST", headers:{ authorization:"Bearer " + opKey() }, body:JSON.stringify({ orderId:o.id, amount:Math.round(o.price * 100) }) });
+    if (r.ok) o.payLink = r.data.payLink || ""; else o.payErr = r.status === 401 ? "Brak klucza opiekuna albo klucz jest błędny. Wpisz go w sekcji „Płatności online”." : (r.data.error || "Nie udało się udostępnić płatności.");
+  } catch (e) { o.payErr = "Bramka płatności nie odpowiada. Spróbuj ponownie albo poproś o przelew."; }
+  render();
+}
+/* Powrót ze strony płatności: ?platnosc=ok|anulowana&zlecenie=<id>. O opłaceniu decyduje wyłącznie bramka (webhook Stripe), nie adres powrotu. */
+function handlePayReturn(){
+  let q; try { q = new URLSearchParams(location.search); } catch (e) { return; }
+  const res = q.get("platnosc"), id = q.get("zlecenie");
+  if (!res) return;
+  try { history.replaceState(null, "", location.pathname + location.hash); } catch (e) {}
+  const o = /^Z-[0-9A-F]{6}$/.test(id || "") ? orderById(id) : null;
+  if (o){ S.shopId = o.shopId; S.mode = "client"; S.view = "zlecenie"; }
+  if (res === "anulowana"){ UI.flash = ["Płatność przerwana. Nic nie zostało pobrane. Możesz spróbować ponownie."]; return; }
+  if (res === "ok" && PAY_API){
+    UI.flash = ["Sprawdzamy potwierdzenie płatności…"];
+    if (o) setTimeout(() => checkPay(o, 6), 0);
+    else if (/^Z-[0-9A-F]{6}$/.test(id || "")) payStatus({ id }).then(st => { UI.flash = st === "paid" ? ["Płatność potwierdzona. Dziękujemy.", "good"] : ["Nie mamy jeszcze potwierdzenia płatności. Jeśli zapłaciłeś, opiekun potwierdzi ją SMS-em."]; render(); });
+  }
+}
+
 /* ---------- Panel opiekuna ---------- */
 function opActions(o){
   const b = (act, label, cls = "") => `<button class="btn sm ${cls}" data-act="${act}" data-id="${o.id}">${label}</button>`;
@@ -320,7 +380,8 @@ function opActions(o){
     case "working": return b("op-propose", "Wyślij zmiany do akceptacji", "primary") + b("op-fail", "Nie udało się", "danger");
     case "proposed": return `<span class="small muted">Czeka na akceptację klienta</span>`;
     case "accepted": return `<form class="row" data-form="done" data-id="${o.id}" novalidate><label class="small" for="m-${o.id}">Czas pracy (min)</label><input id="m-${o.id}" name="minutes" type="number" min="1" step="1" style="width:90px"><label class="small" for="h-${o.id}">Metoda</label><input id="h-${o.id}" name="method" type="text" style="width:220px" placeholder="np. edycja profilu, zgłoszenie duplikatu"><button class="btn sm primary" type="submit">Wprowadzono</button></form>` + b("op-fail", "Nie udało się", "danger");
-    case "done": return b("op-paid", "Odnotuj płatność", "primary");
+    case "done": return (PAY_API ? (o.payLink ? `<span class="small">Link do płatności dla klienta (SMS): <span class="mono">${esc(o.payLink)}</span></span>` + b("op-check-pay", "Sprawdź płatność online")
+        : (o.payErr ? `<span class="err">${esc(o.payErr)}</span>` : "") + b("op-due", "Udostępnij płatność online")) : "") + b("op-paid", PAY_API ? "Odnotuj przelew" : "Odnotuj płatność", PAY_API ? "" : "primary");
     default: return "";
   }
 }
@@ -335,6 +396,8 @@ function vOperator(){
     <section class="card"><div class="row" style="justify-content:space-between"><h3>Pojemność w tym miesiącu</h3><span class="pill ${used >= S.limit ? "bad" : "good"}">${used} z ${S.limit}</span></div>
       <form class="row" data-form="limit" novalidate><label for="lim">Limit zleceń</label><input id="lim" name="limit" type="number" min="1" max="99" value="${S.limit}" style="width:90px"><button class="btn sm" type="submit">Zapisz</button></form>
       <p class="small muted">Po przekroczeniu limitu nowe zgłoszenia trafiają na listę oczekujących.</p></section>
+    ${PAY_API ? `<section class="card"><h3>Płatności online</h3><form class="row" data-form="opkey" novalidate><label for="opk">Klucz opiekuna</label><input id="opk" name="key" type="password" autocomplete="off" style="width:220px" value=""><button class="btn sm" type="submit">Zapamiętaj w tej karcie</button><span class="small muted">${opKey() ? "Klucz zapisany do zamknięcia karty." : "Bez klucza nie udostępnisz płatności."}</span></form>
+      <p class="small muted">Po „Wprowadzono” kwota trafia do bramki płatności i klient może zapłacić BLIK-iem, przez Apple Pay, Google Pay albo kartą. Status „opłacone” ustawia tylko potwierdzenie od Stripe.</p></section>` : ""}
     <h2>Zlecenia</h2>${rows || `<p class="muted">Brak zleceń. Przejdź do widoku klienta i zamów poprawkę w jednym ze sklepów testowych.</p>`}
     <h2>Rejestr rozwiązanych spraw</h2>
     ${S.registry.length ? `<div class="tablewrap"><table><thead><tr><th>Data</th><th>Typ błędu</th><th>Źródło</th><th>Metoda</th><th>Min</th></tr></thead><tbody>${S.registry.map(r => `<tr><td>${fmtD(r.at)}</td><td>${esc(r.type)}</td><td>${esc(r.src)}</td><td>${esc(r.method)}</td><td class="mono">${r.minutes}</td></tr>`).join("")}</tbody></table></div><p class="small muted">Średni czas pracy na zlecenie: ${avg} min.</p>` : `<p class="muted">Rejestr zapełnia się po każdym wykonanym zleceniu: typ błędu, źródło, metoda i czas.</p>`}
@@ -369,7 +432,21 @@ const ACT = {
   "op-access"(el){ move(orderById(el.dataset.id), "working", "Dostęp nadany. Przygotowujemy zmiany."); render(); },
   "op-propose"(el){ const o = orderById(el.dataset.id); o.note = ""; move(o, "proposed", "Zmiany wysłane do akceptacji."); render(); },
   "op-fail"(el){ const o = orderById(el.dataset.id); o.note = "Nie udało się wykonać zlecenia. Nic nie płacisz."; o.price = 0; move(o, "failed", "Nie udało się. Klient nic nie płaci."); render(); },
-  "op-paid"(el){ move(orderById(el.dataset.id), "paid", "Płatność odnotowana."); render(); }
+  "op-paid"(el){ const o = orderById(el.dataset.id); if (move(o, "paid", PAY_API ? "Przelew odnotowany przez opiekuna." : "Płatność odnotowana.")) o.paidVia = "manual"; render(); },
+  "op-due"(el){ registerDue(orderById(el.dataset.id)); },
+  async "op-check-pay"(el){ const o = orderById(el.dataset.id), st = await payStatus(o); if (st === "paid") markPaidOnline(o); else UI.err["op-" + o.id] = st === "pending" ? "Płatność w toku." : st === "review" ? "Kwota w Stripe różni się od zlecenia. Sprawdź w panelu Stripe." : "Brak płatności online."; render(); },
+  async pay(){
+    const o = myOrder(); if (!o || o.status !== "done" || UI.paying) return;
+    UI.paying = true; render();
+    try {
+      const r = await api("/checkout", { method:"POST", body:JSON.stringify({ orderId:o.id }) });
+      if (r.ok && /^https:\/\/checkout\.stripe\.com\//.test(r.data.url || "")){ save(); location.assign(r.data.url); return; }
+      if (r.data.status === "paid"){ markPaidOnline(o); UI.flash = ["To zlecenie jest już opłacone.", "good"]; }
+      else UI.flash = [r.data.error || "Nie udało się otworzyć płatności. Spróbuj ponownie albo zapłać przelewem.", "bad"];
+    } catch (e) { UI.flash = ["Płatność chwilowo niedostępna. Spróbuj za kilka minut albo zapłać przelewem.", "bad"]; }
+    UI.paying = false; render();
+  },
+  "check-pay"(){ const o = myOrder(); if (o) checkPay(o, 1); }
 };
 const FORM = {
   search(fd){
@@ -399,8 +476,9 @@ const FORM = {
     UI.err = {}; o.minutes = m; o.doneAt = TODAY(); o.recheckAt = addDays(o.doneAt, 30);
     const shop = shopById(o.shopId);
     shop.findings.filter(f => f.type !== "chain").forEach(f => S.registry.unshift({ at:o.doneAt, type:f.field, src:f.values.map(v => v.src).join(", "), method, minutes:m, orderId:o.id }));
-    move(o, "done", "Zmiany wprowadzone. Ponowna kontrola " + fmtD(o.recheckAt) + "."); render();
+    move(o, "done", "Zmiany wprowadzone. Ponowna kontrola " + fmtD(o.recheckAt) + "."); render(); registerDue(o);
   },
+  opkey(fd){ const k = String(fd.get("key") || "").trim(); try { if (k) sessionStorage.setItem(OP_KEY_SS, k); else sessionStorage.removeItem(OP_KEY_SS); } catch (e) {} UI.flash = [k ? "Klucz opiekuna zapamiętany do zamknięcia karty." : "Klucz usunięty.", "good"]; render(); },
   limit(fd){ const n = Number(fd.get("limit")); if (Number.isInteger(n) && n >= 1 && n <= 99){ S.limit = n; UI.flash = ["Limit zapisany.", "good"]; } render(); }
 };
 document.addEventListener("click", e => { const el = e.target.closest("[data-act]"); if (el && ACT[el.dataset.act]){ e.preventDefault(); ACT[el.dataset.act](el); } });
@@ -414,6 +492,7 @@ document.addEventListener("change", e => {
 document.addEventListener("input", e => { const o = e.target.closest("[data-other]"); if (o){ S.picks[o.dataset.other] = o.value.trim() || null; save(); } });
 window.addEventListener("hashchange", () => { const v = location.hash.slice(1); if (VIEWS[v] && v !== S.view){ if (v === "operator") S.mode = "operator"; else S.mode = "client"; S.view = v; UI.err = {}; render(); } });
 { const v = location.hash.slice(1); if (VIEWS[v]){ S.view = v; S.mode = v === "operator" ? "operator" : "client"; } }
+handlePayReturn();
 render();
 </script>
 </body>

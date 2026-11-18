@@ -1,0 +1,18 @@
+name = "raportfirmy-platnosci"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://raportfirmy.pl"
+RETURN_URL = "https://raportfirmy.pl/"
+MAX_AMOUNT_GROSZ = "500000"
+
+# Utwórz: npx wrangler kv namespace create PAYMENTS_KV  i wpisz id poniżej.
+[[kv_namespaces]]
+binding = "PAYMENTS_KV"
+id = "UZUPELNIJ_ID_KV"
+
+# Sekrety (nie wpisuj ich tutaj):
+#   npx wrangler secret put STRIPE_SECRET_KEY
+#   npx wrangler secret put STRIPE_WEBHOOK_SECRET
+#   npx wrangler secret put OPERATOR_TOKEN

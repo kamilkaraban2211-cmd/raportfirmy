@@ -54,7 +54,7 @@ Wersja ostateczna z 16.11.2026. Zbiera decyzje i wnioski z prac od 6 do 16.11.20
 | | Zlecenia | Kolejka, wycena trudnych spraw, limit w miesiącu, lista oczekujących | `index.html`: panel opiekuna (makieta) |
 | | Status i teczka | Link z SMS-a, 3 stany, akceptacja, potwierdzenia zmian | `index.html`: makieta |
 | | Rejestr metod | Typ błędu, źródło, metoda, czas. Zasób, którego konkurencja nie skopiuje | `index.html`: makieta |
-| | Płatności | Po wykonaniu, faktura, BLIK lub przelew | brak (pilot: `pilot/` W11–W13) |
+| | Płatności | Po wykonaniu: BLIK, Apple Pay, Google Pay, karta (Stripe Checkout) albo przelew; faktura w KSeF z księgowości | `platnosci/` (bramka) + ekran „Gotowe” w `index.html`; do wdrożenia konto Stripe i adres bramki |
 | **2. Po pilocie** | Opieka (abonament) | Pilnowanie zmian w Google i na Facebooku, kontrola okresowa, sezonowe godziny | brak |
 | | Agent momentów | Proaktywne powiadomienia M1–M5, najwyżej 2 w tygodniu, dopasowane do nastroju | brak (opis w `docs/founder/marketing.md`) |
 | | Raport firmy | Produkt jednorazowy: przepisy dotyczące firmy (z zatwierdzonej biblioteki notek), rynek w liczbach GUS, widoczność w sieci | brak |
