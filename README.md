@@ -2,6 +2,8 @@
 
 **Zarys kompletnej aplikacji (ścieżka, moduły, ceny, agenci, dane, bezpieczeństwo, prawo, mapa drogowa): [`ZARYS-APLIKACJI.md`](ZARYS-APLIKACJI.md).** Plan startu: [`docs/founder/launch.md`](docs/founder/launch.md).
 
+**Kierunek rozważany od 18.11.2026 — biuro rachunkowe jako płacący klient, nie kanał: [`docs/founder/kierunek-biura.md`](docs/founder/kierunek-biura.md).** Hipoteza do rozstrzygnięcia 21.12.2026 po pięciu rozmowach z biurami; nie zastępuje `ZARYS-APLIKACJI.md`.
+
 Statyczna aplikacja (bez serwera i bez budowania). Wersja testowa na przykładowych danych.
 
 ## Co jest w repozytorium
@@ -11,6 +13,8 @@ Statyczna aplikacja (bez serwera i bez budowania). Wersja testowa na przykładow
 | `index.html` | Ścieżka klienta: darmowe sprawdzenie sklepu po nazwie (bez NIP-u) → wynik ze źródłem i datą → „Popraw za mnie” za jedną cenę → status zlecenia w trzech etapach (Znaleźliśmy / Robimy / Gotowe) → teczka zmian. W tym samym pliku lekki panel opiekuna: kolejka zleceń, wycena trudnych spraw, limit zleceń w miesiącu, rejestr rozwiązanych spraw. |
 | `skaner/index.html` | Skaner raportu z kasy (15.11.2026): zdjęcie raportu fiskalnego dobowego lub miesięcznego → odczyt kwot przez Claude → kontrola sum (PTU, łączna należność) → porównanie z podobnym okresem, rozkład zmiany na liczbę i wartość paragonów → komentarz AI na żądanie. Zdjęcia nie są zapisywane, NIP nie jest odczytywany. Odczyt AI i zapis na koncie działają, gdy strona jest otwarta jako artefakt Claude; poza nim zostaje wpisywanie ręczne. |
 | `docs/founder/` | Prace analityczne z 6–16.11.2026: profil klienta, panele symulowanych kupujących (`panel*`), oferta, kalkulacja CFO, cena, marketing, przeszkody i bezpieczeństwo danych. Wyniki paneli to symulacja, nie opinie klientów. |
+| `docs/founder/kierunek-biura.md` | Kierunek z 18.11.2026: biuro rachunkowe jako klient. Dowody z paneli, kto jest strażnikiem bramy przy którym produkcie, cena, pozycjonowanie, łańcuch powierzenia, bramka decyzyjna 21.12.2026. |
+| `docs/founder/wszyscy-P.md` | Wszystkie 100 odpowiedzi paneli w jednym pliku, ułożone osobami: ta sama dwudziestka (seed 483380) przez pięć ofert, z cenami i obiekcjami. |
 | `pilot/index.html` | Wcześniejsza aplikacja pilota W01–W14 (NIP, portret, cele, import sprzedaży, płatności testowe, panel operatora). Bez zmian. |
 | `tests/e2e.mjs` | Test przejścia całej ścieżki „Sklep w porządku” w przeglądarce (Playwright). |
 | `tests/skaner_e2e.py` | Test skanera na atrapie Claude (Playwright, Python): odczyt, kontrola sum, zapis, porównanie, komentarz; szerokość 390 i 1100 px. |
