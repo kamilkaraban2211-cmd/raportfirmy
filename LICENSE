@@ -35,10 +35,24 @@ Copyright (c) 2026 właściciel serwisu RaportFirmy.pl. Wszelkie prawa zastrzeż
    Biblioteki i usługi osób trzecich (np. API Claude, Playwright) podlegają
    własnym licencjom i warunkom.
 
-6. Brak gwarancji
-   W zakresie dopuszczalnym przez prawo Oprogramowanie udostępnia się
-   „w stanie, w jakim jest”, bez gwarancji. Odpowiedzialność wobec klientów
-   usługi określa Regulamin serwisu.
+6. Wyłączenie gwarancji, rękojmi i odpowiedzialności
+   6.1. Właściciel nie udziela gwarancji jakości (art. 577 Kodeksu cywilnego)
+        na Oprogramowanie, które udostępnia w obecnej postaci.
+   6.2. Odpowiedzialność właściciela z tytułu rękojmi za wady Oprogramowania
+        jest wyłączona (art. 558 § 1 Kodeksu cywilnego).
+   6.3. Odpowiedzialność właściciela za szkody wynikłe z korzystania
+        z Oprogramowania jest wyłączona w zakresie dopuszczalnym przez prawo.
+        Wyłączenie nie obejmuje szkody wyrządzonej umyślnie
+        (art. 473 § 2 Kodeksu cywilnego).
+   6.4. Punkty 6.1–6.3 nie ograniczają uprawnień, których przepisy nie
+        pozwalają wyłączyć ani ograniczyć umową, w szczególności uprawnień
+        konsumentów i osób fizycznych zawierających umowę bezpośrednio
+        związaną z działalnością gospodarczą, gdy umowa nie ma dla nich
+        charakteru zawodowego.
+   6.5. Punkty 6.1–6.3 dotyczą Oprogramowania jako kodu. Odpowiedzialność
+        wobec klientów usługi, w tym za niezgodność usługi cyfrowej z umową
+        (rozdział 5b ustawy z dnia 30 maja 2014 r. o prawach konsumenta),
+        określają Regulamin serwisu i przepisy prawa.
 
 7. Prawo właściwe
    Prawo polskie. Sądem właściwym jest sąd powszechny właściwy dla siedziby
