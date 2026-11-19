@@ -1,0 +1,14 @@
+{
+  "name": "raportfirmy",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node serwer/server.mjs",
+    "test:serwer": "node --test serwer/test/*.test.mjs"
+  },
+  "dependencies": {
+    "pg": "8.13.1"
+  }
+}

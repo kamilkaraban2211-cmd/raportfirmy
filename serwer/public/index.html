@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Popraw za mnie — RaportFirmy.pl</title>
+<link rel="stylesheet" href="/styl.css">
+</head>
+<body>
+<main>
+  <h1>Popraw za mnie</h1>
+  <p class="lead">Poprawimy dane Twojego sklepu w Google i na Facebooku. Cena: 149 zł brutto. Opiekun zadzwoni i potwierdzi zakres przed rozpoczęciem pracy.</p>
+
+  <form id="zlecenie" novalidate>
+    <label for="sklep">Nazwa sklepu</label>
+    <input type="text" id="sklep" name="sklep" maxlength="120" autocomplete="organization" required>
+    <p class="blad" data-blad="sklep"></p>
+
+    <label for="miejscowosc">Miejscowość</label>
+    <input type="text" id="miejscowosc" name="miejscowosc" maxlength="80" autocomplete="address-level2" required>
+    <p class="blad" data-blad="miejscowosc"></p>
+
+    <label for="nip">NIP firmy</label>
+    <input type="text" id="nip" name="nip" inputmode="numeric" maxlength="13" required>
+    <p class="male">Potrzebny do upoważnienia w profilu. Przechowujemy go zaszyfrowany i widzi go tylko opiekun.</p>
+    <p class="blad" data-blad="nip"></p>
+
+    <label for="imie">Imię</label>
+    <input type="text" id="imie" name="imie" maxlength="60" autocomplete="given-name" required>
+    <p class="blad" data-blad="imie"></p>
+
+    <label for="telefon">Telefon</label>
+    <input type="tel" id="telefon" name="telefon" maxlength="16" autocomplete="tel" required>
+    <p class="blad" data-blad="telefon"></p>
+
+    <label for="opis">Co jest nie tak? (nieobowiązkowe)</label>
+    <textarea id="opis" name="opis" rows="3" maxlength="1000"></textarea>
+    <p class="blad" data-blad="opis"></p>
+
+    <label class="zgoda"><input type="checkbox" name="zgoda" id="zgoda">
+      <span>Zgadzam się na kontakt telefoniczny RaportFirmy.pl w sprawie tego zlecenia i na przetwarzanie podanych danych w tym celu.</span></label>
+    <p class="blad" data-blad="zgoda"></p>
+
+    <button type="submit">Wyślij zlecenie</button>
+    <p class="blad" data-blad="ogolny"></p>
+  </form>
+
+  <div class="karta" id="gotowe" hidden>
+    <h2>Zlecenie przyjęte</h2>
+    <p>Zapisz ten link. Pod nim sprawdzisz, na jakim etapie jest Twoja sprawa. Kto ma link, widzi status sprawy, więc nie udostępniaj go innym.</p>
+    <p><a id="link" href="/sprawa"></a></p>
+  </div>
+</main>
+<script src="/zlecenie.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Panel opiekuna — RaportFirmy.pl</title>
+<link rel="stylesheet" href="/styl.css">
+</head>
+<body>
+<main class="szeroki">
+  <h1>Panel opiekuna</h1>
+
+  <form id="logowanie" hidden>
+    <label for="login">Login</label>
+    <input type="text" id="login" name="login" autocomplete="username" required>
+    <label for="haslo">Hasło</label>
+    <input type="password" id="haslo" name="haslo" autocomplete="current-password" required>
+    <label for="kod">Kod z aplikacji (6 cyfr)</label>
+    <input type="text" id="kod" name="kod" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+    <button type="submit">Zaloguj</button>
+    <p class="blad" id="blad-logowania"></p>
+  </form>
+
+  <section id="lista" hidden>
+    <p><button type="button" class="drugi" id="wyloguj">Wyloguj</button></p>
+    <p class="blad" id="blad-listy"></p>
+    <div class="tabela">
+      <table>
+        <thead><tr><th>Nr</th><th>Sklep</th><th>Kontakt</th><th>NIP</th><th>Opis</th><th>Przyjęto</th><th>Stan</th></tr></thead>
+        <tbody id="wiersze"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<script src="/panel.js"></script>
+</body>
+</html>
