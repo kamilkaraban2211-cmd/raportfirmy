@@ -16,6 +16,10 @@ Statyczna aplikacja (bez serwera i bez budowania). Wersja testowa na przykładow
 | `tests/skaner_e2e.py` | Test skanera na atrapie Claude (Playwright, Python): odczyt, kontrola sum, zapis, porównanie, komentarz; szerokość 390 i 1100 px. |
 | `.github/workflows/pages.yml` | Publikacja na GitHub Pages po każdym wypchnięciu na `main`. |
 
+## Licencja
+
+Licencja zastrzeżona: wszelkie prawa zastrzeżone, usługa udostępniana tylko jako SaaS. Szczegóły w [`LICENSE`](LICENSE).
+
 ## Uruchomienie
 
 Otwórz `index.html` w przeglądarce. Nic nie trzeba instalować.

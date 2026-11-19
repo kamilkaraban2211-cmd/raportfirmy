@@ -1,0 +1,48 @@
+LICENCJA ZASTRZEŻONA (PROPRIETARY) — RaportFirmy.pl
+Copyright (c) 2026 właściciel serwisu RaportFirmy.pl. Wszelkie prawa zastrzeżone.
+
+1. Przedmiot
+   Niniejsza licencja dotyczy kodu źródłowego, dokumentacji, tekstów, grafik
+   i pozostałych plików w tym repozytorium („Oprogramowanie”). Oprogramowanie
+   jest utworem w rozumieniu ustawy z dnia 4 lutego 1994 r. o prawie autorskim
+   i prawach pokrewnych, a jego część stanowiąca program komputerowy podlega
+   art. 74–77 tej ustawy.
+
+2. Model SaaS
+   Oprogramowanie jest udostępniane klientom wyłącznie jako usługa świadczona
+   drogą elektroniczną pod adresem raportfirmy.pl. Korzystanie z usługi
+   reguluje odrębny Regulamin serwisu, nie niniejsza licencja. Korzystanie
+   z usługi nie daje żadnych praw do kodu źródłowego.
+
+3. Zakaz
+   Bez uprzedniej pisemnej zgody właściciela zabrania się:
+   a) kopiowania, zwielokrotniania lub rozpowszechniania Oprogramowania
+      w całości lub w części;
+   b) modyfikowania, tłumaczenia i tworzenia utworów zależnych;
+   c) udostępniania Oprogramowania osobom trzecim, w tym jako usługi
+      (hosting, SaaS, white-label), odsprzedaży, najmu lub dzierżawy;
+   d) używania Oprogramowania do budowy produktu konkurencyjnego.
+
+4. Wyjątki ustawowe
+   Licencja nie ogranicza uprawnień, których nie można wyłączyć umową,
+   w szczególności z art. 75 ust. 2 ustawy o prawie autorskim i prawach
+   pokrewnych (kopia zapasowa, badanie działania, dekompilacja w celu
+   współdziałania). Publiczna widoczność repozytorium pozwala jedynie na
+   przeglądanie plików i ich rozwidlenie (fork) w serwisie GitHub w zakresie
+   wymaganym przez Warunki korzystania z GitHub; nie daje innych praw.
+
+5. Składniki osób trzecich
+   Biblioteki i usługi osób trzecich (np. API Claude, Playwright) podlegają
+   własnym licencjom i warunkom.
+
+6. Brak gwarancji
+   W zakresie dopuszczalnym przez prawo Oprogramowanie udostępnia się
+   „w stanie, w jakim jest”, bez gwarancji. Odpowiedzialność wobec klientów
+   usługi określa Regulamin serwisu.
+
+7. Prawo właściwe
+   Prawo polskie. Sądem właściwym jest sąd powszechny właściwy dla siedziby
+   właściciela, chyba że przepis bezwzględnie obowiązujący stanowi inaczej.
+
+8. Zgoda na inne użycie
+   Pytania o licencję: przez zgłoszenie (Issue) w tym repozytorium.
