@@ -1,6 +1,6 @@
 # Cena: Skaner raportu z kasy (16.11.2026)
 
-Podstawa: panel 20 symulowanych właścicieli sklepów (seed 483380) z ofertą skanera za 49 zł brutto/mies. (`panel/`, `pricing-curve.md`), ceny zamienników z publicznych cenników i kalkulator CFO (`numbers-opt.json`, konfiguracja zoptymalizowana). Odpowiedzi symulowanych kupujących pokazują, co testować. Nie są dowodem.
+Podstawa: panel 20 symulowanych właścicieli sklepów (seed 483380) z ofertą skanera za 49 zł brutto/mies. (`panel-skaner49/`, `pricing-curve.md`), ceny zamienników z publicznych cenników i kalkulator CFO (`numbers-opt.json`, konfiguracja zoptymalizowana). Odpowiedzi symulowanych kupujących pokazują, co testować. Nie są dowodem.
 
 ## 1. Co powiedzieli kupujący
 

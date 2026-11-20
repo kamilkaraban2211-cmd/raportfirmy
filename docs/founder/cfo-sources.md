@@ -1,4 +1,25 @@
-# Źródła liczb (CFO, 15.11.2026)
+# Źródła liczb: „Sklep w porządku” (CFO, 20.11.2026)
+
+| Liczba | Wartość | Źródło / sposób |
+|---|---|---|
+| Cena | 149 zł brutto = 121,14 zł netto | `launch.md` (oferta v3); zakłada VAT 23% |
+| Sprawdzeń na 1 opłacone zlecenie | 10 | linia sukcesu testu w `launch.md`: ≥ 3 zlecenia z 30 sprawdzeń |
+| Czas sprawdzenia | 15 min | `launch.md` („ok. 15 min na sklep”) |
+| Naprawa (element B) | 45–90 min, przyjęte 67,5 | `offer.md`, tabela elementów (szacunek CEO) |
+| Telefon przy dodaniu menedżera (M) | 10 min | `offer.md` |
+| Kontrola po 30 dniach (F) | 15 min | `offer.md` |
+| 5 odpowiedzi na pytania (G), porównanie z 3 sklepami (H) | nie wliczone | nie ma ich w ofercie v3 (`launch.md`) |
+| Wizyty osobiste | nie wliczone | czas niezmierzony; wynik będzie przez to gorszy |
+| Stawka godziny CEO | 60 zł/h | ta sama co w CFO Skanera (szacunek, `numbers-skaner.json`) |
+| Płatność BLIK / przelew | 0 zł | szacunek; sprawdzić opłaty konta firmowego |
+| Koszty stałe | 330 zł/mies. | jak w CFO Skanera (szacunki do podania) |
+| Start | 1 500 zł prawne + 200 zł marketing | jak w CFO Skanera (szacunki) |
+| Limit / pojemność | 10 zleceń w miesiącu | `launch.md` („np. 10”) |
+| Rampa | 3, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10 | szacunek między linią przejścia (3) a limitem (10) |
+
+---
+
+# Źródła liczb: Skaner raportu z kasy (CFO, 15.11.2026)
 
 | Liczba | Wartość | Źródło / sposób |
 |---|---|---|

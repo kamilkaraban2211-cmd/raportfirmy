@@ -36,7 +36,7 @@ Zestawienie przeszkód, które wyszły w panelach, w kalkulacji CFO i w przepisa
 
 | # | Przeszkoda | Sposób |
 |---|---|---|
-| 17 | Gotówka ~2 150 zł vs budżet 200 zł | Dokumenty prawne z wzorców + 1–2 h konsultacji zamiast pełnej usługi; księgowość tańsza (dźwignia 4 w `cfo.md`); pierwsze płatności od biur na pilotażu przed budową reszty. |
+| 17 | Gotówka ~2 150 zł vs budżet 200 zł | Dokumenty prawne z wzorców + 1–2 h konsultacji zamiast pełnej usługi; księgowość tańsza (dźwignia 4 w `cfo-skaner.md`); pierwsze płatności od biur na pilotażu przed budową reszty. |
 | 18 | Koszt czasu na wsparcie | Kontrola sum w aplikacji, samodzielne poprawki, krótka instrukcja zdjęcia (dźwignia 3: 4 zamiast 10 min). |
 
 ---

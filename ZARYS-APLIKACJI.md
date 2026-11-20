@@ -156,4 +156,4 @@ Statyczne makiety (`index.html`, `pilot/`, `skaner/`) pokazują proces. Produkcj
 
 ---
 
-**Źródła w repozytorium:** `docs/founder/launch.md` (plan startu), `offer.md`, `marketing.md` (momenty, nastrój, pozycjonowanie), `sposoby-i-bezpieczenstwo.md`, `cfo.md`, `pricing.md`, `czas-dla-siebie.md`, panele `panel*/`. Wyniki paneli to symulacja: pokazują obiekcje, nie przewidują sprzedaży.
+**Źródła w repozytorium:** `docs/founder/launch.md` (plan startu), `offer.md`, `marketing.md` (momenty, nastrój, pozycjonowanie), `sposoby-i-bezpieczenstwo.md`, `cfo.md` (usługa), `cfo-skaner.md`, `pricing-skaner.md`, `czas-dla-siebie.md`, panele `panel*/`. Wyniki paneli to symulacja: pokazują obiekcje, nie przewidują sprzedaży.

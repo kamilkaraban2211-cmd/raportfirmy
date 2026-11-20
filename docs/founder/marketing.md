@@ -1,6 +1,6 @@
 # Marketing: raportfirmy.pl, agent, który odzywa się w ważnym momencie (16.11.2026)
 
-Podstawa: panele symulowanych właścicieli sklepów (6.11–16.11: 20 osób w każdej próbie, raz 100), `pricing.md` (29 zł brutto/mies., 290 zł/rok, pierwszy miesiąc 9 zł do 31.03.2027), `cfo.md` i `numbers-opt.json`. Nie ma pliku `competitors.md`: konkurencji nie mapowaliśmy, więc pozycjonowanie opiera się na zamiennikach, które wskazali kupujący (wydruk z kasy, Subiekt, centrala sieci, księgowa, zeszyt). Panele to symulacja: dobrze pokazują obiekcje, słabo przewidują zakup. **Cytatów z paneli nie wolno używać w reklamach jako opinii klientów.** To nie jest porada prawna.
+Podstawa: panele symulowanych właścicieli sklepów (6.11–16.11: 20 osób w każdej próbie, raz 100), `pricing-skaner.md` (29 zł brutto/mies., 290 zł/rok, pierwszy miesiąc 9 zł do 31.03.2027), `cfo-skaner.md` i `numbers-opt.json`. Nie ma pliku `competitors.md`: konkurencji nie mapowaliśmy, więc pozycjonowanie opiera się na zamiennikach, które wskazali kupujący (wydruk z kasy, Subiekt, centrala sieci, księgowa, zeszyt). Panele to symulacja: dobrze pokazują obiekcje, słabo przewidują zakup. **Cytatów z paneli nie wolno używać w reklamach jako opinii klientów.** To nie jest porada prawna.
 
 ---
 
@@ -65,7 +65,7 @@ Agent ma wyczuwać, w jakim momencie jest właściciel, i do tego dopasować ton
    - zimne e-maile, SMS-y i telefony do biur i sklepów odpadają;
    - w aplikacji trzeba rozdzielić **powiadomienia o usłudze** (M1–M5, wynikają z umowy) od **informacji handlowej** (np. propozycja planu „Towary”), która wymaga osobnej zgody.
 4. **RODO.** Dane jednoosobowej działalności mogą być danymi osobowymi. Wyzwalacze M4 to profilowanie danych sprzedaży, więc trzeba: podstawy prawnej (wykonanie umowy), informacji o tym, jak agent decyduje, kiedy się odezwać, i możliwości sprzeciwu. Zdjęcia raportów nie są przechowywane, co upraszcza sprawę.
-5. **Ceny i promocje.** Bez „przekreślonych cen”, których nigdy nie było (zasada z `pricing.md`). Jeśli plan trafi do przedsiębiorcy na prawach konsumenta, trzeba sprawdzić zasady informowania o obniżkach.
+5. **Ceny i promocje.** Bez „przekreślonych cen”, których nigdy nie było (zasada z `pricing-skaner.md`). Jeśli plan trafi do przedsiębiorcy na prawach konsumenta, trzeba sprawdzić zasady informowania o obniżkach.
 
 ## 4. Pozycjonowanie
 

@@ -1,0 +1,52 @@
+{
+ "business": "Sklep w porządku (raportfirmy.pl): naprawa danych sklepu w Google i na Facebooku. Wariant gotówkowy: bez wyceny czasu CEO",
+ "unit": "zlecenie",
+ "price": 121.14,
+ "variable": [
+  {
+   "label": "Płatność BLIK lub przelew (przyjęte 0 zł, do sprawdzenia w banku)",
+   "cost": 0.0
+  }
+ ],
+ "fixed_monthly": [
+  {
+   "label": "Hosting MyDevil MD1 (szacunek, do podania)",
+   "cost": 20
+  },
+  {
+   "label": "Domena i poczta (szacunek)",
+   "cost": 10
+  },
+  {
+   "label": "Księgowość raportfirmy.pl (szacunek, do podania)",
+   "cost": 300
+  }
+ ],
+ "startup": [
+  {
+   "label": "Regulamin, polityka prywatności, umowa powierzenia, upoważnienie (szacunek)",
+   "cost": 1500
+  },
+  {
+   "label": "Pierwsze działania marketingowe (budżet eksperymentów)",
+   "cost": 200
+  }
+ ],
+ "days_per_month": 1,
+ "plan_per_day": 10,
+ "capacity_per_day": 10,
+ "ramp_per_day": [
+  3,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  10,
+  10,
+  10
+ ]
+}

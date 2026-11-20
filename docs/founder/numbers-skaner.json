@@ -1,0 +1,67 @@
+{
+ "business": "Skaner raportu z kasy (raportfirmy.pl), płatny SaaS. Konfiguracja wyjściowa: jak w prototypie",
+ "unit": "klient-miesiąc (1 aktywna subskrypcja przez 1 miesiąc)",
+ "price": 39.84,
+ "variable": [
+  {
+   "label": "AI: odczyt ~32 zdjęć/mies. (Sonnet 5.5, pełna rozdzielczość, 2 zdjęcia/raport)",
+   "cost": 4.66
+  },
+  {
+   "label": "AI: 8 komentarzy/mies. (Sonnet 5.5)",
+   "cost": 0.56
+  },
+  {
+   "label": "Płatność kartą co miesiąc (Stripe 1,5% + 1 zł + Billing 0,7%)",
+   "cost": 2.08
+  },
+  {
+   "label": "Wsparcie i poprawki: 10 min/mies. x 60 zł/h (szacunek)",
+   "cost": 10.0
+  }
+ ],
+ "fixed_monthly": [
+  {
+   "label": "Hosting MyDevil MD1 (szacunek, do podania)",
+   "cost": 20
+  },
+  {
+   "label": "Domena i poczta (szacunek)",
+   "cost": 10
+  },
+  {
+   "label": "Księgowość raportfirmy.pl (szacunek, do podania)",
+   "cost": 300
+  }
+ ],
+ "startup": [
+  {
+   "label": "Regulamin, polityka prywatności, umowa powierzenia (szacunek)",
+   "cost": 1500
+  },
+  {
+   "label": "Testy odczytu na 50 prawdziwych raportach (API)",
+   "cost": 20
+  },
+  {
+   "label": "Pierwsze działania marketingowe (budżet eksperymentów)",
+   "cost": 200
+  }
+ ],
+ "days_per_month": 1,
+ "plan_per_day": 100,
+ "ramp_per_day": [
+  3,
+  5,
+  8,
+  12,
+  16,
+  20,
+  25,
+  30,
+  35,
+  40,
+  45,
+  50
+ ]
+}
