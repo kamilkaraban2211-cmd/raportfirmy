@@ -77,9 +77,31 @@ th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);verti
 th{font-weight:600;color:var(--muted);background:var(--paper)}
 .flash{padding:10px 14px;border-radius:8px;font-weight:500;background:var(--info-soft);color:var(--info)}
 .testnote{padding:10px 14px;border-radius:8px;background:var(--test-soft);color:var(--test);font-size:.92rem}
-.flash.good{background:var(--good-soft);color:var(--good)} .flash.bad{background:var(--bad-soft);color:var(--bad)}
+.flash.good{background:var(--good-soft);color:var(--good)} .flash.bad{background:var(--bad-soft);color:var(--bad)} .flash.warn{background:var(--warn-soft);color:var(--warn)}
 footer{max-width:860px;margin:0 auto;padding:0 16px 40px;font-size:.82rem;color:var(--muted)}
 @media (max-width:520px){h1{font-size:1.45rem}.btn.big{width:100%;justify-content:center}.src{grid-template-columns:1fr}}
+.opnav{display:flex;gap:6px;flex-wrap:wrap}
+.opnav a{padding:7px 12px;border-radius:8px;border:1px solid var(--line);text-decoration:none;color:var(--ink);font-weight:500;font-size:.92rem}
+.opnav a[aria-current="page"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi b{font-family:var(--mono);font-size:1.25rem;font-variant-numeric:tabular-nums}
+.kpi .small{color:var(--muted)}
+.clock{font-family:var(--mono);font-size:1.6rem;font-variant-numeric:tabular-nums}
+.cf{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.cf legend{font-weight:600;padding:0 4px}
+.cf .opts{display:flex;flex-wrap:wrap;gap:6px}
+.cf .opts label{display:inline-flex;gap:5px;align-items:center;font-weight:400;font-size:.9rem;padding:4px 9px;border:1px solid var(--line);border-radius:999px;cursor:pointer}
+.cf .opts label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+details.card>summary{cursor:pointer;list-style:none;display:flex;gap:8px 12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+details.card>summary::-webkit-details-marker{display:none}
+.blank{display:inline-block;min-width:12em;border-bottom:1px solid var(--ink)}
+@media print{
+  .testbar,header.top,footer,.noprint{display:none!important}
+  html,body{background:#fff;color:#000}
+  main{padding:0;max-width:none}
+  .card{border:1px solid #999;break-inside:avoid}
+}
 </style>
 </head>
 <body>
@@ -153,11 +175,11 @@ const fixable = shop => shop.findings.filter(f => f.type !== "chain");
 const hasHard = shop => shop.findings.some(f => f.type === "hard");
 
 /* ---------- Stan ---------- */
-function fresh(){ return { v:1, view:"start", mode:"client", shopId:null, query:"", picks:{}, selfFix:false, orders:[], registry:[], limit:8, log:[] }; }
+function fresh(){ return { v:1, view:"start", mode:"client", shopId:null, query:"", picks:{}, selfFix:false, orders:[], registry:[], limit:8, log:[], checks:[], draft:null, cardId:null }; }
 let S = fresh();
 try { const raw = localStorage.getItem(LS_KEY); if (raw){ const p = JSON.parse(raw); if (p && p.v === 1) S = Object.assign(fresh(), p); } } catch (e) { /* bez pamięci przeglądarki też działa */ }
 function save(){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { /* tryb bez pamięci */ } }
-const UI = { flash:null, err:{}, noData:false };
+const UI = { flash:null, err:{}, noData:false, openCheck:null };
 function log(o, text){ o.history.push({ at:TODAY(), text }); }
 const myOrder = () => S.orders.find(o => o.shopId === S.shopId && !["cancelled"].includes(o.status)) || null;
 const activeThisMonth = () => { const m = TODAY().slice(0, 7); return S.orders.filter(o => o.createdAt.slice(0, 7) === m && !["cancelled","waitlist","failed"].includes(o.status)).length; };
@@ -331,7 +353,7 @@ function vOperator(){
       ${o.note ? `<p class="small">Uwaga klienta: ${esc(o.note)}</p>` : ""}${UI.err["op-" + o.id] ? `<p class="err">${esc(UI.err["op-" + o.id])}</p>` : ""}
       <div class="row">${opActions(o)}</div></section>`).join("");
   const mins = S.registry.map(r => r.minutes), avg = mins.length ? Math.round(mins.reduce((a, b) => a + b, 0) / mins.length) : null;
-  return `<h1>Panel opiekuna</h1>
+  return `${opNav("operator")}<h1>Panel opiekuna</h1>
     <section class="card"><div class="row" style="justify-content:space-between"><h3>Pojemność w tym miesiącu</h3><span class="pill ${used >= S.limit ? "bad" : "good"}">${used} z ${S.limit}</span></div>
       <form class="row" data-form="limit" novalidate><label for="lim">Limit zleceń</label><input id="lim" name="limit" type="number" min="1" max="99" value="${S.limit}" style="width:90px"><button class="btn sm" type="submit">Zapisz</button></form>
       <p class="small muted">Po przekroczeniu limitu nowe zgłoszenia trafiają na listę oczekujących.</p></section>
@@ -341,12 +363,155 @@ function vOperator(){
     <p class="small muted">Pełny proces pilota (W01–W14: kwalifikacja, plan, import sprzedaży, płatności testowe) jest w <a href="pilot/">osobnej aplikacji pilota</a>.</p>`;
 }
 
+/* ---------- Test 30 sklepów (17.11–20.12.2026): karta sprawdzenia, stoper, wizyta, wskaźniki, eksport ----------
+   Zapisujemy tylko dane publiczne sklepu (nazwa, miejscowość, to, co widzi klient). Bez NIP-u i danych osobowych właściciela.
+   Linie decyzji z docs/founder/launch.md i warunki zarządu z docs/founder/board.md. */
+const CHECK_FIELDS = [
+  ["dup",   "Jedna wizytówka w Google (bez duplikatów)", "Google"],
+  ["status","Status: „otwarte”, nie „zamknięte” ani „tymczasowo zamknięte”", "Google"],
+  ["name",  "Nazwa zgodna z szyldem", "Google"],
+  ["addr",  "Adres i pinezka na mapie", "Google"],
+  ["phone", "Telefon działa i odbiera sklep", "Google"],
+  ["hours", "Godziny zwykłe: Google = kartka na drzwiach", "Google"],
+  ["sun",   "Niedziele handlowe 6, 13 i 20.12", "Google"],
+  ["xmas",  "24–27.12 i 31.12–1.01: zamknięte albo skrócone", "Google"],
+  ["cat",   "Kategoria główna pasuje do sklepu", "Google"],
+  ["www",   "Link do strony lub menu działa (jeśli jest)", "Google"],
+  ["fbex",  "Facebook: strona istnieje i nie jest porzucona", "Facebook"],
+  ["fbdata","Facebook: godziny i telefon jak w Google", "Facebook"]
+];
+const RES = { ok:["zgadza się","good"], diff:["rozbieżność","warn"], hard:["trudna sprawa","bad"], chain:["ustala centrala",""], na:["nie dotyczy","" ] };
+const SEGMENTS = ["niezależny spożywczy", "pod szyldem sieci", "specjalistyczny niespożywczy"];
+const ORIGINS = ["lista sklepów z okolicy", "polecenie partnera", "wizyta bez umówienia"];
+const TEST_PRICES = [149, 179, 149, 199];   // naprzemiennie, docs/founder/pricing.md pkt 4
+const HARD_PRICES = "349 zł (duplikat albo zmiana wprowadzana przez Google) lub 449 zł (odzyskanie dostępu, przejęty profil)";
+const DECISIONS = { "":"—", order:"zleca naprawę", self:"poprawi sam", later:"nie teraz", no:"nie jest zainteresowany" };
+const TARGET = { checks:30, ratePass:30, rateStop:15, shown:10, paid:3, checkMin:5, perPaid:120, manager:50 };
+const hasFinding = c => Object.values(c.res).some(r => r === "diff" || r === "hard");
+const countRes = (c, k) => Object.values(c.res).filter(r => r === k).length;
+const median = a => { if (!a.length) return null; const s = a.slice().sort((x, y) => x - y), m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+const r1 = n => Math.round(n * 10) / 10;
+const pct = (a, b) => b ? Math.round(a * 100 / b) : 0;
+const num = n => String(r1(n)).replace(".", ",");
+const fmtMin = n => n == null ? "—" : num(n) + " min";
+const fmtClock = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
+const checkById = id => S.checks.find(c => c.id === id);
+
+function testStats(){
+  const C = S.checks, F = C.filter(hasFinding), shown = F.filter(c => c.shown), paid = C.filter(c => c.paid);
+  const checkMin = C.reduce((a, c) => a + c.minutes, 0), repairMin = paid.reduce((a, c) => a + (c.repairMin || 0), 0);
+  const byPrice = {};
+  shown.forEach(c => { const k = c.price || 0; byPrice[k] = byPrice[k] || { shown:0, paid:0 }; byPrice[k].shown++; if (c.paid) byPrice[k].paid++; });
+  const avgPrice = paid.length ? paid.reduce((a, c) => a + (c.price || 0), 0) / paid.length : null;
+  const perPaid = paid.length ? (checkMin + repairMin) / paid.length : null;
+  return { n:C.length, withF:F.length, rate:pct(F.length, C.length), hard:C.filter(c => countRes(c, "hard")).length, chain:C.filter(c => countRes(c, "chain")).length,
+    medCheck:median(C.map(c => c.minutes)), shown:shown.length, paid:paid.length, granted:shown.filter(c => c.manager === "yes").length,
+    perPaid, avgPrice, byPrice, repairMed:median(paid.map(c => c.repairMin || 0)) };
+}
+function testVerdict(t){
+  if (t.n < TARGET.checks) return [`Test w toku: ${t.n} z ${TARGET.checks} sprawdzeń. Werdykt 21.12.2026.`, "info"];
+  if (t.rate < TARGET.rateStop) return [`Rozbieżność tylko w ${t.rate}% sklepów (poniżej 15%). Darmowe sprawdzenie nie ma czego sprzedać: wracamy do oferty, bez startu w styczniu.`, "bad"];
+  if (t.rate >= TARGET.ratePass && t.shown >= TARGET.shown && t.paid >= TARGET.paid) return [`Linie sukcesu spełnione: ${t.rate}% z rozbieżnością, ${t.paid} opłacone z ${t.shown} pokazanych. Start 18.01.2027 możliwy, jeśli jest partner i czas na zlecenie mieści się w celu.`, "good"];
+  if (t.rate >= TARGET.ratePass && t.paid < 1) return [`Rozbieżności są (${t.rate}%), ale nikt nie zapłacił. Problem leży w zaufaniu albo ofercie, nie w potrzebie.`, "warn"];
+  return [`Wynik pośredni: ${t.rate}% z rozbieżnością, ${t.paid} opłacone z ${t.shown} pokazanych. Decyzja 21.12 według reguł z planu startu.`, "warn"];
+}
+const opNav = active => `<nav class="opnav noprint" aria-label="Panel opiekuna"><a href="#operator" ${active === "operator" ? 'aria-current="page"' : ""}>Zlecenia</a><a href="#test" ${active === "test" ? 'aria-current="page"' : ""}>Test 30 sklepów</a></nav>`;
+const kpi = (label, val, note, cls = "") => `<div class="kpi"><span class="small">${label}</span><b>${val}</b>${note ? `<span class="small"><span class="pill ${cls}">${note}</span></span>` : ""}</div>`;
+
+function checkForm(){
+  const d = S.draft, v = d.values || {};
+  const sel = (name, opts) => `<select id="ck-${name}" name="${name}">${opts.map(o => `<option ${v[name] === o ? "selected" : ""}>${esc(o)}</option>`).join("")}</select>`;
+  const fields = CHECK_FIELDS.map(([k, label, src]) => `<fieldset class="cf"><legend>${esc(label)} <span class="small muted">(${src})</span></legend>
+      <div class="opts">${Object.entries(RES).map(([rk, [rl]]) => `<label><input type="radio" name="r-${k}" value="${rk}" ${v["r-" + k] === rk ? "checked" : ""}> ${rl}</label>`).join("")}</div>
+      <input type="text" name="n-${k}" aria-label="Co widzi klient: ${esc(label)}" placeholder="Przy rozbieżności: co dokładnie widzi klient" value="${esc(v["n-" + k] || "")}">
+      ${errFor("ck-" + k)}</fieldset>`).join("");
+  return `<section class="card accent"><div class="row" style="justify-content:space-between"><h2>Sprawdzenie w toku</h2><span class="clock" id="stoper" aria-live="off">${fmtClock(Date.now() - Date.parse(d.startedAt))}</span></div>
+    <p class="small muted">Cel: ${TARGET.checkMin} min na sklep. Plan zakładał 15 min. Stoper liczy od kliknięcia „Rozpocznij”.</p>
+    <form class="stack" data-form="check" novalidate>
+      <div class="grid2"><div class="field"><label for="ck-shop">Nazwa sklepu (jak na szyldzie)</label><input id="ck-shop" name="shop" type="text" value="${esc(v.shop || "")}" ${UI.err.shop ? 'aria-invalid="true"' : ""}>${errFor("shop")}</div>
+        <div class="field"><label for="ck-town">Miejscowość i ulica</label><input id="ck-town" name="town" type="text" value="${esc(v.town || "")}" ${UI.err.town ? 'aria-invalid="true"' : ""}>${errFor("town")}</div>
+        <div class="field"><label for="ck-segment">Rodzaj sklepu</label>${sel("segment", SEGMENTS)}</div>
+        <div class="field"><label for="ck-origin">Skąd sklep</label>${sel("origin", ORIGINS)}</div></div>
+      ${fields}
+      <div class="field"><label for="ck-min">Czas ręcznie, w minutach (tylko gdy stoper był wyłączony)</label><input id="ck-min" name="minutes" type="text" inputmode="decimal" autocomplete="off" style="max-width:140px" value="${esc(v.minutes || "")}">${errFor("minutes")}</div>
+      ${errFor("ck")}
+      <div class="row"><button class="btn primary" type="submit">Zapisz sprawdzenie</button><button class="btn" type="button" data-act="check-cancel">Przerwij</button></div>
+    </form></section>`;
+}
+function visitForm(c){
+  const opt = (name, map, cur) => `<select name="${name}" id="${name}-${c.id}">${Object.entries(map).map(([k, l]) => `<option value="${k}" ${cur === k ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>`;
+  return `<form class="stack" data-form="visit" data-id="${c.id}" novalidate>
+      <label class="check"><input type="checkbox" name="shown" ${c.shown ? "checked" : ""}> Wynik pokazany właścicielowi (karta albo telefon)</label>
+      <div class="grid2"><div class="field"><label for="decision-${c.id}">Decyzja właściciela</label>${opt("decision", DECISIONS, c.decision)}</div>
+        <div class="field"><label for="manager-${c.id}">Dostęp menedżera nadany</label>${opt("manager", { "":"—", yes:"tak", no:"nie, odmówił" }, c.manager)}</div>
+        <div class="field"><label for="rm-${c.id}">Czas naprawy (min)</label><input id="rm-${c.id}" name="repairMin" type="number" min="1" step="1" value="${c.repairMin || ""}"></div></div>
+      <label class="check"><input type="checkbox" name="paid" ${c.paid ? "checked" : ""}> Opłacone (${c.price ? c.price + " zł" : "cena trudnej sprawy"})</label>
+      ${UI.err["v-" + c.id] ? `<p class="err">${esc(UI.err["v-" + c.id])}</p>` : ""}
+      <div class="row"><button class="btn sm primary" type="submit">Zapisz wizytę</button><button class="btn sm" type="button" data-act="check-card" data-id="${c.id}">Karta wyniku dla sklepu</button><button class="btn sm danger" type="button" data-act="check-del" data-id="${c.id}">Usuń</button></div>
+    </form>`;
+}
+function vTest(){
+  const t = testStats(), [vt, vc] = testVerdict(t);
+  const vat = t.avgPrice != null && t.perPaid != null ? `<p class="small">Wkład na opłacone zlecenie przy 60 zł/h: <b>${num(t.avgPrice / 1.23 - t.perPaid)} zł</b> z VAT · <b>${num(t.avgPrice - t.perPaid)} zł</b> bez VAT (działalność nierejestrowana albo zwolnienie). Liczby z kalkulatora: docs/founder/cfo.md.</p>` : "";
+  const prices = Object.keys(t.byPrice).length ? `<div class="tablewrap"><table><thead><tr><th>Cena na karcie</th><th>Pokazano</th><th>Opłacono</th></tr></thead><tbody>${Object.entries(t.byPrice).map(([p, x]) => `<tr><td class="mono">${p > 0 ? p + " zł" : "trudna sprawa"}</td><td class="mono">${x.shown}</td><td class="mono">${x.paid}</td></tr>`).join("")}</tbody></table></div>` : "";
+  const list = S.checks.map(c => {
+    const nF = countRes(c, "diff") + countRes(c, "hard");
+    const st = c.paid ? '<span class="pill good">opłacone</span>' : c.decision ? `<span class="pill info">${esc(DECISIONS[c.decision])}</span>` : c.shown ? '<span class="pill">pokazany</span>' : "";
+    const finds = CHECK_FIELDS.filter(([k]) => ["diff", "hard", "chain"].includes(c.res[k])).map(([k, label]) => `<div class="src"><span>${esc(label)} <span class="pill ${RES[c.res[k]][1]}">${RES[c.res[k]][0]}</span></span><span class="when">${esc(c.notes[k] || "")}</span></div>`).join("");
+    return `<details class="card" ${UI.openCheck === c.id ? "open" : ""}><summary><span><b>${esc(c.shop)}</b> <span class="small muted">${esc(c.town)} · ${fmtD(c.at)} · ${fmtMin(c.minutes)}</span></span><span class="row">${nF ? `<span class="pill warn">${nF} do poprawy</span>` : '<span class="pill good">wszystko się zgadza</span>'}${st}</span></summary>
+      ${finds || '<p class="small muted">Wszystkie pola się zgadzają albo nie dotyczą sklepu.</p>'}${visitForm(c)}</details>`;
+  }).join("");
+  return `${opNav("test")}<h1>Test 30 sklepów</h1>
+    <p class="muted">Ręczne sprawdzenie prawdziwych sklepów do 20.12.2026. Zapisujemy tylko dane publiczne sklepu. Nie zapisujemy NIP-u ani danych właściciela. Dane zostają w tej przeglądarce, więc po każdym dniu pobierz CSV.</p>
+    <div class="flash ${vc}" role="status">${esc(vt)}</div>
+    <section class="card"><h2>Wskaźniki</h2><div class="kpis">
+      ${kpi("Sprawdzenia", `${t.n}/${TARGET.checks}`)}
+      ${kpi("Z rozbieżnością", t.n ? t.rate + "%" : "—", t.n ? (t.rate >= TARGET.ratePass ? "≥ 30%: cel" : t.rate < TARGET.rateStop ? "< 15%: stop" : "15–29%") : "", t.rate >= TARGET.ratePass ? "good" : t.rate < TARGET.rateStop ? "bad" : "warn")}
+      ${kpi("Mediana sprawdzenia", fmtMin(t.medCheck), t.medCheck == null ? "" : t.medCheck <= TARGET.checkMin ? "cel 5 min" : "powyżej 5 min", t.medCheck != null && t.medCheck <= TARGET.checkMin ? "good" : "warn")}
+      ${kpi("Opłacone / pokazane", `${t.paid}/${t.shown}`, t.shown ? "cel: ≥ 3 z ≥ 10" : "", t.paid >= TARGET.paid && t.shown >= TARGET.shown ? "good" : "warn")}
+      ${kpi("Dostęp menedżera", t.shown ? pct(t.granted, t.shown) + "%" : "—", t.shown ? (pct(t.granted, t.shown) >= TARGET.manager ? "≥ 50%: cel zarządu" : "cel zarządu: ≥ 50%") : "", pct(t.granted, t.shown) >= TARGET.manager ? "good" : "warn")}
+      ${kpi("Minuty na opłacone zlecenie", fmtMin(t.perPaid), t.perPaid == null ? "" : t.perPaid <= TARGET.perPaid ? "≤ 120: cel zarządu" : "cel zarządu: ≤ 120", t.perPaid != null && t.perPaid <= TARGET.perPaid ? "good" : "bad")}
+      ${kpi("Trudne sprawy", t.hard)}${kpi("Pola centrali", t.chain)}
+    </div>${vat}${prices}
+    <p class="small muted">Minuty na opłacone zlecenie = czas wszystkich sprawdzeń + czas napraw, podzielone przez liczbę opłaconych zleceń.</p></section>
+    ${S.draft ? checkForm() : `<section class="card accent"><h2>Nowe sprawdzenie</h2><p>Otwórz Google Maps i Facebooka sklepu, kliknij „Rozpocznij” i przejdź 12 pól z listy.</p><div class="row"><button class="btn primary big" data-act="check-start">Rozpocznij sprawdzenie</button></div></section>`}
+    <h2>Sprawdzone sklepy</h2>${list || '<p class="muted">Jeszcze nic. Pierwsze sprawdzenie pojawi się tutaj.</p>'}
+    <section class="card noprint"><h3>Dane</h3><div class="row"><button class="btn" data-act="check-csv" ${S.checks.length ? "" : "disabled"}>Pobierz CSV</button><button class="btn danger" data-act="check-wipe" ${S.checks.length ? "" : "disabled"}>Usuń wszystkie sprawdzenia</button></div>
+      <p class="small muted">„Wyczyść dane testowe” na górze strony nie usuwa sprawdzeń. Usuwa je tylko ten przycisk.</p></section>`;
+}
+function vKarta(){
+  const c = checkById(S.cardId), date = fmtD(c.at);
+  const items = CHECK_FIELDS.filter(([k]) => ["diff", "hard", "chain"].includes(c.res[k]));
+  const anyDiff = countRes(c, "diff") > 0, anyHard = countRes(c, "hard") > 0, anyChain = countRes(c, "chain") > 0;
+  const who = LIVE ? `<p><b>${esc(CARETAKER.name)}</b>, tel. ${esc(CARETAKER.phone)}</p>` : `<p>Opiekun: <span class="blank">&nbsp;</span> tel. <span class="blank">&nbsp;</span></p><p class="testnote noprint">Dane opiekuna (CARETAKER w index.html) są puste. Na wydruku zostaną linie do wpisania ręcznie.</p>`;
+  const body = !items.length ? `<section class="card good"><h2>Wszystko się zgadza</h2><p class="lead">Klienci widzą u Ciebie te same dane w każdym miejscu, które sprawdziliśmy. Nie mamy Ci czego sprzedać.</p><p>Warto sprawdzić ponownie po zmianie godzin albo numeru i przed świętami.</p></section>`
+    : `<section class="card"><h2>Co widzi klient</h2>${items.map(([k, label, src]) => `<div class="src"><span><b>${esc(label)}</b></span><span class="pill ${RES[c.res[k]][1]}">${RES[c.res[k]][0]}</span><span class="when">${esc(c.notes[k] || "")} · źródło: ${src} · sprawdzone ${date}</span></div>`).join("")}</section>
+      <section class="card accent"><h2>Co możemy zrobić</h2>
+        ${anyDiff ? `<p>Poprawimy to za Ciebie w Google i na Facebooku: <b>${c.price} zł brutto</b>. Ty tylko akceptujesz gotowe zmiany, ok. 5 minut.</p>` : ""}
+        ${anyHard ? `<p>Trudna sprawa ma stałą cenę, podaną przed startem: ${HARD_PRICES}.</p>` : ""}
+        ${anyChain ? `<p>Pól ustalanych przez centralę sieci nie zmieniamy. Przygotujemy zgłoszenie do centrali.</p>` : ""}
+        <p><b>Płacisz dopiero po wykonaniu. Nie udało się, nie płacisz.</b> Po 30 dniach sprawdzamy jeszcze raz, bez opłat.</p>
+        <p>Wolisz poprawić to sam? Powiemy Ci jak, za darmo.</p></section>`;
+  return `<div class="row noprint"><a class="btn" href="#test">← Wróć do testu</a><button class="btn primary" data-act="print">Drukuj kartę</button></div>
+    <article class="stack"><p class="small muted">RaportFirmy.pl · Sklep w porządku</p><h1>Wynik sprawdzenia: ${esc(c.shop)}</h1><p class="muted">${esc(c.town)} · sprawdzone ${date} w Google i na Facebooku, tak jak widzi to klient.</p>
+      ${body}<section class="card"><h3>Kto to robi</h3>${who}<p class="small muted">Nie dzwonimy z ofertami i nie przekazujemy danych dalej. Nie obiecujemy wzrostu sprzedaży ani pozycji w Google.</p></section></article>`;
+}
+function csvOf(){
+  const q = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const head = ["id","data","sklep","miejscowosc","rodzaj","skad","min_sprawdzenia","rozbieznosci","trudne","centrala","cena_na_karcie","wynik_pokazany","decyzja","menedzer","oplacone","min_naprawy"].concat(CHECK_FIELDS.map(([k]) => "pole_" + k), CHECK_FIELDS.map(([k]) => "uwaga_" + k));
+  const rows = S.checks.slice().reverse().map(c => [c.id, c.at.slice(0, 10), c.shop, c.town, c.segment, c.origin, String(c.minutes).replace(".", ","), countRes(c, "diff"), countRes(c, "hard"), countRes(c, "chain"), c.price || "", c.shown ? "tak" : "nie", DECISIONS[c.decision] || "", c.manager === "yes" ? "tak" : c.manager === "no" ? "nie" : "", c.paid ? "tak" : "nie", c.repairMin || ""]
+    .concat(CHECK_FIELDS.map(([k]) => RES[c.res[k]][0]), CHECK_FIELDS.map(([k]) => c.notes[k] || "")));
+  return "﻿" + [head].concat(rows).map(r => r.map(q).join(";")).join("\r\n");
+}
+
 /* ---------- Render i zdarzenia ---------- */
-const VIEWS = { start:vStart, wynik:vWynik, zlecenie:vZlecenie, operator:vOperator };
+const VIEWS = { start:vStart, wynik:vWynik, zlecenie:vZlecenie, operator:vOperator, test:vTest, karta:vKarta };
+const OP_VIEWS = ["operator", "test", "karta"];
 let lastView = null;
 function render(){
-  if (S.mode === "operator") S.view = "operator"; else if (S.view === "operator") S.view = "start";
+  if (S.mode === "operator"){ if (!OP_VIEWS.includes(S.view)) S.view = "operator"; } else if (OP_VIEWS.includes(S.view)) S.view = "start";
   if (!VIEWS[S.view]) S.view = "start";
+  if (S.view === "karta" && !checkById(S.cardId)) S.view = "test";
   if ((S.view === "wynik" || S.view === "zlecenie") && !shopById(S.shopId)) S.view = "start";
   const fl = UI.flash ? `<div class="flash ${UI.flash[1] || ""}" role="status">${esc(UI.flash[0])}</div>` : ""; UI.flash = null;
   document.getElementById("app").innerHTML = header() + `<main id="main" tabindex="-1">${fl}${VIEWS[S.view]()}</main><footer>RaportFirmy.pl · wersja testowa · ceny brutto · bez analityki zewnętrznej</footer>`;
@@ -358,7 +523,17 @@ function go(v){ S.view = v; UI.err = {}; if (location.hash.slice(1) !== v){ try 
 const orderById = id => S.orders.find(o => o.id === id);
 const ACT = {
   mode(){ S.mode = S.mode === "client" ? "operator" : "client"; go(S.mode === "operator" ? "operator" : (S.shopId ? "wynik" : "start")); },
-  reset(){ S = fresh(); try { localStorage.removeItem(LS_KEY); } catch (e) {} UI.flash = ["Dane testowe wyczyszczone."]; go("start"); },
+  reset(){ const keep = S.checks; S = fresh(); S.checks = keep; try { localStorage.removeItem(LS_KEY); } catch (e) {} UI.flash = ["Dane testowe wyczyszczone." + (keep.length ? " Sprawdzenia z testu zostały." : "")]; go("start"); },
+  "check-start"(){ S.draft = { startedAt:TODAY(), values:{} }; UI.err = {}; render(); const f = document.getElementById("ck-shop"); if (f) f.focus(); },
+  "check-cancel"(){ if (confirm("Przerwać to sprawdzenie? Wpisane dane przepadną.")){ S.draft = null; UI.err = {}; render(); } },
+  "check-card"(el){ S.cardId = el.dataset.id; go("karta"); },
+  "check-del"(el){ const c = checkById(el.dataset.id); if (c && confirm(`Usunąć sprawdzenie sklepu „${c.shop}”?`)){ S.checks = S.checks.filter(x => x !== c); UI.flash = ["Sprawdzenie usunięte."]; render(); } },
+  "check-wipe"(){ if (confirm("Usunąć wszystkie sprawdzenia z testu? Najpierw pobierz CSV.")){ S.checks = []; S.draft = null; UI.flash = ["Wszystkie sprawdzenia usunięte."]; render(); } },
+  "check-csv"(){
+    const blob = new Blob([csvOf()], { type:"text/csv;charset=utf-8" }), a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "test-sklepow-" + TODAY().slice(0, 10) + ".csv"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  },
+  print(){ window.print(); },
   "pick-shop"(el){ S.shopId = el.dataset.id; S.picks = {}; S.selfFix = false; UI.noData = false; go("wynik"); },
   self(){ S.selfFix = true; render(); const el = document.getElementById("sam"); if (el) el.scrollIntoView({ block:"start" }); },
   "accept-price"(){ const o = myOrder(); if (o && move(o, "called", "Zgodziłeś się na cenę " + zl(o.price) + ".")) UI.flash = ["Cena zaakceptowana. Opiekun przeprowadzi Cię przez nadanie dostępu.", "good"]; render(); },
@@ -401,8 +576,46 @@ const FORM = {
     shop.findings.filter(f => f.type !== "chain").forEach(f => S.registry.unshift({ at:o.doneAt, type:f.field, src:f.values.map(v => v.src).join(", "), method, minutes:m, orderId:o.id }));
     move(o, "done", "Zmiany wprowadzone. Ponowna kontrola " + fmtD(o.recheckAt) + "."); render();
   },
-  limit(fd){ const n = Number(fd.get("limit")); if (Number.isInteger(n) && n >= 1 && n <= 99){ S.limit = n; UI.flash = ["Limit zapisany.", "good"]; } render(); }
+  limit(fd){ const n = Number(fd.get("limit")); if (Number.isInteger(n) && n >= 1 && n <= 99){ S.limit = n; UI.flash = ["Limit zapisany.", "good"]; } render(); },
+  check(fd){
+    const d = S.draft; if (!d) return render();
+    d.values = Object.fromEntries(fd.entries()); UI.err = {};
+    const shop = String(fd.get("shop") || "").trim(), town = String(fd.get("town") || "").trim();
+    if (shop.length < 2) UI.err.shop = "Wpisz nazwę sklepu.";
+    if (town.length < 2) UI.err.town = "Wpisz miejscowość i ulicę.";
+    const res = {}, notes = {};
+    CHECK_FIELDS.forEach(([k]) => {
+      const r = fd.get("r-" + k), n = String(fd.get("n-" + k) || "").trim();
+      if (!RES[r]) UI.err["ck-" + k] = "Zaznacz wynik dla tego pola.";
+      else if ((r === "diff" || r === "hard") && !n) UI.err["ck-" + k] = "Napisz, co dokładnie widzi klient. To trafi na kartę wyniku.";
+      res[k] = r; notes[k] = n;
+    });
+    const manual = String(fd.get("minutes") || "").replace(",", ".").trim();
+    let minutes = r1((Date.now() - Date.parse(d.startedAt)) / 60000);
+    if (manual){ const m = Number(manual); if (!(m > 0 && m < 600)) UI.err.minutes = "Podaj czas w minutach, np. 6 albo 4,5."; else minutes = r1(m); }
+    if (Object.keys(UI.err).length){ UI.err.ck = "Uzupełnij zaznaczone pola. Stoper dalej liczy."; return render(); }
+    const c = { id:"S-" + rid().slice(0, 6).toUpperCase(), at:TODAY(), shop, town, segment:String(fd.get("segment")), origin:String(fd.get("origin")),
+      res, notes, minutes:Math.max(minutes, 0.1), price:null, shown:false, decision:"", manager:"", paid:false, repairMin:null };
+    if (hasFinding(c)) c.price = countRes(c, "diff") ? TEST_PRICES[S.checks.filter(hasFinding).length % TEST_PRICES.length] : null;
+    S.checks.unshift(c); S.draft = null;
+    UI.flash = [hasFinding(c) ? `Zapisano: ${shop}, ${fmtMin(c.minutes)}. Cena na karcie: ${c.price ? c.price + " zł" : "trudna sprawa"}.` : `Zapisano: ${shop}, ${fmtMin(c.minutes)}. Wszystko się zgadza.`, "good"];
+    render();
+  },
+  visit(fd, form){
+    const c = checkById(form.dataset.id); if (!c) return render();
+    UI.openCheck = c.id;
+    const shown = !!fd.get("shown"), decision = String(fd.get("decision") || ""), manager = String(fd.get("manager") || ""), paid = !!fd.get("paid"), rm = String(fd.get("repairMin") || "").trim();
+    let err = "";
+    if (paid && (!shown || decision !== "order" || manager !== "yes" || !(Number(rm) >= 1))) err = "Opłacone zlecenie wymaga: wynik pokazany, decyzja „zleca naprawę”, dostęp nadany i czas naprawy w minutach.";
+    else if ((decision || manager) && !shown) err = "Najpierw zaznacz, że wynik został pokazany.";
+    else if (rm && !(Number(rm) >= 1)) err = "Czas naprawy podaj w pełnych minutach.";
+    if (err){ UI.err["v-" + c.id] = err; return render(); }
+    delete UI.err["v-" + c.id];
+    Object.assign(c, { shown, decision, manager, paid, repairMin: rm ? Math.round(Number(rm)) : null });
+    UI.flash = ["Wizyta zapisana: " + c.shop + ".", "good"]; render();
+  }
 };
+setInterval(() => { const el = document.getElementById("stoper"); if (el && S.draft) el.textContent = fmtClock(Date.now() - Date.parse(S.draft.startedAt)); }, 1000);
 document.addEventListener("click", e => { const el = e.target.closest("[data-act]"); if (el && ACT[el.dataset.act]){ e.preventDefault(); ACT[el.dataset.act](el); } });
 document.addEventListener("submit", e => { const f = e.target.closest("[data-form]"); if (!f) return; e.preventDefault(); if (FORM[f.dataset.form]) FORM[f.dataset.form](new FormData(f), f); });
 document.addEventListener("change", e => {
@@ -412,8 +625,8 @@ document.addEventListener("change", e => {
   save(); if (S.selfFix) render();
 });
 document.addEventListener("input", e => { const o = e.target.closest("[data-other]"); if (o){ S.picks[o.dataset.other] = o.value.trim() || null; save(); } });
-window.addEventListener("hashchange", () => { const v = location.hash.slice(1); if (VIEWS[v] && v !== S.view){ if (v === "operator") S.mode = "operator"; else S.mode = "client"; S.view = v; UI.err = {}; render(); } });
-{ const v = location.hash.slice(1); if (VIEWS[v]){ S.view = v; S.mode = v === "operator" ? "operator" : "client"; } }
+window.addEventListener("hashchange", () => { const v = location.hash.slice(1); if (VIEWS[v] && v !== S.view){ S.mode = OP_VIEWS.includes(v) ? "operator" : "client"; S.view = v; UI.err = {}; render(); } });
+{ const v = location.hash.slice(1); if (VIEWS[v]){ S.view = v; S.mode = OP_VIEWS.includes(v) ? "operator" : "client"; } }
 render();
 </script>
 </body>

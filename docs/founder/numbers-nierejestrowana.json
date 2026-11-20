@@ -1,0 +1,64 @@
+{
+ "business": "Sklep w porządku (raportfirmy.pl): naprawa danych sklepu w Google i na Facebooku. Wariant: działalność nierejestrowana (bez VAT, bez ZUS, bez biura rachunkowego)",
+ "unit": "zlecenie",
+ "price": 149.0,
+ "variable": [
+  {
+   "label": "Bezpłatne sprawdzenia: 10 na 1 opłacone zlecenie x 15 min x 60 zł/h (linia sukcesu testu: 3 zlecenia z 30 sprawdzeń)",
+   "cost": 150.0
+  },
+  {
+   "label": "Naprawa w Google i na Facebooku: 67,5 min (środek z 45–90 min) x 60 zł/h",
+   "cost": 67.5
+  },
+  {
+   "label": "Telefon: przeprowadzenie przez dodanie menedżera, 10 min x 60 zł/h",
+   "cost": 10.0
+  },
+  {
+   "label": "Bezpłatna kontrola po 30 dniach, 15 min x 60 zł/h",
+   "cost": 15.0
+  },
+  {
+   "label": "Płatność BLIK lub przelew (przyjęte 0 zł, do sprawdzenia w banku)",
+   "cost": 0.0
+  }
+ ],
+ "fixed_monthly": [
+  {
+   "label": "Hosting MyDevil MD1 (szacunek, do podania)",
+   "cost": 20
+  },
+  {
+   "label": "Domena i poczta (szacunek)",
+   "cost": 10
+  }
+ ],
+ "startup": [
+  {
+   "label": "Regulamin, polityka prywatności, umowa powierzenia, upoważnienie (szacunek)",
+   "cost": 1500
+  },
+  {
+   "label": "Pierwsze działania marketingowe (budżet eksperymentów)",
+   "cost": 200
+  }
+ ],
+ "days_per_month": 1,
+ "plan_per_day": 10,
+ "capacity_per_day": 10,
+ "ramp_per_day": [
+  3,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  10,
+  10,
+  10
+ ]
+}

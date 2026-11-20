@@ -22,32 +22,149 @@ _Kwoty w zł netto; kalkulator liczy w miesiącach, więc „w miesiącu” zast
 
 ## The idea
 
-Darmowe sprawdzenie, co klienci widzą o małym sklepie stacjonarnym w Google i na Facebooku, a potem naprawa danych za właściciela w jednej cenie (149 zł brutto, płatne po wykonaniu). Abonament (opieka) tylko po odebranym zleceniu i tylko z konkretnym powodem. Pełny zarys: `ZARYS-APLIKACJI.md`; plan startu: `launch.md`.
+- **Co to jest:** darmowe sprawdzenie, co klienci widzą o małym sklepie stacjonarnym w Google i na Facebooku (12 pól, każde ze źródłem i datą), a jeśli coś się nie zgadza, naprawa za właściciela, płatna dopiero po wykonaniu.
+- **Dla kogo:** właściciel małego sklepu stacjonarnego w Polsce: niezależny spożywczy, pod szyldem sieci albo specjalistyczny. Pracuje 12 godzin za ladą i ufa swojej księgowej.
+- **Co i za ile:** sprawdzenie 0 zł; naprawa 149 zł brutto (test 179 i 199 zł); trudne sprawy w stałej cenie 349 / 449 zł (propozycja). Abonament dopiero po 20 opłaconych naprawach.
+- **Gdzie i jak:** jedna okolica; klienci przychodzą przez partnera (biuro rachunkowe, hurtownia) i wizyty osobiste z kartą wyniku. Usługę robi jedna osoba z imieniem i telefonem, w roli menedżera profilu, bez haseł.
+- **Budżet i ograniczenia:** 200 zł na eksperymenty; ok. 1 700 zł potrzebne przed startem; jedna osoba; test na 30 prawdziwych sklepach do 20.12.2026, start 18.01.2027. Pełny zarys: `ZARYS-APLIKACJI.md`.
 
 ## Summary
 
-**Werdykt: Not yet.** Zanim zaczniesz, musi się zmienić jedna rzecz: czas pracy na jedno opłacone zlecenie. Dziś to ok. 242,5 minuty, z czego 150 minut zabierają darmowe sprawdzenia sklepów, które nic nie kupią. Co zrobić: sprawdzenie skrócić do 5 minut, a naprawę do 45 minut (`/founder-ops`), sklepy brać z polecenia partnera, czyli 5 sprawdzeń na zlecenie zamiast 10 (`/founder-offer`), i przetestować cenę 199 zł (`/founder-pricing`). W kalkulatorze dopiero wszystkie te zmiany razem dają zysk: 1 717 zł w 1. roku przy progu 5 zleceń w miesiącu.
+**Werdykt: Not yet.** Muszą się zmienić dwie rzeczy, a trzecią trzeba udowodnić:
+1. **Czas pracy:** z 242,5 do ok. 95 minut na opłacone zlecenie. Sprawdzenie ma trwać 5 min zamiast 15, przypadać 5 na jedno zlecenie zamiast 10, a naprawa ma zająć 45 min. Procedura jest w `ops.md`, narzędzie w aplikacji.
+2. **Forma działalności:** działalność nierejestrowana albo zwolnienie z VAT. Wtedy 149 zł zostaje w całości i nie ma kosztu biura rachunkowego. Decyzję podejmuje księgowy (`ops.md`, punkt 5).
+3. **Prawdziwi kupujący zamiast panelu:** ≥ 3 opłacone zlecenia z ≥ 10 pokazanych wyników do 20.12.
 
-**Co to jest.** raportfirmy.pl za darmo sprawdza, co klienci widzą o małym sklepie w Google i na Facebooku. Jeśli coś się nie zgadza, poprawia to za właściciela za 149 zł brutto, płatne po wykonaniu. Klientem jest właściciel małego sklepu stacjonarnego, a dociera się do niego przez biuro rachunkowe albo hurtownię, którym już ufa.
+Jeśli spełnione są punkty 1 i 2, kalkulator zalicza wszystkie trzy kontrole liczbowe: +54 zł na zlecenie, próg 1 zlecenie w miesiącu, +4 230 zł w 1. roku. Nie zalicza jedynie symulowanego panelu. Ten wynik obali tylko punkt 3.
 
-**Trzy liczby** (`cfo.md`, godzina CEO liczona po 60 zł):
-- każde zlecenie przynosi **−121,36 zł** przed kosztami stałymi (marża przy limicie 10 zleceń w miesiącu: −127%);
-- próg rentowności **nie istnieje**, bo każde zlecenie traci;
-- 1. rok: **−14 276 zł** zysku operacyjnego.
+**Co to jest.** RaportFirmy.pl za darmo sprawdza, co klienci widzą o małym sklepie w Google i na Facebooku. Jeśli coś się nie zgadza, poprawia to za właściciela za 149 zł, płatne po wykonaniu. Klient to właściciel małego sklepu stacjonarnego, do którego dochodzimy przez jego biuro rachunkowe albo hurtownię.
 
-Bez wyceny czasu usługa jest na plus od 3 zleceń w miesiącu (6 337 zł w 1. roku). Wtedy jednak płaci Ci ok. 30 zł za godzinę przed podatkiem.
+**Trzy liczby dzisiaj** (`cfo.md`, godzina CEO po 60 zł, z VAT): **−121,36 zł** na zlecenie (marża −127% przy limicie 10 w miesiącu), próg rentowności **nie istnieje**, 1. rok **−14 276 zł**.
 
-**Panel i zarząd.** Zarząd się nie zbierał (nie ma `board.md`). W panelu ze 149 zł (`panel/`, czyli `panel-v2`) kupiło **0 z 20** symulowanych kupujących. Zgodni byli w dwóch sprawach. Cena nie jest przeszkodą: tylko 2 z 20 uznali 149 zł za „za drogo”. A 15 z 20 zapłaciłoby, gdyby sprawdzenie pokazało konkretny błąd we własnym sklepie. Podzielili się w sprawie potrzeby: 10 uważa, że klienci i tak znają godziny, inni chcą mieć to z głowy. 7 nie ufa obcej firmie z dostępem menedżera, chyba że poleci ją księgowa, centrala albo znajomy.
+**Zarząd, panel i rynek.** Zarząd głosował **3 × FUND IF, średnio 4,3/10**. Wszystkie trzy soczewki zgodziły się co do dwóch ryzyk: czas pracy zjada marżę, a sprzedaż zależy od tego, ile prawdziwych sklepów ma błąd. Różnią się co do ceny (Offers chce 199 zł, panel stawia granicę na 179 zł) i co do źródła przewagi (Monopoly widzi ją w wyłącznym partnerze, Product w zawężeniu oferty). W panelu kupiło **0 z 20**, ale tylko 2 z 20 uznało 149 zł za za drogo, a 15 z 20 zapłaciłoby po zobaczeniu błędu u siebie. Konkurencja (`competitors.md`) bierze 300–2 500 zł z góry i obiecuje klientów. Nikt nie sprzedaje „najpierw dowód, płatność po wykonaniu”. Luka jest jednak wąska, bo właściciel może poprawić błąd sam, za darmo.
 
-**Uwaga do sekcji.** Cennik i marketing w paczce pisano pod Skaner. Cennik jest teraz w `pricing-skaner.md` i dla usługi go nie ma, a przekaz z `marketing.md` trzeba przestawić na „klient znajdzie Twój sklep” (`launch.md`). Nie było też zarządu, mapy konkurencji, marki ani planu operacji.
+**Największe ryzyko** to odsetek prawdziwych sklepów z rozbieżnością. Poniżej 15% nie ma startu. Zmierzy go test, a zakładka „Test 30 sklepów” w aplikacji liczy wszystkie warunki zarządu na bieżąco.
 
-**Największe ryzyko.** Nikt nie wie, w ilu prawdziwych sklepach sprawdzenie znajdzie błąd ani ile minut naprawdę zajmuje. Odpowie na to grudniowy test z `launch.md`: 30 sprawdzeń, a przy każdym mierzony czas.
+**Czego potrzebujesz, żeby zacząć:** ok. **1 700 zł** (1 500 zł na dokumenty prawne, szacunek; 200 zł na druk i spotkania), rozmowy z księgowym o formie i VAT oraz partnera z ≥ 50 sklepami w okolicy, z prowizją ≤ 25 zł za opłacone zlecenie (`marketing.md`, A5).
 
-**Czego potrzebujesz, żeby zacząć.** Ok. **1 700 zł gotówki** (1 500 zł na dokumenty prawne, szacunek, i 200 zł na marketing) oraz pierwszego testu: 30 ręcznych sprawdzeń i ≥ 3 opłacone zlecenia do 20.12.2026.
-
-**W tym tygodniu:** dokończ 30 sprawdzeń do 22.11 i zapisuj przy każdym minuty ze stopera oraz informację, czy jest rozbieżność. Te dwie liczby decydują o całym modelu.
+**W tym tygodniu:** do 22.11 zrób 30 sprawdzeń w zakładce „Test 30 sklepów” (`index.html#test`) ze stoperem i po każdym dniu pobierz CSV. Do tego jedno pytanie do księgowego: czy ta usługa może iść w działalności nierejestrowanej albo ze zwolnieniem z VAT.
 
 _Panel to symulowani kupujący, a liczby to projekcje z wejść w `cfo-sources.md`. Potwierdzają je dopiero prawdziwi klienci i prawdziwe oferty. To nie jest porada finansowa, prawna ani podatkowa._
+
+## What the board said
+
+Trzy soczewki to streszczenia opublikowanych ram (Offers, Monopoly, Product), a nie głosy ich autorów. Memo są w `board/`, a materiał wejściowy w `board/brief.md`.
+
+### 1. Głosowanie
+
+**3 × FUND IF, średnia 4,3/10** (Offers 4, Monopoly 4, Product 5). Nikt nie głosował „pass”, ale nikt też nie dał więcej niż 5. Zarząd mówi: „jeszcze nie wiadomo, sprawdźcie to w grudniu”.
+
+### 2. Ryzyka wskazane przez więcej niż jedną soczewkę
+
+| Ryzyko | Kto je wskazał | Liczba z paczki |
+|---|---|---|
+| **Czas pracy zjada marżę.** 242,5 min na opłacone zlecenie, w tym 150 min darmowych sprawdzeń | wszystkie trzy | −121,36 zł na zleceniu przy 60 zł/h; ok. 30 zł/h bez wyceny czasu |
+| **Ból jest rzadki, dopóki właściciel nie zobaczy błędu.** Wszystko zależy od odsetka prawdziwych rozbieżności | wszystkie trzy | 0/20 kupuje; 10/20 „sam poprawię w kwadrans”; 15/20 zapłaci, gdy zobaczy błąd |
+| **Zaufanie i łatwość kopiowania.** Kategoria ma złą opinię, a usługę łatwo powtórzyć | Offers, Monopoly | 7/20 odmawia z braku zaufania; nie ma technologii ani efektu sieci |
+| **Sklepy sieciowe dostają mniej.** Część pól ustala centrala | Monopoly, Product | ok. 30% grupy docelowej; 3/20 „centrala to robi” |
+
+Tylko soczewka Product wskazała **liczbę przekazań na ścieżce** (partner → karta → dodanie menedżera → zmiany → akceptacja → kontrola). Każde przejście gubi klientów, a nikt nie mierzy, ilu.
+
+### 3. Warunki: lista do odhaczenia
+
+| # | Warunek | Kto | Termin | Kto to sprawdza | Stan na 20.11 |
+|---|---|---|---|---|---|
+| 1 | ≥ 30% z 30 sprawdzeń ma realną rozbieżność; ≥ 3 opłacone zlecenia z ≥ 10 pokazanych wyników. Poniżej 15%: brak startu | wszyscy | 20.12.2026 | test (`launch.md`) | w toku |
+| 2 | Zmierzony medianowy czas na opłacone zlecenie, razem ze sprawdzeniami, ≤ 120 min **albo** cena, przy której zlecenie przy 60 zł/h nie traci (warunek najostrzejszy, z soczewki Product; Offers: 125, Monopoly: 150 w ciągu 90 dni) | wszyscy | 21.12.2026 | `/founder-cfo` z czasami z testu | ✗ dziś 242,5 min (szacunek) |
+| 3 | ≥ 5 pokazanych wyników dostaje ofertę za 199 zł; konwersja porównana ze 149 zł | Offers | 20.12.2026 | test, `pricing.md` | dodane do testu |
+| 4 | ≥ 50% właścicieli, którym pokazano błąd, nadaje uprawnienia menedżera; dla każdego kroku zapisane, ilu odpadło | Product | 20.12.2026 | rejestr testu (karta sprawdzenia w aplikacji) | narzędzie gotowe |
+| 5 | Stałe ceny trudnych spraw opublikowane | Offers, Product | 18.01.2027 | `pricing.md` | propozycja w `pricing.md` |
+| 6 | Podpisany partner: ≥ 50 sklepów-klientów w jednej okolicy, wyłączność lub pierwszeństwo na ≥ 12 mies., prowizja ustalona w zł | Monopoly (Offers: koszty partnera ustalone) | 18.01.2027 | CEO | ✗ |
+| 7 | Mapa konkurencji pokazująca konkretną różnicę | Monopoly | 18.01.2027 | `competitors.md` | ✓ jest (ceny do sprawdzenia na stronach) |
+| 8 | W ciągu 90 dni od startu: ≥ 20% sklepów partnera sprawdzonych, ≥ 5% opłaconych | Monopoly | 18.04.2027 | przegląd 90 dni | — |
+| 9 | Abonament, raport firmy, plan „Biuro” i KSeF poza zakresem do 20 opłaconych napraw | Product | stale | CEO | do decyzji |
+
+### 4. Gdzie się różnią
+
+- **Cena.** Offers uważa, że 149 zł to za mało, i chce testu 199 zł, bo mediana „za drogo” to 225 zł. Monopoly i Product nie traktują ceny jako głównej dźwigni. Dla nich liczą się kanał i skupienie.
+- **Fosa.** Monopoly widzi jedyną trwałą przewagę w wyłącznym partnerze i rejestrze metod, który z czasem skraca sprawdzenie. Offers szuka jej w ofercie (gwarancja, bonusy), a Product w rzemiośle i doświadczeniu.
+- **Zakres.** Product chce wyciąć wszystko poza naprawą (warunek 9). Offers proponuje coś dołożyć tanim kosztem, np. kartę godzin świątecznych na drzwi albo przypomnienie przed kolejnymi świętami.
+
+### 5. Najmocniejsza wersja tego biznesu, jaką widzi zarząd
+
+To nie jest dokładnie to, co jest w pitchu. **Produktem jest sprawdzenie, a nie naprawa.** Biuro rachunkowe albo hurtownia z co najmniej 50 sklepami w jednej okolicy pokazuje swoim klientom wynik sprawdzenia: konkretną rozbieżność ze źródłem i datą albo „wszystko się zgadza”. Sprawdzenie trwa 5 minut, bo robi je lista kontrolna z narzędziem, a nie 15 minut ręcznej pracy. Płatna naprawa kosztuje tyle, żeby przy wycenionym czasie się opłacała (prawdopodobnie 199 zł). Pieniądze robią trudne sprawy, których właściciel sam nie załatwi (duplikat, przejęty profil, odzyskanie dostępu), za stałe, opublikowane ceny. Wszystko inne, czyli abonament, raport i KSeF, czeka na 20 opłaconych napraw. W tej wersji fosą jest kanał i rejestr metod, a nie technologia.
+
+## The competition
+
+**Ograniczenie, które trzeba znać.** Środowisko, w którym to powstało, blokowało pobieranie stron. Wszystkie fakty pochodzą więc z wyników wyszukiwarki (tytuł, adres i krótkie streszczenie), a nie z przeczytanych stron. Nie przeczytałem też żadnych opinii klientów konkurencji. Każdą cenę sprawdź na stronie, zanim się na nią powołasz. Pełna tabela jest w `competitors.csv`.
+
+### 1. Kto już to robi
+
+| Nazwa | Typ | Cena porównywalnej usługi | Co sprzedaje | Źródło |
+|---|---|---|---|---|
+| Właściciel sam, w Profilu Firmy w Google | substytut | 0 zł | edycja godzin, w tym świątecznych; odrzucanie zmian sugerowanych przez Google | [pomoc Google](https://support.google.com/business/answer/14368911?hl=pl) |
+| Centrala lub opiekun sieci | substytut | 0 zł w ramach sieci | wizytówka szyldu | panel-v2 (symulacja, brak źródła publicznego) |
+| Freelancerzy | bezpośredni | 300–800 zł jednorazowo (najniższe 100–500 zł) | założenie i optymalizacja | [konkurometr.pl](https://konkurometr.pl/blog/wizytowka-google-ile-kosztuje), [zuczkowski.com.pl](https://zuczkowski.com.pl/ile-kosztuje-wizytowka-google-cennik-2026/) |
+| Lokal360 | bezpośredni | od 490 zł | profesjonalny setup | [lokal360.pl](https://lokal360.pl/przewodniki/wizytowka-google/) |
+| Studio72 | bezpośredni | 1 200 zł netto | jednorazowa optymalizacja | [studio72.net](https://studio72.net/blog/pozycjonowanie-wizytowki-google-prawdy-i-mity/) |
+| Agencje SEO lokalnego | bezpośredni | 500–2 500 zł jednorazowo, obsługa 300–1 500 zł/mies. | optymalizacja i stała obsługa | [kcmobile.pl](https://kcmobile.pl/artykuly/ile-kosztuje-wizytowka-google-cennik-2026/) |
+| Ogłoszenia na Allegro Lokalnie | bezpośredni | nieznana (strona niedostępna) | „pozycjonowanie wizytówki” | [allegrolokalnie.pl](https://allegrolokalnie.pl/oferta/pozycjonowanie-wizytowki-google-moja-firma) |
+| Localo | pośredni (narzędzie do samodzielnej pracy) | 39 USD/mies. rocznie, 49 USD miesięcznie | aplikacja do wizytówki i SEO lokalnego | [toolradar](https://toolradar.com/tools/localo/pricing), [frontdeskreview](https://frontdeskreview.com/software/local-seo-tools/localo/) |
+| NapoleonCat (polska firma) | pośredni | od 89 USD/mies. rocznie (Pro) | opinie i posty dla wielu wizytówek | [napoleoncat.com](https://napoleoncat.com/pl/google-my-business/) |
+| Semrush Local | pośredni | 30 USD/mies. (źródło nieoficjalne) | dane lokalne | [frontdeskreview](https://frontdeskreview.com/software/local-seo-tools/localo/) |
+| Telefoniczni „sprzedawcy wizytówek” | psują zaufanie do całej kategorii | ok. 400 zł za „przedłużenie widoczności” | opłata za coś, co w Google jest darmowe | [antyweb.pl](https://antyweb.pl/google-moja-firma-oszusci), [telepolis.pl](https://www.telepolis.pl/wiadomosci/735816907-nieznany-numer-kto-dzwoni-google), [pro.rp.pl](https://pro.rp.pl/prawo-w-firmie/art1876651-umowa-zawarta-przez-telefon-moze-firme-sporo-kosztowac) |
+
+### 2. Ceny jednorazowej usługi
+
+- **Najniżej:** 100–500 zł, najtańsze oferty według poradników.
+- **Typowo:** 300–800 zł u freelancera; konkretne oferty to 490 zł (Lokal360) i 1 200 zł netto (Studio72).
+- **Najwyżej:** 2 500 zł w agencji.
+
+**149 zł brutto plasuje się na samym dole rynku**, poniżej typowych widełek. W panelu-v2 mediana „za drogo” wyniosła 225 zł. Cena nie jest więc barierą. Raczej może wyglądać podejrzanie tanio, co przy złej reputacji kategorii jest ryzykiem.
+
+### 3. Mapa pozycji
+
+Dwie osie, które liczą się dla właściciela sklepu: **kto wykonuje pracę** (ja sam ↔ ktoś za mnie) i **co obiecują** (poprawne dane ↔ wyższa pozycja w Google i więcej klientów).
+
+```
+                    obiecują pozycję i klientów
+                              │
+       Localo, Semrush        │     agencje SEO (500–2 500 zł + abonament)
+       (39–49 USD/mies.)      │     Studio72 (1 200 zł), Lokal360 (od 490 zł)
+                              │     freelancerzy, Allegro (100–800 zł)
+  ja sam ─────────────────────┼───────────────────────────── za mnie
+                              │
+       Google sam (0 zł)      │     ► Sklep w porządku (149 zł, płatne po wykonaniu,
+       centrala sieci (0 zł)  │       „wszystko się zgadza” bez oferty)
+                              │
+                       obiecują poprawne dane
+```
+
+### 4. Na co narzekają kupujący
+
+Opinii klientów konkurencji nie przeczytałem, bo strony były niedostępne. Ten punkt trzeba uzupełnić. Wyniki wyszukiwania pokazują jeden wyraźny i dobrze udokumentowany wątek:
+
+1. **Telefony od firm, które podszywają się pod Google i każą płacić za darmową wizytówkę.** Wspomina o nich kilka niezależnych źródeł ([antyweb.pl](https://antyweb.pl/google-moja-firma-oszusci), [telepolis.pl](https://www.telepolis.pl/wiadomosci/735816907-nieznany-numer-kto-dzwoni-google), [pro.rp.pl](https://pro.rp.pl/prawo-w-firmie/art1876651-umowa-zawarta-przez-telefon-moze-firme-sporo-kosztowac)). Jest też [Interia](https://geekweek.interia.pl/bezpieczenstwo/news-jeden-numer-na-150-wizytowkach-oszusci-opanowali-mapy-google,nId,23550166) o fałszywych numerach telefonu podmienianych na wizytówkach. Część artykułów jest starsza. Ten wątek tłumaczy, skąd w panelu wzięło się zdanie „takich od wizytówek Google miałem już kilku”.
+2. **Płacenie za „pozycjonowanie” bez mierzalnego efektu.** To tylko wątek z poradników, za mało źródeł. Do potwierdzenia w opiniach.
+
+### 5. Luka
+
+Na podstawie tego, co dało się znaleźć: **nikt nie sprzedaje „naprawy konkretnego błędu, płatnej po wykonaniu”, z darmową diagnozą, która potrafi powiedzieć „wszystko się zgadza”.** Konkurencja sprzedaje „optymalizację” albo „pozycjonowanie”, z góry i z obietnicą wyników. Sklep w porządku sprzedaje odwrotnie:
+
+- dowód przed zapłatą: jest konkretna rozbieżność, ze źródłem i datą;
+- zero ryzyka: płaci się po wykonaniu, a jak się nie uda, nie płaci się wcale;
+- spójność Google i Facebooka, a nie tylko Google;
+- dostęp przez kogoś, komu sklep już ufa (biuro rachunkowe, hurtownia), a nie przez telefon.
+
+Ta luka jest jednak wąska. Właściciel, który zobaczy błąd, może go poprawić sam za darmo (substytut za 0 zł), co w panelu zrobiło 10 z 20 osób. **Wartość leży więc w diagnozie i w zdjęciu z głowy pracy, a nie w samej poprawce.** Najmocniejszy kawałek oferty to sprawy, których właściciel sam nie zrobi: duplikat, przejęty profil, odzyskanie dostępu, zmiany wprowadzane przez Google bez jego wiedzy.
+
+### 6. Kto może skopiować najszybciej
+
+- **Freelancerzy i agencje** mogą jutro wystawić pakiet „poprawa danych za 149 zł”. Nie mają jednak kanału przez biura rachunkowe ani zasady „płacisz po wykonaniu”. Obroną są partner, rejestr metod i reputacja jednej, podpisanej osoby.
+- **Localo i podobne narzędzia** mogą zautomatyzować przypomnienie o godzinach świątecznych, bo API Profilu Firmy obsługuje godziny niestandardowe. To zagrożenie dla przyszłego abonamentu „Opieka”, nie dla jednorazowej naprawy.
+- **Sam Google** może przypominać właścicielom o godzinach świątecznych. Nie sprawdzałem, czy i jak robi to w Polsce. To otwarte pytanie, które może zmniejszyć liczbę rozbieżności znalezionych w grudniowym teście.
+
+_Źródła z dostępem tylko przez wyszukiwarkę. To nie jest porada prawna._
 
 ## The buyer panel
 
@@ -113,7 +230,86 @@ These are simulated buyers, not customers. Use this to find objections and weak 
 
 20 buyers gave all four price answers. Run founder-pricing's van_westendorp.py on the answers folder.
 
+## Pricing
+
+Ceny brutto, chyba że zaznaczono „netto” (VAT 23%). Podstawy: odpowiedzi cenowe 20 symulowanych kupujących z panelu oferty za 149 zł (`panel-v2/answers`, wynik w `pricing-curve-uslugi.md`), ceny konkurencji (`competitors.md`) i kalkulator CFO (`numbers.json`). Symulowane odpowiedzi pokazują, co warto testować. Dowodem nie są. Cennik Skanera jest w `pricing-skaner.md`.
+
+### 1. Cena: 149 zł zostaje w teście, a 179 zł testujemy obok
+
+| | |
+|---|---|
+| Akceptowalny zakres (panel) | **40–179 zł** (PMC/OPP 40 zł, IPP 81 zł, PME 179 zł) |
+| Mediany odpowiedzi | za tanio 30 zł · okazja 60 zł · zaczyna być drogo 149 zł · za drogo 225 zł (narzędzie podaje 250 zł, bo bierze wyższą z dwóch środkowych wartości) |
+| Ile osób uznaje cenę za „za drogo” | 149 zł: **2/20** · 179 zł: **4/20** · 199 zł: **7/20** |
+| Konkurencja, jednorazowa usługa | freelancer 300–800 zł, Lokal360 od 490 zł, Studio72 1 200 zł netto, agencje do 2 500 zł |
+
+**Dlaczego nie 199 zł od razu.** Według panelu 199 zł leży powyżej granicy „za drogo” (PME 179 zł). Soczewka Offers w zarządzie chce jednak testu 199 zł (`board.md`, warunek 3). Prawdziwi kupujący rozstrzygną to lepiej niż panel, więc w teście grudniowym co drugi pokazany wynik dostaje cenę 179 zł albo 199 zł. Szczegóły w punkcie 4.
+
+### 2. Ceny nie naprawią marży. Naprawi ją czas pracy
+
+| Scenariusz czasu pracy (`cfo.md`) | Cena | Wkład nza zlecenie | Próg | Zysk w 1. roku |
+|---|---|---:|---:|---:|
+| Dziś: 242,5 min nza zlecenie | 149 zł | −121,36 zł | nigdy | −14 276 zł |
+| Dziś | 179 zł | −96,97 zł | nigdy | −12 202 zł |
+| Dziś | 199 zł | −80,71 zł | nigdy | −10 820 zł |
+| Cel: 95 min (5 sprawdzeń × 5 min, naprawa 45 min, telefon 10, kontrola 15) | 149 zł | 26,14 zł | 13 / mies. | −1 738 zł |
+| Cel | 169 zł | 42,40 zł | 8 / mies. | −356 zł |
+| Cel | **179 zł** | **50,53 zł** | **7 / mies.** | **335 zł** |
+| Cel | 199 zł | 66,79 zł | 5 / mies. | 1 717 zł |
+
+Przy dzisiejszym czasie pracy cena musiałaby wynosić ok. 299 zł brutto (243,09 zł netto), żeby zlecenie przestało tracić. To daleko poza zakresem z panelu. **Najpierw trzeba skrócić czas (`ops.md`), a dopiero potem podnosić cenę.** W scenariuszu celu 179 zł to najniższa przetestowana cena, przy której 1. rok wychodzi na plus.
+
+### 3. Drabinka
+
+| Szczebel | Cena | Po co klient wchodzi wyżej |
+|---|---|---|
+| Sprawdzenie | 0 zł | Wynik ze źródłem i datą albo „wszystko się zgadza”. Także instrukcja „poprawię sam” za darmo |
+| Naprawa | 149 zł (test 179/199 zł) | Nie robi tego sam, akceptuje w 5 min, dostaje teczkę przed/po i kontrolę po 30 dniach |
+| **Trudna sprawa** (propozycja) | **349 zł**: duplikat wizytówki albo zmiana wprowadzona przez Google, która wraca · **449 zł**: odzyskanie dostępu albo przejęty profil | Sprawy, których właściciel sam nie załatwi. Cena stała przed startem; jeśli trwa dłużej, ryzyko jest nasze. Nie udało się = nie płacisz |
+| Opieka (później) | 49 zł/mies., tylko z powodem | Wraca dopiero po 20 opłaconych naprawach (`board.md`, warunek 9) |
+
+**Jak powstały ceny trudnych spraw.** 349 i 449 zł to ok. 4,7 i 6 h pracy przy 60 zł/h netto (283,74 i 365,04 zł netto). Obie ceny są poniżej typowych widełek freelancera (300–800 zł netto lub brutto, zależnie od oferty). To hipoteza do testu, nie zmierzony koszt. Warunek zarządu nr 5: ceny trzeba opublikować do 18.01.2027.
+
+### 4. Oferta otwarcia i test
+
+**Oferta otwarcia, bez rabatu i bez przekreślonej ceny:** pierwsze 10 sklepów od partnera dostaje do 31.01.2027 kartkę na drzwi z godzinami świątecznymi i przypomnienie przed Wielkanocą (28.03.2027; Wielka Sobota 27.03, handel do 14:00). Pilność jest prawdziwa: limit zleceń w miesiącu, bo pracuje jedna osoba.
+
+**Test cen w grudniu.** Na karcie wyniku ceny zmieniają się na przemian: kolejne pokazane wyniki dostają 149 zł, 179 zł, 149 zł, 199 zł i tak dalej. Narzędzie „Karta sprawdzenia” w panelu opiekuna (`index.html`) zapisuje, jaką cenę pokazano i czy klient kupił. Reguła na 21.12: wybieramy najwyższą cenę, przy której konwersja nie spada o więcej niż połowę względem 149 zł. Przy małej próbie (≥ 10 wyników) to wskazówka, nie statystyka.
+
+### 5. Obiekcje cenowe z panelu, dosłownie
+
+1. „Darmowe sprawdzenie zrobię chętnie, bo nic nie kosztuje. Ale jak mi pokażecie, że godziny w Google i na Facebooku się różnią, to sam to poprawię wieczorem w kwadrans, a 149 zł zostanie w kasie.” (P003)
+2. „149 zł za poprawki w Google, których efektu nie zobaczę w kasie, to dla mnie wydatek bez dowodu.” (P002)
+3. „Najwyżej wpiszę ten NIP za darmo z ciekawości, ale 149 zł obcej firmie bez pytania centrali nie zapłacę.” (P007)
+
+Odpowiedź marketingu (`marketing.md`, część „Sklep w porządku”): „poprawię sam” to uczciwa opcja, więc dajemy darmową instrukcję. Płatna jest robota, której nie chce się robić wieczorem, oraz sprawy, których nie da się zrobić w kwadrans.
+
 ## The offer
+
+### Oferta v3, obowiązująca (20.11.2026)
+
+Powstała z v2 (niżej) po panelu, zarządzie (`board.md`), konkurencji (`competitors.md`), cenach (`pricing.md`) i operacjach (`ops.md`). Najważniejsza zmiana: **wartością jest dowód przed zapłatą i zdjęcie pracy z głowy, a nie sama poprawka.** Zmienia się też kolejność: najpierw darmowy wynik, potem cena.
+
+| Element | Co klient dostaje | Koszt dla nas (cel z `ops.md`) | Status |
+|---|---|---|---|
+| **Sprawdzenie** | 12 pól w Google i na Facebooku, każde ze źródłem i datą; karta wyniku do ręki; „wszystko się zgadza” bez oferty | 5 min | rdzeń, 0 zł |
+| **Naprawa** | zmiany za właściciela, akceptacja w 5 min, teczka przed/po | 45 min + 10 min telefonu | rdzeń, **149 zł** (test 179 i 199 zł) |
+| **Gwarancja** | nic nie znaleźliśmy = nic nie płacisz; nie udało się = nie płacisz; płatność po wykonaniu | ryzyko po naszej stronie | rdzeń |
+| **Kontrola po 30 dniach** | sprawdzamy, czy Google nie zmienił danych | 15 min | bonus |
+| **Instrukcja „poprawię sam”** | za darmo, gdy właściciel woli sam | 0 (szablon) | bonus; odpowiedź na P003 |
+| **Trudna sprawa** | duplikat, przejęty profil, odzyskanie dostępu; stała cena przed startem | do 6 h | **349 / 449 zł** (propozycja) |
+| **Pola centrali** | nie zmieniamy, przygotowujemy zgłoszenie do centrali | 10 min | w cenie naprawy |
+| **Oferta otwarcia** | pierwsze 10 sklepów od partnera: kartka na drzwi z godzinami świątecznymi i przypomnienie przed Wielkanocą (28.03.2027) | druk | do 31.01.2027 |
+| Usunięte z v2 | 5 odpowiedzi na pytania klientów (G), porównanie z 3 sklepami (H) | 40 min | wycięte: za drogie w czasie, nikt w panelu o nie nie prosił |
+| Odłożone | opieka (abonament), raport firmy, plan „Biuro”, KSeF | — | do 20 opłaconych napraw (`board.md`, warunek 9) |
+
+**Nazwa i obietnica** (`brand.md`): „Sprawdzamy. Poprawiamy. Płacisz, gdy gotowe.”
+
+**Pilność:** tylko prawdziwa. Limit zleceń w miesiącu (pracuje jedna osoba) i daty z kalendarza: 24–27.12, Wielka Sobota 27.03.2027 (handel do 14:00).
+
+---
+
+## Oferta v1–v2: „Porządek w sieci” (6.11.2026, archiwum)
 
 6 listopada 2026. Metoda: soczewka Offers (streszczenie ramy z *100 złM Offers* A. Hormoziego, nie jego słowa). Materiał wejściowy: panel 20 symulowanych właścicieli sklepów (`panel-v1`), dokumenty projektu 01-PRODUKT, Katalog-produktów-i-obsługa-Google v0.1, Badanie potrzeb v0.1. Brak `numbers.json` (CFO nie był uruchamiany) — koszty poniżej to szacunki minut pracy CEO, nie wyliczenia.
 
@@ -263,8 +459,15 @@ Wszystkie kwoty w zł, netto. 149 zł brutto to 121,14 zł netto przy VAT 23%. J
 | 4. Cena 299 zł brutto (243,09 zł netto) | 0,59 zł | 560 | −3 910 zł |
 | 1 + 2 + 3 razem (149 zł) | 26,14 zł | 13 (ponad limit 10) | −1 738 zł |
 | 1 + 2 + 3 i cena 199 zł brutto (161,79 zł netto) | 66,79 zł | 5 | 1 717 zł |
+| 5. Działalność nierejestrowana albo zwolnienie z VAT (cała kwota 149 zł zostaje, bez księgowości 300 zł/mies.), czas dzisiejszy | −93,50 zł | nigdy | −8 308 zł |
+| **5 + 1 + 2 + 3 (czas docelowy 95 min), cena 149 zł** | **54,00 zł** | **1** | **4 230 zł** |
+| 5 + 1 + 2 + 3, cena 179 zł | 84,00 zł | 1 | 6 780 zł |
 
-Żadna dźwignia sama nie wystarcza. Na plus wychodzi dopiero połączenie: szybkie sprawdzenie, klienci z polecenia, krótka naprawa i wyższa cena. Cenę 199 zł trzeba sprawdzić. Panel v2 dał medianę „za drogo” 225 zł (`offer.md`), ale to symulacja.
+Żadna dźwignia sama nie wystarcza. **Najmocniejsze połączenie (dodane 20.11 po `ops.md`) to forma działalności i krótszy czas pracy.** Działalność nierejestrowana ma limit 10 813,50 zł przychodu na kwartał w 2026 r. Zwolnienie z VAT obowiązuje do 240 000 zł rocznie. Przy jednym i drugim 149 zł zostaje w całości i nie ma kosztu biura rachunkowego. Razem z czasem docelowym 95 min zlecenie zarabia nawet przy godzinie liczonej po 60 zł: +4 230 zł w 1. roku przy cenie 149 zł (`numbers-nierejestrowana.json` ze zmienionymi czasami). Oba warunki trzeba jednak sprawdzić: formę i VAT u księgowego, czas w teście. Do tego czasu `numbers.json` zostaje bez zmian.
+
+**Luka w kosztach stałych.** W 330 zł miesięcznie nie ma składek ZUS ani zdrowotnej. Przy zarejestrowanej działalności to kilkaset zł miesięcznie, zależnie od ulg, więc wynik wariantu z VAT jest w tej kwestii zbyt optymistyczny.
+
+Poza tym żadna z dźwigni 1–4 nie wystarcza sama. Na plus wychodzi dopiero połączenie: szybkie sprawdzenie, klienci z polecenia, krótka naprawa i wyższa cena. Cenę 199 zł trzeba sprawdzić. Panel v2 dał medianę „za drogo” 225 zł (`offer.md`), ale to symulacja.
 
 ### Gotówka
 
@@ -393,6 +596,92 @@ Fixed costs: 330 zł a month (Hosting MyDevil MD1 (szacunek, do podania) 20, zł
 No red flags in these numbers. They are only as good as the inputs: check every cost against a real quote.
 
 ## Marketing
+
+**Część A: „Sklep w porządku”, usługa, która startuje 18.01.2027 (20.11.2026).** Część B (16.11.2026) dotyczy agenta momentów, abonamentu i Skanera, czyli etapów 2–3 z `ZARYS-APLIKACJI.md`.
+
+### A1. Dowody, z których korzystam
+
+- **Panel 149 zł** (`panel/` = `panel-v2`, symulacja): 0/20 kupuje. Powody odmowy: potrzeba 10, zaufanie 7, nawyk 3. 15/20 zapłaci, gdy zobaczy błąd we własnym sklepie; 9/20 chce polecenia od zaufanej osoby. Segmenty nie różnią się od siebie (0% wszędzie), więc pierwszą grupę wybieram po kanale: **sklepy, które obsługuje jeden partner w jednej okolicy**.
+- **Konkurencja** (`competitors.md`): rynek sprzedaje „pozycjonowanie” i „optymalizację” z góry, za 300–2 500 zł, z obietnicą klientów. Kategorii szkodzą telefony od firm, które podszywają się pod Google.
+- **Cena i liczby** (`pricing.md`, `cfo.md`): 149 zł, test 179 i 199 zł. Ile wolno wydać na pozyskanie klienta, wynika z punktu A5.
+
+### A2. Pozycjonowanie
+
+1. **Rekomendowane, dla właściciela:** *Dla właściciela małego sklepu, który nie ma czasu pilnować internetu, Sklep w porządku sprawdza za darmo, co klienci widzą o sklepie w Google i na Facebooku, i poprawia to za niego, płatne dopiero po wykonaniu. W przeciwieństwie do firm od „pozycjonowania wizytówek” nie bierzemy pieniędzy z góry i nie obiecujemy klientów.*
+   Dlaczego: odpowiada na zaufanie (7/20), na „wydatek bez dowodu” (P002) i na złą reputację kategorii.
+2. **Sezonowe, na grudzień i Wielkanoc:** *Zanim klient odbije się od zamkniętych drzwi: sprawdzamy, czy Google zna Twoje godziny świąteczne.* Dobre jako hook, za wąskie jako pozycja na cały rok.
+3. **Dla partnera:** *Dla biura rachunkowego, które chce dać klientom coś pożytecznego bez dodatkowej pracy: darmowe sprawdzenie sklepu ze źródłem i datą, a naprawę robi podpisana osoba, płatna po wykonaniu.* Używamy go w rozmowie z partnerem, a nie wobec właściciela.
+
+### A3. Kanały
+
+| Kanał | Dlaczego | Koszt | Po czym poznamy, że działa |
+|---|---|---|---|
+| **Partner** (biuro rachunkowe, hurtownia) | 9/20 chce polecenia; warunek 6 zarządu | prowizja za opłacone zlecenie (A5) | ≥ 1 zgłoszenie tygodniowo od partnera |
+| **Wizyty osobiste z kartą wyniku** | dowód przed ceną (15/20) i brak zimnego kontaktu (art. 398 PKE) | czas i druk | ≥ 30% opłaconych z pokazanych |
+| **Polecenia klientów z grudnia** | najsilniejszy dowód w okolicy | 0 zł | ≥ 1 polecenie na 5 klientów |
+| Profil Firmy raportfirmy.pl w Google | ktoś, kto nas sprawdza, musi nas znaleźć z prawdziwymi danymi | 0 zł | — |
+
+**Czego nie robimy:** zimnych e-maili, telefonów i SMS-ów (art. 398 PKE i zła reputacja kategorii), reklam na Facebooku (kupujący nie ufa reklamie, P006: „tylko dlatego, że wyskoczyła mi reklama”), opinii z paneli w reklamach. Nie obiecujemy klientów ani pozycji w Google.
+
+### A4. Kampania od T−14 do T+16 (4.01–3.02.2027)
+
+| Data | Kanał | Co | Komunikat |
+|---|---|---|---|
+| pn 4.01 | partner | wysłanie partnerowi tekstu dla jego klientów (jego kanałem, tylko tam, gdzie klienci mają zgodę na kontakt) | pozycja 3 |
+| wt 5.01 | Profil Firmy raportfirmy.pl | uzupełnienie: godziny, telefon, opis z ceną i gwarancją | pozycja 1 |
+| śr 6.01 | — | karty wyniku i kartka dla partnera do druku (`index.html#test` → „Karta wyniku”) | — |
+| pn 11.01 | klienci z grudnia | prośba o zgodę na pokazanie przykładu „przed/po” (bez nazwy, jeśli tak woli) | — |
+| pt 15.01 | partner | dzień próbny: 3 sprawdzenia z poleceń partnera | — |
+| **pn 18.01** | partner + wizyty | **start**: partner przekazuje informację; 5 wizyt z kartą | hooki 1, 3, 6 |
+| 19–22.01 | wizyty | 5 wizyt dziennie, tylko w sklepach z rozbieżnością | hook według rozbieżności |
+| pn 25.01 | — | przegląd 7 dni (`launch.md`) | — |
+| 26–29.01 | partner | drugi tekst dla klientów partnera: prawdziwa liczba z testu („u X z 30 sklepów w okolicy coś się nie zgadzało”) | hook 9 |
+| pn 1.02 | — | przegląd 14 dni | — |
+| 2–3.02 | wizyty | sklepy z listy oczekujących | — |
+
+Kiedy nie ma nic nowego do powiedzenia: jedno zdanie w Profilu Firmy raportfirmy.pl o tym, co sprawdzamy w tym tygodniu (np. „ferie zimowe: czy Twoje godziny się zmieniają?”).
+
+#### Dziesięć hooków (każdy odpowiada na jedną obiekcję z panelu)
+
+| # | Obiekcja | Hook (zdanie na karcie albo przy ladzie) |
+|---|---|---|
+| 1 | „klienci to sąsiedzi, znają godziny” (potrzeba) | „Sąsiedzi znają Pana godziny. Ktoś, kto szuka sklepu w telefonie, widzi to:” + zdanie z karty |
+| 2 | „sam poprawię w kwadrans” | „Proszę bardzo, tu jest instrukcja za darmo. Jak zabraknie wieczoru, zrobimy to za Pana.” |
+| 3 | „takich od wizytówek miałem kilku” | „Nie dzwonimy. Przychodzimy osobiście, z kartką i nazwiskiem.” |
+| 4 | „Google za wizytówkę nie bierze” | „Zgadza się, Google nic nie bierze. My bierzemy tylko za wykonaną poprawkę.” |
+| 5 | „nie wpuszczę obcego jako menedżera” | „Bez haseł. Usuwa nas Pan jednym kliknięciem, instrukcja jest w teczce.” |
+| 6 | „wydatek bez dowodu” | „Nic nie znaleźliśmy, nic nie płacisz. Nie udało się, nie płacisz.” |
+| 7 | „centrala to robi” | „Tego, co ustala centrala, nie ruszamy. Pokażemy, co należy do Pana.” |
+| 8 | „nie mam czasu” | „5 minut przy ladzie na akceptację zamiast wieczoru przy komputerze.” |
+| 9 | „nie wiem, czy mam problem” | „U [X] z 30 sklepów w tej okolicy coś się nie zgadzało.” **Tylko z prawdziwą liczbą z testu.** |
+| 10 | moment (święta) | „Wielka Sobota 27.03.2027: handel do 14:00. Co pokaże Google?” (na marzec) |
+
+**Oferta otwarcia** (`pricing.md`): pierwsze 10 sklepów od partnera dostaje do 31.01.2027 kartkę na drzwi z godzinami świątecznymi i przypomnienie przed Wielkanocą. Bez rabatów.
+
+### A5. Budżet i liczby
+
+**Budżet 200 zł:** 100 zł na druk (karty wyniku, kartka dla partnera), 50 zł na spotkania z partnerami, 50 zł rezerwy. Bez płatnych reklam.
+
+**Ile wolno zapłacić za pozyskanie klienta.** Kupuje się raz, więc to wkład jednego zlecenia (`cfo.md`):
+
+| Scenariusz | Wkład nza zlecenie | Maksymalny koszt pozyskania |
+|---|---:|---:|
+| dzisiejszy czas, z VAT | −121,36 zł | **0 zł**: każde zlecenie już traci |
+| czas docelowy 95 min, z VAT | 26,14 zł | < 26 zł |
+| czas docelowy, bez VAT (nierejestrowana / zwolnienie) | 54,00 zł | < 54 zł |
+
+Wniosek dla umowy z partnerem (warunek 6 zarządu): **prowizja nie wyższa niż ok. 25 zł za opłacone zlecenie**, i to tylko wtedy, gdy czas pracy zejdzie do celu. Lepiej zaproponować partnerowi korzyść niepieniężną: darmowe sprawdzenia dla jego klientów i jego logo na karcie.
+
+**Trzy liczby co tydzień:**
+| Liczba | Poziom „zmień coś” | Co wtedy |
+|---|---|---|
+| Opłacone / pokazane wyniki | < 10% po 20 wynikach | `/founder-offer` z prawdziwymi odpowiedziami |
+| Zgłoszenia od partnera | 0 przez 2 tygodnie | drugi partner |
+| Minuty na opłacone zlecenie | > 120 | `ops.md`, procedura A; potem cena |
+
+---
+
+## Część B: agent, który odzywa się w ważnym momencie (16.11.2026)
 
 Podstawa: panele symulowanych właścicieli sklepów (6.11–16.11: 20 osób w każdej próbie, raz 100), `pricing-skaner.md` (29 zł brutto/mies., 290 zł/rok, pierwszy miesiąc 9 zł do 31.03.2027), `cfo-skaner.md` i `numbers-opt.json`. Nie ma pliku `competitors.md`: konkurencji nie mapowaliśmy, więc pozycjonowanie opiera się na zamiennikach, które wskazali kupujący (wydruk z kasy, Subiekt, centrala sieci, księgowa, zeszyt). Panele to symulacja: dobrze pokazują obiekcje, słabo przewidują zakup. **Cytatów z paneli nie wolno używać w reklamach jako opinii klientów.** To nie jest porada prawna.
 
@@ -558,6 +847,197 @@ Każdy odpowiada na obiekcję z paneli lub korzysta z powodu, dla którego ludzi
 
 `/founder-brand` (nazwa planu dla biur, ton agenta, wygląd powiadomień), potem `/founder-launch` (lista biur, materiały, przegląd prawny przed 4 stycznia).
 
+## Brand
+
+Ta marka wyrasta z pozycjonowania w `marketing.md` (część A). Ma być przeciwieństwem „firm od wizytówek”: osobiście, z nazwiskiem, płatne po wykonaniu, bez obietnic. W panelu ludzie odmawiali z braku zaufania, a nie przez cenę, więc marka ma przede wszystkim budzić zaufanie.
+
+### 1. Nazwa
+
+Nazwa firmy i domena już istnieją: **RaportFirmy.pl**. Usługa nazywa się **„Sklep w porządku”**. Oceniłem dziesięć kandydatów i rekomenduję zostawić ten układ: firma RaportFirmy.pl, produkt „Sklep w porządku”. Nazwa produktu mówi dokładnie, co klient dostaje, a zmiana nazwy firmy przed testem tylko by kosztowała.
+
+| # | Nazwa | Styl | Co mówi | Na głos / na karcie | Ryzyko |
+|---|---|---|---|---|---|
+| 1 | **Sklep w porządku** | opisowa | wynik, którego chce właściciel | naturalnie, po polsku | słowa ogólne, trudniej o znak towarowy |
+| 2 | RaportFirmy.pl | opisowa | raport, nie naprawa | dobrze | sugeruje papier, nie pracę za klienta |
+| 3 | Dobre Godziny | obrazowa | godziny otwarcia | ładnie | za wąska: telefon, adres i duplikaty zostają poza nią |
+| 4 | Drzwi Otwarte | obrazowa | klient trafia na otwarte drzwi | dobrze | kojarzy się z „dniem otwartym” |
+| 5 | Zgadza się | obrazowa | spójność danych; „wszystko się zgadza” to też wynik | bardzo dobrze | potoczne zwroty trudno zastrzec |
+| 6 | Wizytówka bez błędów | opisowa | dokładnie to, co robimy | długo | brzmi jak kategoria, na której ciąży zła opinia |
+| 7 | Ladka | wymyślona | lada, mały sklep | krótko | nic nie mówi bez wyjaśnienia |
+| 8 | Sklepomierz | wymyślona | pomiar sklepu | dobrze | sugeruje analitykę, nie pracę |
+| 9 | [Imię] od sklepów | osoba | konkretny opiekun, zaufanie | ciepło | nie rośnie poza jedną osobę |
+| 10 | Nasza Ulica | miejsce | lokalność | ciepło | brzmi jak portal osiedlowy |
+
+**Krótka lista do sprawdzenia:** 1. Sklep w porządku · 5. Zgadza się · 2. RaportFirmy.pl.
+
+**Kontrole, które trzeba zrobić samemu.** Tu ich nie zrobiłem, bo środowisko blokowało DNS i pobieranie stron:
+- **Znak towarowy:** wyszukiwarka Urzędu Patentowego RP ([uprp.gov.pl](https://uprp.gov.pl)) i EUIPO eSearch ([euipo.europa.eu](https://euipo.europa.eu/eSearch/)). Klasy: **35** (reklama, zarządzanie informacją o firmach, aktualizacja danych w katalogach) i **42** (usługi informatyczne, jeśli aplikacja będzie sprzedawana osobno). Potoczne frazy jak „Zgadza się” czy „Sklep w porządku” mogą nie spełniać warunku odróżniającego. Rozważ znak słowno-graficzny z logo. Ostatecznie potwierdza to rzecznik patentowy, to nie jest porada prawna.
+- **Domena:** sprawdź u rejestratora `sklepwporzadku.pl` i `zgadzasie.pl`. Najprostsze rozwiązanie to podstrona `raportfirmy.pl/sklep`.
+- **Profile w serwisach:** Facebook (tu i tak jest klient), Instagram. TikTok i X nie są potrzebne dla tej grupy.
+- **Pomylenie z konkurencją:** żadna z nazw nie jest bliska konkurentom z `competitors.md` (Lokal360, Localo, Studio72, NapoleonCat).
+
+### 2. Obietnica i głos
+
+**Obietnica w jednym zdaniu:** *Pokażemy Ci, co widzi klient, ze źródłem i datą. Jeśli coś jest nie tak, poprawimy to za Ciebie, a zapłacisz dopiero, gdy jest gotowe.*
+
+**Hasło, trzy wersje:**
+1. **„Sprawdzamy. Poprawiamy. Płacisz, gdy gotowe.”** (rekomendowane, bo mówi o gwarancji, która odpowiada na brak zaufania)
+2. „Klient trafi na otwarte drzwi.”
+3. „Wszystko się zgadza? Powiemy wprost.”
+
+**Głos: trzy cechy.**
+| Cecha | Tak | Nie |
+|---|---|---|
+| **Konkretny** | „Google pokazuje 24.12 otwarte 6–22.” | „Twoja widoczność w sieci wymaga optymalizacji.” |
+| **Uczciwy** | „Wszystko się zgadza. Nie mamy czego sprzedać.” | „Tracisz klientów każdego dnia!” |
+| **Sąsiedzki** | „Dzień dobry, zostawiam kartkę.” | „Szanowny Partnerze Biznesowy, …” |
+
+**Przed i po (zdanie z `pitch-v2.md`):**
+- Przed: „Cel: klient, który szuka Cię w Google albo na Facebooku, widzi prawdziwe godziny, adres, telefon, co sprzedajesz i jak zamówić, i nie idzie do sklepu obok tylko dlatego, że u Ciebie coś się nie zgadza.”
+- Po: „Google pokazuje, że w Wigilię masz otwarte do 22. Poprawimy to za 149 zł. Płacisz, gdy będzie gotowe.”
+
+### 3. Wygląd (brief)
+
+**Kolory** są już w `index.html`. Kontrast policzyłem według wzoru WCAG:
+
+| Rola | Kolor | Zadanie | Kontrast |
+|---|---|---|---|
+| Turkus (akcent) | `#0b6b63` | przyciski, „gotowe”, marka | biały na turkusie **6,37:1** (AA ✓) |
+| Atrament | `#16222c` na papierze `#f3f5f4` | tekst | **14,76:1** (AAA ✓) |
+| Bursztyn (ostrzeżenie) | `#94580a` na `#fbefd9` | „rozbieżność” | **5,04:1** (AA ✓) |
+| Czerwień | `#ad2a20` na `#f8e2df` | „trudna sprawa”, błąd | **5,41:1** (AA ✓) |
+| Szary pomocniczy | `#56646d` na białym | daty, źródła | **6,11:1** (AA ✓) |
+
+**Krój pisma:** Literata (tytuły) i IBM Plex Sans / Plex Mono (tekst, liczby). Oba na licencji SIL Open Font License, dostępne w Google Fonts, już użyte w aplikacji.
+
+**Logo (brief):** musi mówić „sprawdzone i w porządku”, a nie „marketing”. Działa jako znaczek 32 px w karcie przeglądarki, na wydruku czarno-białym (karta wyniku) i na naklejce na drzwi. Unikać pinezki z map i gwiazdek ocen, bo to język konkurencji i oszustów. Kierunek: znak „✓” połączony z kształtem drzwi albo lady. Jeśli powstaną projekty z generatora obrazów, to są koncepcje, a nie gotowe logo.
+
+**Pierwszych pięć punktów styku:**
+1. **Karta wyniku** (wydruk z aplikacji): pierwsze, co klient trzyma w ręku. Data, źródło, cena, gwarancja, nazwisko. Już zbudowana.
+2. **Profil Firmy RaportFirmy.pl w Google:** prawdziwe godziny i telefon (sami musimy być „w porządku”).
+3. **Potwierdzenie zlecenia:** ekran „Znaleźliśmy / Robimy / Gotowe” w aplikacji.
+4. **Teczka zmian:** przed i po z datą oraz instrukcja, jak nas usunąć.
+5. **Odpowiedź na pierwszą reklamację:** w ciągu 2 h, bez tłumaczenia się, z poprawką bez dopłaty (`ops.md`, procedura E).
+
+## Operations
+
+Usługę robi jedna osoba (CEO, opiekun). Nie ma towaru, lokalu ani dostawców w zwykłym sensie. Jedyny prawdziwy koszt to czas, a kalkulator pokazał, że to on decyduje o całym biznesie (`cfo.md`). Ten plan ma więc jeden cel: **zejść z 242,5 do ok. 95 minut na opłacone zlecenie** i nie zgubić przy tym jakości. Narzędzie do mierzenia jest w aplikacji: panel opiekuna → „Test 30 sklepów” (`index.html#test`).
+
+### 1. Cykl dnia
+
+✱ = krok, który widzi klient.
+
+**Dzień testu (do 20.12.2026)**
+1. 8:00. Plan dnia: 6–8 sklepów z jednej ulicy lub osiedla. Trasa pieszo, nie autem.
+2. Pod sklepem: zdjęcie kartki z godzinami na drzwiach, potem sprawdzenie w aplikacji (procedura A, cel 5 min).
+3. ✱ Jeśli jest rozbieżność: wizyta przy ladzie poza szczytem (10–12 albo 14–16), karta wyniku (procedura B).
+4. ✱ Jeśli właściciel zleca: umówiony telefon i dodanie menedżera (procedura C).
+5. 16:00–18:00. Naprawy przyjętych zleceń, zmiany wysłane do akceptacji ✱, teczka ✱.
+6. 18:00. W aplikacji „Pobierz CSV”, kopia w chmurze. Rejestr metod.
+7. 19:00 koniec. Nic po 21:00 (`marketing.md`).
+
+**Dzień po starcie (od 18.01.2027).** Jak w `launch.md`, krok 3. Zmienia się tylko źródło sklepów: lista od partnera zamiast spaceru.
+
+### 2. Procedury (każda na jedną stronę)
+
+#### A. Sprawdzenie w 5 minut (12 pól z aplikacji)
+
+Kolejność jest dobrana tak, żeby jedno otwarcie aplikacji dawało kilka pól naraz.
+
+| Minuta | Gdzie | Pola w aplikacji |
+|---|---|---|
+| 0:00 | „Rozpocznij sprawdzenie”, wpisz nazwę z szyldu i ulicę | — |
+| 0:30 | **Google Maps** na telefonie: nazwa + miejscowość. Jedno spojrzenie na kartę sklepu | status, nazwa, adres i pinezka, kategoria, telefon, link |
+| 1:30 | Google Maps → godziny: dziś, najbliższa niedziela handlowa i 24.12. Porównanie ze zdjęciem kartki z drzwi | godziny zwykłe, niedziele 6/13/20.12, 24–27.12 i 31.12–1.01 |
+| 2:30 | Google Maps: szukaj „nazwa” bez miejscowości; drugi wynik z tym samym szyldem w pobliżu to podejrzenie duplikatu | jedna wizytówka |
+| 3:00 | **Facebook**: wyszukaj stronę sklepu, sprawdź datę ostatniego wpisu, godziny i telefon | Facebook istnieje, Facebook = Google |
+| 4:00 | Przy każdej rozbieżności jedno zdanie: **co dokładnie widzi klient** („Google: 24.12 otwarte 6–22”). To trafia na kartę | opisy |
+| 4:30 | Pola, które w sklepie sieciowym ustala centrala, oznacz „ustala centrala”. Niczego nie zgaduj: czego nie da się sprawdzić, oznacz „nie dotyczy” | — |
+| 5:00 | „Zapisz sprawdzenie” | — |
+
+Zasady: telefonu nie dzwonimy przy sprawdzeniu, bo to zabiera 2–3 minuty. Numer weryfikujemy przy wizycie albo porównując z kartką na drzwiach. Każdy wynik ma źródło i datę (zasada 2 z `ZARYS-APLIKACJI.md`).
+
+#### B. Wizyta z kartą wyniku
+1. Wydruk karty z aplikacji („Karta wyniku dla sklepu”). Cena na karcie zmienia się sama (149, 179, 149, 199 zł) na potrzeby testu cen.
+2. Przy ladzie, gdy nie ma klientów: „Dzień dobry, sprawdzam, co klienci widzą o sklepach na tej ulicy w Google. U Pana/Pani wyszło jedno: [zdanie z karty]. Zostawiam kartkę.”
+3. Bez naciskania. „Poprawię sam” to dobra odpowiedź: mówimy jak, za darmo.
+4. Jeśli właściciel chce zlecić: umawiamy telefon w wybranej porze. Zgody na kontakt nie bierzemy w ciemno (art. 398 PKE). Właściciel sam podaje numer i porę.
+5. W aplikacji: „Wynik pokazany”, decyzja.
+
+#### C. Naprawa
+1. Telefon (cel 10 min): właściciel dodaje opiekuna jako **menedżera** w Profilu Firmy w Google (Profil → „Osoby i dostęp”) i daje dostęp do strony na Facebooku (Meta Business Suite). Haseł nie bierzemy.
+2. Zrzut ekranu „przed” z datą.
+3. Zmiany: godziny specjalne na konkretne dni (Google zaleca godziny niestandardowe przy zamknięciu do 7 dni, [pomoc Google](https://support.google.com/business/answer/14368911?hl=pl)), telefon, adres, opis. Na Facebooku to samo.
+4. ✱ Zmiany do akceptacji w aplikacji klienta, a po akceptacji publikacja.
+5. ✱ Teczka: zrzut „po” z datą i instrukcja, jak nas usunąć z profilu.
+6. Rejestr: typ błędu, źródło, metoda, minuty. Termin kontroli za 30 dni.
+
+#### D. Trudna sprawa (duplikat, przejęty profil, zmiany wprowadzane przez Google)
+Cena stała przed startem (`pricing.md`). Zgłoszenia wysyłamy przez oficjalne formularze pomocy Google. Termin jest po stronie Google, więc mówimy o tym klientowi wprost. Jeśli przekroczymy 6 h pracy, ryzyko jest nasze. Nie udało się = 0 zł.
+
+#### E. Reklamacja
+1. Telefon oddzwaniamy w ciągu 2 h (godziny pracy).
+2. Jeśli to nasz błąd: poprawka bez dopłaty. Jeśli Google cofnął zmianę: poprawka bez dopłaty i wpis w rejestrze, bo to argument za opieką.
+3. Jeśli klient jest niezadowolony mimo poprawnego wykonania: przy pierwszym zleceniu zwrot pieniędzy. Taniej niż zła opinia u partnera.
+
+#### F. Zamknięcie dnia i tygodnia
+- **Dzień:** CSV, kopia w chmurze. Zlecenia czekające na akceptację najdłużej: przypomnienie w aplikacji, nie telefon.
+- **Poniedziałek:** wskaźniki z aplikacji (odsetek rozbieżności, mediana sprawdzenia, minuty na opłacone zlecenie, dostęp menedżera). Porównanie z warunkami zarządu (`board.md`). Kontrole po 30 dniach na ten tydzień.
+
+### 3. Ludzie
+
+| | Test (grudzień) | Po starcie, 10 zleceń/mies. przy celu 95 min |
+|---|---|---|
+| Sprawdzenia | 30 × 5–15 min = 2,5–7,5 h | 50 × 5 min = 4,2 h |
+| Wizyty i telefony | ok. 10 × 15 min = 2,5 h (nie mierzone, szacunek) | partner zastępuje wizyty |
+| Naprawy, kontrola | zależnie od zleceń | 10 × 70 min = 11,7 h |
+| **Razem** | **ok. 5–10 h + naprawy** | **ok. 16 h/mies.** |
+
+**Stawka.** Paczka liczy godzinę CEO po 60 zł (`cfo-sources.md`). Dla porównania minimalna stawka godzinowa w 2026 r. to 31,40 zł brutto, a minimalne wynagrodzenie 4 806 zł ([zielonalinia.gov.pl](https://zielonalinia.gov.pl/wynagrodzenie-minimalne-w-2026-1/), [money.pl](https://www.money.pl/gospodarka/placa-minimalna-i-stawka-godzinowa-w-polsce-oto-kwoty-na-rok-2026-7238666721393152a.html)). Wariant gotówkowy przy dzisiejszym czasie daje ok. 30 zł/h, czyli **mniej niż minimalna stawka godzinowa**. Zatrudnienie drugiej osoby ma sens dopiero wtedy, gdy zlecenie trwa krócej niż ok. 95 min. Koszty pracodawcy ponad wynagrodzenie zależą od formy umowy, więc trzeba je sprawdzić z księgowym.
+
+### 4. Narzędzia
+
+| Do czego | Narzędzie | Cena | Dlaczego |
+|---|---|---|---|
+| Sprawdzenie, wizyta, rejestr, karta | ta aplikacja, zakładka „Test 30 sklepów” | 0 zł | mierzy dokładnie to, czego wymaga zarząd |
+| Zmiany w profilach | Profil Firmy w Google, Meta Business Suite | 0 zł | rola menedżera, bez haseł |
+| Faktury | Aplikacja Podatnika KSeF (Ministerstwo Finansów) | 0 zł | obowiązek KSeF w B2B: od 1.04.2026; przy sprzedaży fakturowej ≤ 10 000 zł brutto miesięcznie od 1.01.2027 ([ksef.podatki.gov.pl](https://ksef.podatki.gov.pl/informacje-ogolne-ksef-20/zakres-obowiazkowego-ksef/), [infor.pl](https://ksiegowosc.infor.pl/wiadomosci/7577102,ksef-w-2026-roku-obowiazkowy-jakie-obowiazki-ksef-i-dla-kogo-w-2027.html)) |
+| Płatność | przelew albo BLIK na telefon | opłaty zależne od banku (do sprawdzenia) | płatność po wykonaniu, bez terminala |
+| Druk kart | własna drukarka albo punkt ksero | do sprawdzenia | ok. 10–30 kart w miesiącu |
+| Hosting strony | MyDevil (już opłacony) | 20 zł/mies. (szacunek z CFO) | `index.html` jest statyczny |
+
+### 5. Formalności (do potwierdzenia z księgowym i prawnikiem, to nie jest porada prawna)
+
+| Sprawa | Co wiadomo | Gdzie sprawdzić |
+|---|---|---|
+| **Forma działalności** | Działalność nierejestrowana: limit **10 813,50 zł przychodu na kwartał** w 2026 r. (225% minimalnego wynagrodzenia). Po przekroczeniu jest 7 dni na rejestrację w CEIDG. Przy 149 zł to ok. 72 zlecenia na kwartał. Bez ZUS i bez biura rachunkowego. Warunek: brak własnej działalności w ostatnich 60 miesiącach | [podatki.gov.pl](https://podatki.gov.pl/poradniki-i-informatory/dzialalnosc-nierejestrowana), [money.pl](https://direct.money.pl/artykuly/porady/dzialalnosc-nierejestrowana-2026-limit-10-813,50-zl,-po-przekroczeniu-7-dni-na-ceidg) |
+| **VAT** | Zwolnienie podmiotowe do **240 000 zł** sprzedaży rocznie od 1.01.2026 (art. 113 ust. 1). Przy rozpoczęciu w trakcie roku limit liczy się proporcjonalnie. Nie przysługuje przy czynnościach z art. 113 ust. 13; **trzeba potwierdzić, że ta usługa się tam nie mieści** | [podatki.gov.pl](https://podatki.gov.pl/podatki-firmowe/vat/poradniki-i-informatory/zwolnienie-podmiotowe-od-podatku-vat), [infor.pl](https://ksiegowosc.infor.pl/wiadomosci/6852348,nowy-limit-zwolnienia-z-vat-od-2026-roku-240-tys-zl-sejm-uchwalil-nowelizacje-ustawy-o-podatku-od-towarow-i-uslug.html) |
+| **ZUS przy JDG** | Kalkulator nie zawiera składek ZUS ani zdrowotnej. Przy zarejestrowanej działalności to stały koszt rzędu kilkuset zł miesięcznie, zależny od ulg i innych tytułów ubezpieczenia | księgowy |
+| KSeF | wyżej, w „Narzędziach” | [ksef.podatki.gov.pl](https://ksef.podatki.gov.pl/informacje-ogolne-ksef-20/zakres-obowiazkowego-ksef/) |
+| RODO | Działamy w profilu klienta, więc potrzebna jest umowa powierzenia i rejestr czynności. Zapisujemy tylko dane publiczne sklepu | `sposoby-i-bezpieczenstwo.md` |
+| Kontakt handlowy | art. 398 PKE: bez zimnych e-maili, telefonów i SMS-ów. Wizyty osobiste i partner | `launch.md` |
+| Upoważnienie | Pisemne: zakres zmian, usunięcie nas po zleceniu | wzór: `launch.md`, tydzień 1 |
+| Ubezpieczenie OC zawodowe | Nieobowiązkowe. Warto zapytać o cenę, zanim weźmiemy trudne sprawy | oferta ubezpieczyciela |
+
+### 6. Rejestr ryzyk
+
+| # | Ryzyko | Prawdopodobieństwo | Skutek | Plan |
+|---|---|---|---|---|
+| 1 | Mniej niż 15% sklepów ma rozbieżność | średnie | bardzo duży: brak startu | reguła 21.12 z `launch.md`; inna okolica albo segment |
+| 2 | Sprawdzenie trwa dłużej niż 5 min | wysokie na początku | duży: marża | procedura A, mediana co tydzień w aplikacji |
+| 3 | Właściciele nie dają dostępu menedżera (< 50%) | średnie | duży | partner jako poręczyciel, karta z danymi opiekuna, instrukcja „jak nas usunąć” |
+| 4 | Google odrzuca albo cofa zmianę | średnie | średni | „nie udało się = 0 zł”, rejestr metod, kontrola po 30 dniach |
+| 5 | Przekroczenie limitu działalności nierejestrowanej | niskie w 2027 | mały | licznik przychodu w kwartale; 7 dni na CEIDG |
+| 6 | Usługa wpada w wyłączenie z art. 113 ust. 13 i trzeba doliczać VAT | nieznane | duży: −18,7% przychodu (149 zł brutto to 121,14 zł netto) | pytanie do księgowego przed pierwszą fakturą |
+| 7 | Choroba CEO | średnie | średni | wstrzymanie przyjęć, informacja na stronie (`launch.md`) |
+| 8 | Partner się wycofuje | średnie | duży | drugi partner z rozmów grudniowych |
+| 9 | Pomyłka w danych klienta (np. złe godziny) | niskie | duży: reputacja | akceptacja przez właściciela przed publikacją, teczka przed/po |
+| 10 | Utrata danych testu (dane w jednej przeglądarce) | średnie | średni | CSV codziennie, kopia w chmurze |
+
+### 7. Liczby do CFO
+
+Ten plan nie zmienia `numbers.json`, bo czas pracy trzeba zmierzyć, a nie założyć. Po teście wpisz do `numbers.json` zmierzone wartości: medianę sprawdzenia, liczbę sprawdzeń na opłacone zlecenie i medianę naprawy. Wszystkie trzy pokazuje zakładka „Test 30 sklepów”. Potem uruchom ponownie `/founder-cfo` i `/founder-plan`.
+
 ## Launch plan
 
 **Co startuje:** darmowe sprawdzenie, czy klient znajdzie sklep z prawdziwymi danymi w Google i na Facebooku (portret), a potem naprawa za właściciela w jednej cenie. Abonament (opieka) proponujemy dopiero po odbiorze zlecenia i tylko wtedy, gdy jest powód. To powrót do wizji z 6.11 i oferty v3 z 9.11. Skaner raportu z kasy zostaje w szufladzie.
@@ -578,12 +1058,14 @@ W grudniu 2026 handel jest dozwolony w trzy niedziele: 6, 13 i 20 grudnia. Wigil
 
 ### Krok 1. Test przed wydaniem pieniędzy (17.11–20.12.2026)
 
+**Dodane 20.11:** przy każdym sprawdzeniu i zleceniu mierzymy też warunki zarządu (`board.md`): medianę czasu sprawdzenia (cel 5 min), minuty na opłacone zlecenie (cel ≤ 120), odsetek nadanych dostępów menedżera (cel ≥ 50%) i konwersję przy każdej cenie. Wszystko liczy zakładka „Test 30 sklepów” w aplikacji. Procedura sprawdzenia jest w `ops.md`.
+
 Usługa, więc test to **płatne zlecenia pilotażowe w docelowej cenie**. Najpierw jednak mierzymy to, od czego zależy cały model (warunek zarządu z 6.11): **u ilu prawdziwych sklepów sprawdzenie znajduje realny błąd.**
 
 | Test | Jak | Linia sukcesu (spisana przed startem) | Porównanie z panelem |
 |---|---|---|---|
 | A. Trafność sprawdzenia | Ręcznie 30 sklepów w jednej okolicy: godziny (w tym grudniowe niedziele i 24–27.12), adres, telefon, status, duplikaty, Facebook | **≥ 9 z 30 (30%) ma realną rozbieżność**, w tym ≥ 3 trudne sprawy | Panel nie umie tego zmierzyć: oceniał ofertę bez wyniku sklepu |
-| B. Płatne zlecenia | Wynik sprawdzenia pokazany osobiście na karcie (papier lub telefon) | **≥ 3 opłacone zlecenia po 149 zł z ≥ 10 pokazanych wyników** do 20.12 | Panel: 0/20 przy ogólnym opisie, ale ok. 15/20 „zapłaci, gdy zobaczy konkretny błąd” |
+| B. Płatne zlecenia | Wynik sprawdzenia pokazany osobiście na karcie (papier lub telefon); cena na karcie na zmianę 149 / 179 / 149 / 199 zł (`pricing.md`) | **≥ 3 opłacone zlecenia po 149 zł z ≥ 10 pokazanych wyników** do 20.12 | Panel: 0/20 przy ogólnym opisie, ale ok. 15/20 „zapłaci, gdy zobaczy konkretny błąd” |
 | C. Partner | Rozmowy z 3–5 biurami rachunkowymi i 1 hurtownią w tej samej okolicy | **1 partner zgadza się pokazać wyniki swoim klientom** od stycznia | Panele: polecenie księgowej to najczęstszy warunek zakupu |
 
 **Reguły decyzji 21.12.2026:**
@@ -603,8 +1085,8 @@ Właściciele zadań: **CEO** (Ty) i **Claude** (przygotowanie materiałów, lic
 #### Tydzień 1: 17–22.11 — przygotowanie i 30 sprawdzeń
 | Zadanie | Kto | Termin |
 |---|---|---|
-| Lista kontrolna sprawdzenia (12 pól) i arkusz wyników | Claude | 17.11 |
-| Karta wyniku dla sklepu: rozbieżność, źródło, data, cena, gwarancja, dane opiekuna | Claude, akceptuje CEO | 18.11 |
+| ✓ Lista kontrolna sprawdzenia (12 pól), stoper i arkusz wyników: panel opiekuna → „Test 30 sklepów” (`index.html#test`), eksport CSV | Claude | 20.11 |
+| ✓ Karta wyniku dla sklepu do druku: rozbieżność, źródło, data, cena, gwarancja, dane opiekuna (z aplikacji) | Claude, akceptuje CEO | 20.11 |
 | Potwierdzić formę działalności, konto firmowe, wystawianie faktur, płatność BLIK/przelew | CEO | 19.11 |
 | Wzór zlecenia i upoważnienia do zmian (zgoda na rolę menedżera, zakres, usunięcie nas po zleceniu) | Claude, sprawdza CEO | 19.11 |
 | ⚑ Wybór okolicy i 30 sklepów; sprawdzenie wszystkich (ok. 15 min na sklep, ok. 7,5 h) | CEO | 22.11 |
@@ -695,13 +1177,5 @@ Właściciele sklepów mają najgorętszy okres. Ty masz czas dla siebie. Jedyne
 ---
 
 Ograniczenia: wyniki paneli to symulacja (górna granica, nie prognoza). Daty prawne pochodzą z publicznych źródeł z 16.11.2026. To nie jest porada prawna ani podatkowa: formę działalności, VAT i umowy sprawdza księgowy i prawnik przed pierwszym zleceniem.
-
-## Not done yet
-
-- What the board said: run /founder-board
-- The competition: run /founder-competitors
-- Pricing: run /founder-pricing
-- Brand: run /founder-brand
-- Operations: run /founder-ops
 
 _The panel is simulated buyers and the numbers are projections from your inputs. Confirm demand with real customers and costs with real quotes before you spend. Not financial, legal or tax advice._

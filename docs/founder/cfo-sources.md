@@ -16,6 +16,11 @@
 | Start | 1 500 zł prawne + 200 zł marketing | jak w CFO Skanera (szacunki) |
 | Limit / pojemność | 10 zleceń w miesiącu | `launch.md` („np. 10”) |
 | Rampa | 3, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10 | szacunek między linią przejścia (3) a limitem (10) |
+| Limit działalności nierejestrowanej | 10 813,50 zł / kwartał (2026) | [podatki.gov.pl](https://podatki.gov.pl/poradniki-i-informatory/dzialalnosc-nierejestrowana), [money.pl](https://direct.money.pl/artykuly/porady/dzialalnosc-nierejestrowana-2026-limit-10-813,50-zl,-po-przekroczeniu-7-dni-na-ceidg) |
+| Zwolnienie podmiotowe z VAT | 240 000 zł / rok od 1.01.2026; wyłączenia w art. 113 ust. 13 (do sprawdzenia) | [podatki.gov.pl](https://podatki.gov.pl/podatki-firmowe/vat/poradniki-i-informatory/zwolnienie-podmiotowe-od-podatku-vat), [infor.pl](https://ksiegowosc.infor.pl/wiadomosci/6852348,nowy-limit-zwolnienia-z-vat-od-2026-roku-240-tys-zl-sejm-uchwalil-nowelizacje-ustawy-o-podatku-od-towarow-i-uslug.html) |
+| Wariant nierejestrowany | cena 149 zł bez VAT; koszty stałe 30 zł/mies. (bez księgowości) | `numbers-nierejestrowana.json`; księgowość niepotrzebna przy uproszczonej ewidencji (do potwierdzenia) |
+| Czas docelowy | 5 sprawdzeń × 5 min, naprawa 45 min | `ops.md`, procedura A; cel do zmierzenia w teście |
+| ZUS / składka zdrowotna | brak w kosztach stałych | luka; kwotę poda księgowy |
 
 ---
 

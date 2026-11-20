@@ -1,4 +1,29 @@
-# Oferta „Porządek w sieci” — RaportFirmy.pl
+# Oferta: RaportFirmy.pl · „Sklep w porządku”
+
+## Oferta v3, obowiązująca (20.11.2026)
+
+Powstała z v2 (niżej) po panelu, zarządzie (`board.md`), konkurencji (`competitors.md`), cenach (`pricing.md`) i operacjach (`ops.md`). Najważniejsza zmiana: **wartością jest dowód przed zapłatą i zdjęcie pracy z głowy, a nie sama poprawka.** Zmienia się też kolejność: najpierw darmowy wynik, potem cena.
+
+| Element | Co klient dostaje | Koszt dla nas (cel z `ops.md`) | Status |
+|---|---|---|---|
+| **Sprawdzenie** | 12 pól w Google i na Facebooku, każde ze źródłem i datą; karta wyniku do ręki; „wszystko się zgadza” bez oferty | 5 min | rdzeń, 0 zł |
+| **Naprawa** | zmiany za właściciela, akceptacja w 5 min, teczka przed/po | 45 min + 10 min telefonu | rdzeń, **149 zł** (test 179 i 199 zł) |
+| **Gwarancja** | nic nie znaleźliśmy = nic nie płacisz; nie udało się = nie płacisz; płatność po wykonaniu | ryzyko po naszej stronie | rdzeń |
+| **Kontrola po 30 dniach** | sprawdzamy, czy Google nie zmienił danych | 15 min | bonus |
+| **Instrukcja „poprawię sam”** | za darmo, gdy właściciel woli sam | 0 (szablon) | bonus; odpowiedź na P003 |
+| **Trudna sprawa** | duplikat, przejęty profil, odzyskanie dostępu; stała cena przed startem | do 6 h | **349 / 449 zł** (propozycja) |
+| **Pola centrali** | nie zmieniamy, przygotowujemy zgłoszenie do centrali | 10 min | w cenie naprawy |
+| **Oferta otwarcia** | pierwsze 10 sklepów od partnera: kartka na drzwi z godzinami świątecznymi i przypomnienie przed Wielkanocą (28.03.2027) | druk | do 31.01.2027 |
+| Usunięte z v2 | 5 odpowiedzi na pytania klientów (G), porównanie z 3 sklepami (H) | 40 min | wycięte: za drogie w czasie, nikt w panelu o nie nie prosił |
+| Odłożone | opieka (abonament), raport firmy, plan „Biuro”, KSeF | — | do 20 opłaconych napraw (`board.md`, warunek 9) |
+
+**Nazwa i obietnica** (`brand.md`): „Sprawdzamy. Poprawiamy. Płacisz, gdy gotowe.”
+
+**Pilność:** tylko prawdziwa. Limit zleceń w miesiącu (pracuje jedna osoba) i daty z kalendarza: 24–27.12, Wielka Sobota 27.03.2027 (handel do 14:00).
+
+---
+
+# Oferta v1–v2: „Porządek w sieci” (6.11.2026, archiwum)
 
 6 listopada 2026. Metoda: soczewka Offers (streszczenie ramy z *$100M Offers* A. Hormoziego, nie jego słowa). Materiał wejściowy: panel 20 symulowanych właścicieli sklepów (`panel-v1`), dokumenty projektu 01-PRODUKT, Katalog-produktów-i-obsługa-Google v0.1, Badanie potrzeb v0.1. Brak `numbers.json` (CFO nie był uruchamiany) — koszty poniżej to szacunki minut pracy CEO, nie wyliczenia.
 

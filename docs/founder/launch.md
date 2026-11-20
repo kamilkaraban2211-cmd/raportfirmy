@@ -18,12 +18,14 @@ W grudniu 2026 handel jest dozwolony w trzy niedziele: 6, 13 i 20 grudnia. Wigil
 
 ## Krok 1. Test przed wydaniem pieniędzy (17.11–20.12.2026)
 
+**Dodane 20.11:** przy każdym sprawdzeniu i zleceniu mierzymy też warunki zarządu (`board.md`): medianę czasu sprawdzenia (cel 5 min), minuty na opłacone zlecenie (cel ≤ 120), odsetek nadanych dostępów menedżera (cel ≥ 50%) i konwersję przy każdej cenie. Wszystko liczy zakładka „Test 30 sklepów” w aplikacji. Procedura sprawdzenia jest w `ops.md`.
+
 Usługa, więc test to **płatne zlecenia pilotażowe w docelowej cenie**. Najpierw jednak mierzymy to, od czego zależy cały model (warunek zarządu z 6.11): **u ilu prawdziwych sklepów sprawdzenie znajduje realny błąd.**
 
 | Test | Jak | Linia sukcesu (spisana przed startem) | Porównanie z panelem |
 |---|---|---|---|
 | A. Trafność sprawdzenia | Ręcznie 30 sklepów w jednej okolicy: godziny (w tym grudniowe niedziele i 24–27.12), adres, telefon, status, duplikaty, Facebook | **≥ 9 z 30 (30%) ma realną rozbieżność**, w tym ≥ 3 trudne sprawy | Panel nie umie tego zmierzyć: oceniał ofertę bez wyniku sklepu |
-| B. Płatne zlecenia | Wynik sprawdzenia pokazany osobiście na karcie (papier lub telefon) | **≥ 3 opłacone zlecenia po 149 zł z ≥ 10 pokazanych wyników** do 20.12 | Panel: 0/20 przy ogólnym opisie, ale ok. 15/20 „zapłaci, gdy zobaczy konkretny błąd” |
+| B. Płatne zlecenia | Wynik sprawdzenia pokazany osobiście na karcie (papier lub telefon); cena na karcie na zmianę 149 / 179 / 149 / 199 zł (`pricing.md`) | **≥ 3 opłacone zlecenia po 149 zł z ≥ 10 pokazanych wyników** do 20.12 | Panel: 0/20 przy ogólnym opisie, ale ok. 15/20 „zapłaci, gdy zobaczy konkretny błąd” |
 | C. Partner | Rozmowy z 3–5 biurami rachunkowymi i 1 hurtownią w tej samej okolicy | **1 partner zgadza się pokazać wyniki swoim klientom** od stycznia | Panele: polecenie księgowej to najczęstszy warunek zakupu |
 
 **Reguły decyzji 21.12.2026:**
@@ -43,8 +45,8 @@ Właściciele zadań: **CEO** (Ty) i **Claude** (przygotowanie materiałów, lic
 ### Tydzień 1: 17–22.11 — przygotowanie i 30 sprawdzeń
 | Zadanie | Kto | Termin |
 |---|---|---|
-| Lista kontrolna sprawdzenia (12 pól) i arkusz wyników | Claude | 17.11 |
-| Karta wyniku dla sklepu: rozbieżność, źródło, data, cena, gwarancja, dane opiekuna | Claude, akceptuje CEO | 18.11 |
+| ✓ Lista kontrolna sprawdzenia (12 pól), stoper i arkusz wyników: panel opiekuna → „Test 30 sklepów” (`index.html#test`), eksport CSV | Claude | 20.11 |
+| ✓ Karta wyniku dla sklepu do druku: rozbieżność, źródło, data, cena, gwarancja, dane opiekuna (z aplikacji) | Claude, akceptuje CEO | 20.11 |
 | Potwierdzić formę działalności, konto firmowe, wystawianie faktur, płatność BLIK/przelew | CEO | 19.11 |
 | Wzór zlecenia i upoważnienia do zmian (zgoda na rolę menedżera, zakres, usunięcie nas po zleceniu) | Claude, sprawdza CEO | 19.11 |
 | ⚑ Wybór okolicy i 30 sklepów; sprawdzenie wszystkich (ok. 15 min na sklep, ok. 7,5 h) | CEO | 22.11 |

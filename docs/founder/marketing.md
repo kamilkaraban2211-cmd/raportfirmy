@@ -1,4 +1,90 @@
-# Marketing: raportfirmy.pl, agent, który odzywa się w ważnym momencie (16.11.2026)
+# Marketing: raportfirmy.pl
+
+**Część A: „Sklep w porządku”, usługa, która startuje 18.01.2027 (20.11.2026).** Część B (16.11.2026) dotyczy agenta momentów, abonamentu i Skanera, czyli etapów 2–3 z `ZARYS-APLIKACJI.md`.
+
+## A1. Dowody, z których korzystam
+
+- **Panel 149 zł** (`panel/` = `panel-v2`, symulacja): 0/20 kupuje. Powody odmowy: potrzeba 10, zaufanie 7, nawyk 3. 15/20 zapłaci, gdy zobaczy błąd we własnym sklepie; 9/20 chce polecenia od zaufanej osoby. Segmenty nie różnią się od siebie (0% wszędzie), więc pierwszą grupę wybieram po kanale: **sklepy, które obsługuje jeden partner w jednej okolicy**.
+- **Konkurencja** (`competitors.md`): rynek sprzedaje „pozycjonowanie” i „optymalizację” z góry, za 300–2 500 zł, z obietnicą klientów. Kategorii szkodzą telefony od firm, które podszywają się pod Google.
+- **Cena i liczby** (`pricing.md`, `cfo.md`): 149 zł, test 179 i 199 zł. Ile wolno wydać na pozyskanie klienta, wynika z punktu A5.
+
+## A2. Pozycjonowanie
+
+1. **Rekomendowane, dla właściciela:** *Dla właściciela małego sklepu, który nie ma czasu pilnować internetu, Sklep w porządku sprawdza za darmo, co klienci widzą o sklepie w Google i na Facebooku, i poprawia to za niego, płatne dopiero po wykonaniu. W przeciwieństwie do firm od „pozycjonowania wizytówek” nie bierzemy pieniędzy z góry i nie obiecujemy klientów.*
+   Dlaczego: odpowiada na zaufanie (7/20), na „wydatek bez dowodu” (P002) i na złą reputację kategorii.
+2. **Sezonowe, na grudzień i Wielkanoc:** *Zanim klient odbije się od zamkniętych drzwi: sprawdzamy, czy Google zna Twoje godziny świąteczne.* Dobre jako hook, za wąskie jako pozycja na cały rok.
+3. **Dla partnera:** *Dla biura rachunkowego, które chce dać klientom coś pożytecznego bez dodatkowej pracy: darmowe sprawdzenie sklepu ze źródłem i datą, a naprawę robi podpisana osoba, płatna po wykonaniu.* Używamy go w rozmowie z partnerem, a nie wobec właściciela.
+
+## A3. Kanały
+
+| Kanał | Dlaczego | Koszt | Po czym poznamy, że działa |
+|---|---|---|---|
+| **Partner** (biuro rachunkowe, hurtownia) | 9/20 chce polecenia; warunek 6 zarządu | prowizja za opłacone zlecenie (A5) | ≥ 1 zgłoszenie tygodniowo od partnera |
+| **Wizyty osobiste z kartą wyniku** | dowód przed ceną (15/20) i brak zimnego kontaktu (art. 398 PKE) | czas i druk | ≥ 30% opłaconych z pokazanych |
+| **Polecenia klientów z grudnia** | najsilniejszy dowód w okolicy | 0 zł | ≥ 1 polecenie na 5 klientów |
+| Profil Firmy raportfirmy.pl w Google | ktoś, kto nas sprawdza, musi nas znaleźć z prawdziwymi danymi | 0 zł | — |
+
+**Czego nie robimy:** zimnych e-maili, telefonów i SMS-ów (art. 398 PKE i zła reputacja kategorii), reklam na Facebooku (kupujący nie ufa reklamie, P006: „tylko dlatego, że wyskoczyła mi reklama”), opinii z paneli w reklamach. Nie obiecujemy klientów ani pozycji w Google.
+
+## A4. Kampania od T−14 do T+16 (4.01–3.02.2027)
+
+| Data | Kanał | Co | Komunikat |
+|---|---|---|---|
+| pn 4.01 | partner | wysłanie partnerowi tekstu dla jego klientów (jego kanałem, tylko tam, gdzie klienci mają zgodę na kontakt) | pozycja 3 |
+| wt 5.01 | Profil Firmy raportfirmy.pl | uzupełnienie: godziny, telefon, opis z ceną i gwarancją | pozycja 1 |
+| śr 6.01 | — | karty wyniku i kartka dla partnera do druku (`index.html#test` → „Karta wyniku”) | — |
+| pn 11.01 | klienci z grudnia | prośba o zgodę na pokazanie przykładu „przed/po” (bez nazwy, jeśli tak woli) | — |
+| pt 15.01 | partner | dzień próbny: 3 sprawdzenia z poleceń partnera | — |
+| **pn 18.01** | partner + wizyty | **start**: partner przekazuje informację; 5 wizyt z kartą | hooki 1, 3, 6 |
+| 19–22.01 | wizyty | 5 wizyt dziennie, tylko w sklepach z rozbieżnością | hook według rozbieżności |
+| pn 25.01 | — | przegląd 7 dni (`launch.md`) | — |
+| 26–29.01 | partner | drugi tekst dla klientów partnera: prawdziwa liczba z testu („u X z 30 sklepów w okolicy coś się nie zgadzało”) | hook 9 |
+| pn 1.02 | — | przegląd 14 dni | — |
+| 2–3.02 | wizyty | sklepy z listy oczekujących | — |
+
+Kiedy nie ma nic nowego do powiedzenia: jedno zdanie w Profilu Firmy raportfirmy.pl o tym, co sprawdzamy w tym tygodniu (np. „ferie zimowe: czy Twoje godziny się zmieniają?”).
+
+### Dziesięć hooków (każdy odpowiada na jedną obiekcję z panelu)
+
+| # | Obiekcja | Hook (zdanie na karcie albo przy ladzie) |
+|---|---|---|
+| 1 | „klienci to sąsiedzi, znają godziny” (potrzeba) | „Sąsiedzi znają Pana godziny. Ktoś, kto szuka sklepu w telefonie, widzi to:” + zdanie z karty |
+| 2 | „sam poprawię w kwadrans” | „Proszę bardzo, tu jest instrukcja za darmo. Jak zabraknie wieczoru, zrobimy to za Pana.” |
+| 3 | „takich od wizytówek miałem kilku” | „Nie dzwonimy. Przychodzimy osobiście, z kartką i nazwiskiem.” |
+| 4 | „Google za wizytówkę nie bierze” | „Zgadza się, Google nic nie bierze. My bierzemy tylko za wykonaną poprawkę.” |
+| 5 | „nie wpuszczę obcego jako menedżera” | „Bez haseł. Usuwa nas Pan jednym kliknięciem, instrukcja jest w teczce.” |
+| 6 | „wydatek bez dowodu” | „Nic nie znaleźliśmy, nic nie płacisz. Nie udało się, nie płacisz.” |
+| 7 | „centrala to robi” | „Tego, co ustala centrala, nie ruszamy. Pokażemy, co należy do Pana.” |
+| 8 | „nie mam czasu” | „5 minut przy ladzie na akceptację zamiast wieczoru przy komputerze.” |
+| 9 | „nie wiem, czy mam problem” | „U [X] z 30 sklepów w tej okolicy coś się nie zgadzało.” **Tylko z prawdziwą liczbą z testu.** |
+| 10 | moment (święta) | „Wielka Sobota 27.03.2027: handel do 14:00. Co pokaże Google?” (na marzec) |
+
+**Oferta otwarcia** (`pricing.md`): pierwsze 10 sklepów od partnera dostaje do 31.01.2027 kartkę na drzwi z godzinami świątecznymi i przypomnienie przed Wielkanocą. Bez rabatów.
+
+## A5. Budżet i liczby
+
+**Budżet 200 zł:** 100 zł na druk (karty wyniku, kartka dla partnera), 50 zł na spotkania z partnerami, 50 zł rezerwy. Bez płatnych reklam.
+
+**Ile wolno zapłacić za pozyskanie klienta.** Kupuje się raz, więc to wkład jednego zlecenia (`cfo.md`):
+
+| Scenariusz | Wkład na zlecenie | Maksymalny koszt pozyskania |
+|---|---:|---:|
+| dzisiejszy czas, z VAT | −121,36 zł | **0 zł**: każde zlecenie już traci |
+| czas docelowy 95 min, z VAT | 26,14 zł | < 26 zł |
+| czas docelowy, bez VAT (nierejestrowana / zwolnienie) | 54,00 zł | < 54 zł |
+
+Wniosek dla umowy z partnerem (warunek 6 zarządu): **prowizja nie wyższa niż ok. 25 zł za opłacone zlecenie**, i to tylko wtedy, gdy czas pracy zejdzie do celu. Lepiej zaproponować partnerowi korzyść niepieniężną: darmowe sprawdzenia dla jego klientów i jego logo na karcie.
+
+**Trzy liczby co tydzień:**
+| Liczba | Poziom „zmień coś” | Co wtedy |
+|---|---|---|
+| Opłacone / pokazane wyniki | < 10% po 20 wynikach | `/founder-offer` z prawdziwymi odpowiedziami |
+| Zgłoszenia od partnera | 0 przez 2 tygodnie | drugi partner |
+| Minuty na opłacone zlecenie | > 120 | `ops.md`, procedura A; potem cena |
+
+---
+
+# Część B: agent, który odzywa się w ważnym momencie (16.11.2026)
 
 Podstawa: panele symulowanych właścicieli sklepów (6.11–16.11: 20 osób w każdej próbie, raz 100), `pricing-skaner.md` (29 zł brutto/mies., 290 zł/rok, pierwszy miesiąc 9 zł do 31.03.2027), `cfo-skaner.md` i `numbers-opt.json`. Nie ma pliku `competitors.md`: konkurencji nie mapowaliśmy, więc pozycjonowanie opiera się na zamiennikach, które wskazali kupujący (wydruk z kasy, Subiekt, centrala sieci, księgowa, zeszyt). Panele to symulacja: dobrze pokazują obiekcje, słabo przewidują zakup. **Cytatów z paneli nie wolno używać w reklamach jako opinii klientów.** To nie jest porada prawna.
 

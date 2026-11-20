@@ -50,7 +50,7 @@ Wersja ostateczna z 16.11.2026. Zbiera decyzje i wnioski z prac od 6 do 16.11.20
 
 | Etap | Moduł | Co robi | Stan w repo |
 |---|---|---|---|
-| **1. Start (18.01.2027)** | Sprawdzenie / portret | Ręczne sprawdzenie przez opiekuna wspierane formularzem i listą kontrolną; później półautomatyczne | `index.html`: makieta na 4 sklepach testowych |
+| **1. Start (18.01.2027)** | Sprawdzenie / portret | Ręczne sprawdzenie przez opiekuna wspierane formularzem i listą kontrolną; później półautomatyczne | `index.html`: makieta na 4 sklepach testowych; panel opiekuna → „Test 30 sklepów”: lista 12 pól, stoper, karta wyniku do druku, CSV |
 | | Zlecenia | Kolejka, wycena trudnych spraw, limit w miesiącu, lista oczekujących | `index.html`: panel opiekuna (makieta) |
 | | Status i teczka | Link z SMS-a, 3 stany, akceptacja, potwierdzenia zmian | `index.html`: makieta |
 | | Rejestr metod | Typ błędu, źródło, metoda, czas. Zasób, którego konkurencja nie skopiuje | `index.html`: makieta |
@@ -72,7 +72,7 @@ Wersja ostateczna z 16.11.2026. Zbiera decyzje i wnioski z prac od 6 do 16.11.20
 |---|---|---|---|
 | Sprawdzenie (portret) | wejście | 0 zł | **Do decyzji CEO** (wyjątek od zasady „Nic za darmo” z 10.11) |
 | Naprawa danych w Google i na Facebooku | jednorazowo | 149 zł brutto | akceptowalna dla 19 z 20 w panelu; test na prawdziwych sklepach do 20.12.2026 |
-| Trudna sprawa (duplikat, przejęty profil, odzyskanie dostępu) | jednorazowo | stała cena przed startem | widełki do ustalenia |
+| Trudna sprawa (duplikat, przejęty profil, odzyskanie dostępu) | jednorazowo | stała cena przed startem: 349 / 449 zł (propozycja, `pricing.md`) | do opublikowania przed 18.01.2027 |
 | Raport firmy | jednorazowo | 49 zł (hipoteza) | panel: 2/100 przy 49 zł |
 | Opieka | abonament | 49–99 zł/mies. (hipoteza) | 99 zł dało 0/20; wraca tylko z powodem |
 | Kasa | abonament | 29 zł/mies. albo 290 zł/rok (hipoteza) | 0/20; sens tylko przez biuro |
@@ -156,4 +156,4 @@ Statyczne makiety (`index.html`, `pilot/`, `skaner/`) pokazują proces. Produkcj
 
 ---
 
-**Źródła w repozytorium:** `docs/founder/launch.md` (plan startu), `offer.md`, `marketing.md` (momenty, nastrój, pozycjonowanie), `sposoby-i-bezpieczenstwo.md`, `cfo.md` (usługa), `cfo-skaner.md`, `pricing-skaner.md`, `czas-dla-siebie.md`, panele `panel*/`. Wyniki paneli to symulacja: pokazują obiekcje, nie przewidują sprzedaży.
+**Źródła w repozytorium:** `docs/founder/launch.md` (plan startu), `offer.md`, `marketing.md` (momenty, nastrój, pozycjonowanie), `sposoby-i-bezpieczenstwo.md`, `business-plan.md`, `summary.md`, `one-pager.md`, `board.md`, `competitors.md`, `pricing.md`, `brand.md`, `ops.md`, `cfo.md` (usługa), `cfo-skaner.md`, `pricing-skaner.md`, `czas-dla-siebie.md`, panele `panel*/`. Wyniki paneli to symulacja: pokazują obiekcje, nie przewidują sprzedaży.

@@ -36,8 +36,15 @@ Wszystkie kwoty w zł, netto. 149 zł brutto to 121,14 zł netto przy VAT 23%. J
 | 4. Cena 299 zł brutto (243,09 zł netto) | 0,59 zł | 560 | −3 910 zł |
 | 1 + 2 + 3 razem (149 zł) | 26,14 zł | 13 (ponad limit 10) | −1 738 zł |
 | 1 + 2 + 3 i cena 199 zł brutto (161,79 zł netto) | 66,79 zł | 5 | 1 717 zł |
+| 5. Działalność nierejestrowana albo zwolnienie z VAT (cała kwota 149 zł zostaje, bez księgowości 300 zł/mies.), czas dzisiejszy | −93,50 zł | nigdy | −8 308 zł |
+| **5 + 1 + 2 + 3 (czas docelowy 95 min), cena 149 zł** | **54,00 zł** | **1** | **4 230 zł** |
+| 5 + 1 + 2 + 3, cena 179 zł | 84,00 zł | 1 | 6 780 zł |
 
-Żadna dźwignia sama nie wystarcza. Na plus wychodzi dopiero połączenie: szybkie sprawdzenie, klienci z polecenia, krótka naprawa i wyższa cena. Cenę 199 zł trzeba sprawdzić. Panel v2 dał medianę „za drogo” 225 zł (`offer.md`), ale to symulacja.
+Żadna dźwignia sama nie wystarcza. **Najmocniejsze połączenie (dodane 20.11 po `ops.md`) to forma działalności i krótszy czas pracy.** Działalność nierejestrowana ma limit 10 813,50 zł przychodu na kwartał w 2026 r. Zwolnienie z VAT obowiązuje do 240 000 zł rocznie. Przy jednym i drugim 149 zł zostaje w całości i nie ma kosztu biura rachunkowego. Razem z czasem docelowym 95 min zlecenie zarabia nawet przy godzinie liczonej po 60 zł: +4 230 zł w 1. roku przy cenie 149 zł (`numbers-nierejestrowana.json` ze zmienionymi czasami). Oba warunki trzeba jednak sprawdzić: formę i VAT u księgowego, czas w teście. Do tego czasu `numbers.json` zostaje bez zmian.
+
+**Luka w kosztach stałych.** W 330 zł miesięcznie nie ma składek ZUS ani zdrowotnej. Przy zarejestrowanej działalności to kilkaset zł miesięcznie, zależnie od ulg, więc wynik wariantu z VAT jest w tej kwestii zbyt optymistyczny.
+
+Poza tym żadna z dźwigni 1–4 nie wystarcza sama. Na plus wychodzi dopiero połączenie: szybkie sprawdzenie, klienci z polecenia, krótka naprawa i wyższa cena. Cenę 199 zł trzeba sprawdzić. Panel v2 dał medianę „za drogo” 225 zł (`offer.md`), ale to symulacja.
 
 ## Gotówka
 
