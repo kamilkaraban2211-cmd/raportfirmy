@@ -175,7 +175,7 @@ const fixable = shop => shop.findings.filter(f => f.type !== "chain");
 const hasHard = shop => shop.findings.some(f => f.type === "hard");
 
 /* ---------- Stan ---------- */
-function fresh(){ return { v:1, view:"start", mode:"client", shopId:null, query:"", picks:{}, selfFix:false, orders:[], registry:[], limit:8, log:[], checks:[], draft:null, cardId:null }; }
+function fresh(){ return { v:1, view:"start", mode:"client", shopId:null, query:"", picks:{}, selfFix:false, orders:[], registry:[], limit:8, log:[], checks:[], draft:null, cardId:null, caretaker:{ name:"", phone:"" }, onboarded:false, exported:false }; }
 let S = fresh();
 try { const raw = localStorage.getItem(LS_KEY); if (raw){ const p = JSON.parse(raw); if (p && p.v === 1) S = Object.assign(fresh(), p); } } catch (e) { /* bez pamięci przeglądarki też działa */ }
 function save(){ try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { /* tryb bez pamięci */ } }
@@ -450,6 +450,21 @@ function visitForm(c){
       <div class="row"><button class="btn sm primary" type="submit">Zapisz wizytę</button><button class="btn sm" type="button" data-act="check-card" data-id="${c.id}">Karta wyniku dla sklepu</button><button class="btn sm danger" type="button" data-act="check-del" data-id="${c.id}">Usuń</button></div>
     </form>`;
 }
+/* Szybki start: tylko kroki, bez których test nie ruszy. Znika po kliknięciu „Ukryj” albo po wykonaniu wszystkich trzech. */
+function onboarding(){
+  if (S.onboarded) return "";
+  const ct = LIVE ? CARETAKER : S.caretaker, s1 = !!(ct.name && ct.phone), s2 = S.checks.length > 0, s3 = !!S.exported;
+  if (s1 && s2 && s3) return "";
+  const mark = done => done ? '<span class="pill good">zrobione</span>' : '<span class="pill">do zrobienia</span>';
+  const step1 = s1 ? `<p>Na karcie wyniku: <b>${esc(ct.name)}</b>, tel. ${esc(ct.phone)}${LIVE ? "" : ` <button class="btn link" data-act="ct-edit">zmień</button>`}</p>`
+    : `<form class="row" data-form="caretaker" novalidate><input name="name" type="text" autocomplete="name" aria-label="Imię i nazwisko" placeholder="Imię i nazwisko" style="max-width:220px" value="${esc(S.caretaker.name)}"><input name="phone" type="tel" inputmode="tel" autocomplete="tel" aria-label="Telefon" placeholder="Telefon, 9 cyfr" style="max-width:160px" value="${esc(S.caretaker.phone)}"><button class="btn primary sm" type="submit">Zapisz</button></form>${errFor("ct")}`;
+  return `<section class="card accent noprint" aria-labelledby="onb-h"><div class="row" style="justify-content:space-between"><h2 id="onb-h">Szybki start: 3 kroki</h2><button class="btn sm" data-act="onb-hide">Ukryj</button></div>
+    <ol class="stack">
+      <li><div class="row" style="justify-content:space-between"><b>Twoje imię i telefon na karcie.</b>${mark(s1)}</div><p class="small muted">Klient ufa osobie, nie firmie. Zapisane tylko w tej przeglądarce.</p>${step1}</li>
+      <li><div class="row" style="justify-content:space-between"><b>Pierwsze sprawdzenie: 5 minut.</b>${mark(s2)}</div><p class="small muted">Stoper rusza sam. 12 pól, Google i Facebook. Instrukcja minuta po minucie: docs/founder/ops.md, procedura A.</p>${s2 || S.draft ? "" : `<div><button class="btn primary" data-act="check-start">Rozpocznij sprawdzenie</button></div>`}</li>
+      <li><div class="row" style="justify-content:space-between"><b>Koniec dnia: pobierz CSV.</b>${mark(s3)}</div><p class="small muted">Dane żyją tylko w tej przeglądarce. CSV to Twoja kopia.</p></li>
+    </ol></section>`;
+}
 function vTest(){
   const t = testStats(), [vt, vc] = testVerdict(t);
   const vat = t.avgPrice != null && t.perPaid != null ? `<p class="small">Wkład na opłacone zlecenie przy 60 zł/h: <b>${num(t.avgPrice / 1.23 - t.perPaid)} zł</b> z VAT · <b>${num(t.avgPrice - t.perPaid)} zł</b> bez VAT (działalność nierejestrowana albo zwolnienie). Liczby z kalkulatora: docs/founder/cfo.md.</p>` : "";
@@ -461,7 +476,7 @@ function vTest(){
     return `<details class="card" ${UI.openCheck === c.id ? "open" : ""}><summary><span><b>${esc(c.shop)}</b> <span class="small muted">${esc(c.town)} · ${fmtD(c.at)} · ${fmtMin(c.minutes)}</span></span><span class="row">${nF ? `<span class="pill warn">${nF} do poprawy</span>` : '<span class="pill good">wszystko się zgadza</span>'}${st}</span></summary>
       ${finds || '<p class="small muted">Wszystkie pola się zgadzają albo nie dotyczą sklepu.</p>'}${visitForm(c)}</details>`;
   }).join("");
-  return `${opNav("test")}<h1>Test 30 sklepów</h1>
+  return `${opNav("test")}${onboarding()}<h1>Test 30 sklepów</h1>
     <p class="muted">Ręczne sprawdzenie prawdziwych sklepów do 20.12.2026. Zapisujemy tylko dane publiczne sklepu. Nie zapisujemy NIP-u ani danych właściciela. Dane zostają w tej przeglądarce, więc po każdym dniu pobierz CSV.</p>
     <div class="flash ${vc}" role="status">${esc(vt)}</div>
     <section class="card"><h2>Wskaźniki</h2><div class="kpis">
@@ -483,7 +498,8 @@ function vKarta(){
   const c = checkById(S.cardId), date = fmtD(c.at);
   const items = CHECK_FIELDS.filter(([k]) => ["diff", "hard", "chain"].includes(c.res[k]));
   const anyDiff = countRes(c, "diff") > 0, anyHard = countRes(c, "hard") > 0, anyChain = countRes(c, "chain") > 0;
-  const who = LIVE ? `<p><b>${esc(CARETAKER.name)}</b>, tel. ${esc(CARETAKER.phone)}</p>` : `<p>Opiekun: <span class="blank">&nbsp;</span> tel. <span class="blank">&nbsp;</span></p><p class="testnote noprint">Dane opiekuna (CARETAKER w index.html) są puste. Na wydruku zostaną linie do wpisania ręcznie.</p>`;
+  const ct = LIVE ? CARETAKER : S.caretaker;
+  const who = ct.name && ct.phone ? `<p><b>${esc(ct.name)}</b>, tel. ${esc(ct.phone)}</p>` : `<p>Opiekun: <span class="blank">&nbsp;</span> tel. <span class="blank">&nbsp;</span></p><p class="testnote noprint">Brak Twojego imienia i telefonu. Wpisz je w „Szybkim starcie” w zakładce testu. Do tego czasu na wydruku zostają linie do wpisania ręcznie.</p>`;
   const body = !items.length ? `<section class="card good"><h2>Wszystko się zgadza</h2><p class="lead">Klienci widzą u Ciebie te same dane w każdym miejscu, które sprawdziliśmy. Nie mamy Ci czego sprzedać.</p><p>Warto sprawdzić ponownie po zmianie godzin albo numeru i przed świętami.</p></section>`
     : `<section class="card"><h2>Co widzi klient</h2>${items.map(([k, label, src]) => `<div class="src"><span><b>${esc(label)}</b></span><span class="pill ${RES[c.res[k]][1]}">${RES[c.res[k]][0]}</span><span class="when">${esc(c.notes[k] || "")} · źródło: ${src} · sprawdzone ${date}</span></div>`).join("")}</section>
       <section class="card accent"><h2>Co możemy zrobić</h2>
@@ -523,17 +539,21 @@ function go(v){ S.view = v; UI.err = {}; if (location.hash.slice(1) !== v){ try 
 const orderById = id => S.orders.find(o => o.id === id);
 const ACT = {
   mode(){ S.mode = S.mode === "client" ? "operator" : "client"; go(S.mode === "operator" ? "operator" : (S.shopId ? "wynik" : "start")); },
-  reset(){ const keep = S.checks; S = fresh(); S.checks = keep; try { localStorage.removeItem(LS_KEY); } catch (e) {} UI.flash = ["Dane testowe wyczyszczone." + (keep.length ? " Sprawdzenia z testu zostały." : "")]; go("start"); },
+  reset(){ const keep = S.checks, ct = S.caretaker, onb = S.onboarded, ex = S.exported; S = fresh(); Object.assign(S, { checks:keep, caretaker:ct, onboarded:onb, exported:ex }); try { localStorage.removeItem(LS_KEY); } catch (e) {} UI.flash = ["Dane testowe wyczyszczone." + (keep.length ? " Sprawdzenia z testu zostały." : "")]; go("start"); },
   "check-start"(){ S.draft = { startedAt:TODAY(), values:{} }; UI.err = {}; render(); const f = document.getElementById("ck-shop"); if (f) f.focus(); },
   "check-cancel"(){ if (confirm("Przerwać to sprawdzenie? Wpisane dane przepadną.")){ S.draft = null; UI.err = {}; render(); } },
   "check-card"(el){ S.cardId = el.dataset.id; go("karta"); },
   "check-del"(el){ const c = checkById(el.dataset.id); if (c && confirm(`Usunąć sprawdzenie sklepu „${c.shop}”?`)){ S.checks = S.checks.filter(x => x !== c); UI.flash = ["Sprawdzenie usunięte."]; render(); } },
   "check-wipe"(){ if (confirm("Usunąć wszystkie sprawdzenia z testu? Najpierw pobierz CSV.")){ S.checks = []; S.draft = null; UI.flash = ["Wszystkie sprawdzenia usunięte."]; render(); } },
   "check-csv"(){
+    S.exported = true; save();
     const blob = new Blob([csvOf()], { type:"text/csv;charset=utf-8" }), a = document.createElement("a");
     a.href = URL.createObjectURL(blob); a.download = "test-sklepow-" + TODAY().slice(0, 10) + ".csv"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    render();
   },
   print(){ window.print(); },
+  "onb-hide"(){ S.onboarded = true; render(); },
+  "ct-edit"(){ S.caretaker = { name:"", phone:"" }; render(); },
   "pick-shop"(el){ S.shopId = el.dataset.id; S.picks = {}; S.selfFix = false; UI.noData = false; go("wynik"); },
   self(){ S.selfFix = true; render(); const el = document.getElementById("sam"); if (el) el.scrollIntoView({ block:"start" }); },
   "accept-price"(){ const o = myOrder(); if (o && move(o, "called", "Zgodziłeś się na cenę " + zl(o.price) + ".")) UI.flash = ["Cena zaakceptowana. Opiekun przeprowadzi Cię przez nadanie dostępu.", "good"]; render(); },
@@ -600,6 +620,11 @@ const FORM = {
     S.checks.unshift(c); S.draft = null;
     UI.flash = [hasFinding(c) ? `Zapisano: ${shop}, ${fmtMin(c.minutes)}. Cena na karcie: ${c.price ? c.price + " zł" : "trudna sprawa"}.` : `Zapisano: ${shop}, ${fmtMin(c.minutes)}. Wszystko się zgadza.`, "good"];
     render();
+  },
+  caretaker(fd){
+    const name = String(fd.get("name") || "").trim(), phone = String(fd.get("phone") || "").replace(/[\s-]/g, "").replace(/^\+?48/, "");
+    if (name.length < 3 || !/^\d{9}$/.test(phone)){ S.caretaker = { name, phone:String(fd.get("phone") || "") }; UI.err.ct = "Podaj imię i nazwisko oraz 9 cyfr telefonu."; return render(); }
+    delete UI.err.ct; S.caretaker = { name, phone:phone.replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3") }; UI.flash = ["Zapisane. Twoje dane będą na karcie wyniku.", "good"]; render();
   },
   visit(fd, form){
     const c = checkById(form.dataset.id); if (!c) return render();

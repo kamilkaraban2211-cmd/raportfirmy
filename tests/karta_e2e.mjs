@@ -27,6 +27,15 @@ for (const width of [390, 1100]) {
   ok(await page.locator('[data-act="check-csv"]').isDisabled(), W("CSV wyłączony bez danych"));
   await noHScroll("test pusty");
 
+  // 0. szybki start: 3 kroki, walidacja i zapis danych opiekuna
+  ok((await text()).includes("Szybki start: 3 kroki"), W("szybki start widoczny"));
+  await page.click('[data-form="caretaker"] button[type=submit]');
+  ok((await text()).includes("Podaj imię i nazwisko oraz 9 cyfr"), W("walidacja danych opiekuna"));
+  await page.fill('[data-form="caretaker"] input[name="name"]', "Jan Testowy");
+  await page.fill('[data-form="caretaker"] input[name="phone"]', "+48 600-100-200");
+  await page.click('[data-form="caretaker"] button[type=submit]');
+  ok((await text()).includes("Jan Testowy, tel. 600 100 200"), W("dane opiekuna zapisane i sformatowane"));
+
   // 1. sprawdzenie z rozbieżnością: walidacja, potem zapis
   await page.click('[data-act="check-start"]');
   ok(await page.locator("#stoper").count() === 1, W("stoper widoczny"));
@@ -103,6 +112,8 @@ for (const width of [390, 1100]) {
   ok(card.includes("nie płacisz"), W("karta: gwarancja"));
   ok(card.includes("centralę sieci"), W("karta: pole centrali"));
   ok(card.includes("za darmo"), W("karta: opcja poprawię sam"));
+  ok(card.includes("Jan Testowy") && card.includes("600 100 200"), W("karta: imię i telefon opiekuna z szybkiego startu"));
+  ok(!card.includes("Szybki start"), W("karta bez szybkiego startu"));
   await page.emulateMedia({ media: "print" });
   ok(await page.locator(".testbar").isHidden(), W("druk: bez paska testowego"));
   ok(await page.locator('[data-act="print"]').isHidden(), W("druk: bez przycisków"));
@@ -113,6 +124,8 @@ for (const width of [390, 1100]) {
   await page.click('a[href="#test"]');
   const [dl] = await Promise.all([page.waitForEvent("download"), page.click('[data-act="check-csv"]')]);
   const csv = fs.readFileSync(await dl.path(), "utf8");
+  await page.goto(url + "#test");
+  ok(!(await text()).includes("Szybki start"), W("szybki start znika po 3 krokach"));
   ok(csv.startsWith("﻿\"id\""), W("CSV z BOM i nagłówkiem"));
   ok(csv.split("\r\n").length === 4, W("CSV: nagłówek + 3 wiersze"));
   ok(csv.includes('"Sklep Pod Lipą"') && csv.includes('"tak"'), W("CSV: dane wizyty"));
@@ -123,6 +136,7 @@ for (const width of [390, 1100]) {
   ok((await text()).includes("Sprawdzenia z testu zostały"), W("reset zachowuje sprawdzenia"));
   await page.goto(url + "#test");
   ok((await text()).includes("3/30"), W("sprawdzenia przetrwały reset i przeładowanie"));
+  ok(!(await text()).includes("Szybki start"), W("reset nie przywraca szybkiego startu"));
   await page.click('[data-act="mode"]');
   ok(!(await text()).includes("Test 30 sklepów"), W("widok klienta bez zakładki testu"));
   await page.goto(url + "#test");
