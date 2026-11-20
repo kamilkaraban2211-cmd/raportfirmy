@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sprawdzenie w terenie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Literata:opsz,wght@7..72,500;7..72,650&display=swap" rel="stylesheet">
+<style>
+/* Narzędzie terenowe do testu 17.11–20.12.2026. Ten sam system barw co pilot/ i index.html. */
+:root{
+  --paper:#f3f5f4; --surface:#ffffff; --ink:#16222c; --muted:#56646d; --line:#d6dedd; --accent:#0b6b63; --accent-soft:#e0efec; --on-accent:#ffffff;
+  --good:#2e7533; --good-soft:#e3f1e3; --warn:#94580a; --warn-soft:#fbefd9; --bad:#ad2a20; --bad-soft:#f8e2df;
+  --display:"Literata", Georgia, serif; --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --r:10px; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#111a1f; --surface:#18232a; --ink:#e4ebec; --muted:#9aa9ae; --line:#2c3a41; --accent:#43b3a6; --accent-soft:#163633; --on-accent:#06201d;
+  --good:#78c27c; --good-soft:#1b3320; --warn:#e2ad5a; --warn-soft:#3a2c14; --bad:#f08a80; --bad-soft:#3d1d1a; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --paper:#111a1f; --surface:#18232a; --ink:#e4ebec; --muted:#9aa9ae; --line:#2c3a41; --accent:#43b3a6; --accent-soft:#163633; --on-accent:#06201d;
+  --good:#78c27c; --good-soft:#1b3320; --warn:#e2ad5a; --warn-soft:#3a2c14; --bad:#f08a80; --bad-soft:#3d1d1a; color-scheme:dark; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+h1,h2,h3{font-family:var(--display);font-weight:650;line-height:1.2;margin:0;text-wrap:balance}
+h1{font-size:1.5rem} h2{font-size:1.2rem} h3{font-size:1rem;font-family:var(--body);font-weight:600}
+p{margin:0} a{color:var(--accent)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)} .small{font-size:.875rem}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+header{background:var(--surface);border-bottom:1px solid var(--line)}
+.top{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;gap:8px 16px;align-items:baseline;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:650;font-size:1.1rem}
+nav{max-width:900px;margin:0 auto;padding:0 16px;display:flex;gap:2px;overflow-x:auto}
+nav a{padding:9px 10px;text-decoration:none;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;font-weight:500}
+nav a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+main{max-width:900px;margin:0 auto;padding:18px 16px 80px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card.good{border-left:5px solid var(--good)} .card.bad{border-left:5px solid var(--bad)} .card.warn{border-left:5px solid var(--warn)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+label{display:flex;flex-direction:column;gap:4px;font-size:.875rem;color:var(--muted);min-width:0}
+label.inline{flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:.95rem}
+input[type=text],input[type=tel],input[type=date],input[type=number],select,textarea{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+textarea{min-height:64px;resize:vertical}
+input[type=checkbox],input[type=radio]{width:20px;height:20px;accent-color:var(--accent);margin:0}
+.btn{font:inherit;font-weight:500;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;line-height:1.2}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.danger{color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:.8rem;background:var(--paper);border:1px solid var(--line);white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good);border-color:transparent}
+.pill.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);text-decoration:none;color:var(--ink);flex-wrap:wrap}
+.field{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.field:first-of-type{border-top:0;padding-top:0}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg label{flex-direction:row;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 10px;color:var(--ink);cursor:pointer}
+.seg label:has(input:checked){background:var(--accent-soft);border-color:var(--accent)}
+.seg input{width:16px;height:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--surface)}
+.stat b{display:block;font-family:var(--mono);font-size:1.4rem}
+.banner{background:var(--warn-soft);color:var(--warn);padding:8px 16px;font-size:.875rem}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+td,th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tablewrap{overflow-x:auto}
+/* Karta wyniku: to, co widzi właściciel. */
+.result{background:#fff;color:#16222c;border:2px solid #16222c;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px;max-width:560px}
+.result h2{font-size:1.35rem}
+.result .r-head{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.85rem;color:#56646d}
+.result ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.result .price{white-space:nowrap;font-family:var(--mono);font-size:1.3rem;font-weight:500}
+.result .foot{border-top:1px solid #d6dedd;padding-top:10px;font-size:.85rem;color:#56646d}
+@media print{
+  header,nav,.banner,.noprint{display:none!important}
+  html,body{background:#fff}
+  main{padding:0}
+  .result{border-width:1px}
+}
+</style>
+</head>
+<body>
+<div id="storeWarn" class="banner" hidden>Ta przeglądarka nie zapisuje danych. Po każdej wizycie zrób kopię (Ustawienia → Kopia zapasowa).</div>
+<header>
+  <div class="top"><span class="brand" id="brandName"></span><span class="muted small">Sprawdzenie w terenie · test do 20.12.2026</span></div>
+  <nav aria-label="Sekcje">
+    <a href="#sklepy" data-nav="sklepy">Sklepy</a>
+    <a href="#biura" data-nav="biura">Biura i hurtownie</a>
+    <a href="#zestawienie" data-nav="zestawienie">Zestawienie</a>
+    <a href="#ustawienia" data-nav="ustawienia">Ustawienia</a>
+  </nav>
+</header>
+<main id="app" tabindex="-1"></main>
+
+<script>
+// ===== Konfiguracja: nazwę marki i ceny zmieniasz tutaj =====
+const CONFIG = {
+  brand: "raportfirmy.pl",            // nazwa robocza, do zmiany po decyzji o nazwie
+  price: 149,                         // naprawa danych, zł brutto, płatna po wykonaniu
+  target: 30,                         // liczba sklepów w teście A
+  // Kalendarz grudnia 2026: niedziele handlowe i dni zamknięte.
+  tradingSundays: "6, 13 i 20 grudnia",
+  closedDays: "24–27 grudnia (Wigilia, święta, niedziela niehandlowa)",
+};
+
+// 12 pól listy kontrolnej. hq: pole zwykle ustala centrala sieci.
+const FIELDS = [
+  { k:"exists",   t:"Profil w Google istnieje",                 h:"Szukaj nazwy i miejscowości w Mapach Google." },
+  { k:"dup",      t:"Brak duplikatu profilu",                   h:"Dwa profile tego samego sklepu, np. stary adres albo stara nazwa.", hard:true },
+  { k:"status",   t:"Status: otwarte (nie „zamknięte na stałe”)", h:"" },
+  { k:"addr",     t:"Adres i pinezka na mapie",                 h:"Pinezka na właściwym budynku, wejście po właściwej stronie." },
+  { k:"phone",    t:"Telefon",                                   h:"Zadzwoń albo porównaj z szyldem i paragonem." },
+  { k:"hours",    t:"Godziny w zwykły dzień",                   h:"Porównaj z tabliczką na drzwiach." },
+  { k:"sundays",  t:"Niedziele handlowe: " + CONFIG.tradingSundays, h:"Czy Google ma godziny specjalne na te dni?" },
+  { k:"closed",   t:"Zamknięte " + CONFIG.closedDays,           h:"Jeśli Google pokaże „otwarte”, klient odbije się od drzwi." },
+  { k:"category", t:"Kategoria sklepu",                          h:"Np. „sklep spożywczy”, a nie „hurtownia”." },
+  { k:"web",      t:"Strona lub link w profilu działa",          h:"" },
+  { k:"fb",       t:"Facebook: godziny, adres, telefon zgodne",  h:"Jeśli sklep ma stronę na Facebooku." },
+  { k:"photos",   t:"Zdjęcia pokazują obecny wygląd sklepu",     h:"Stary szyld albo inny sklep na zdjęciu." },
+];
+const SEGMENTS = { niezalezny:"Niezależny spożywczy", siec:"Pod szyldem sieci", specjalistyczny:"Specjalistyczny niespożywczy" };
+const SOURCES = ["tabliczka na drzwiach","rozmowa z właścicielem","telefon do sklepu","paragon","strona sklepu","inne"];
+const DECISIONS = { "":"—", zlecil:"Zlecił naprawę", mysli:"Zastanawia się", odmowil:"Odmówił", nd:"Nie dotyczy (wszystko się zgadza)" };
+const ORDER_PICK = { "":"—", braki:"Wspólna lista braków", faktury:"Zamówienie z ostatnich faktur", oba:"Oba", zadne:"Żadne" };
+const AGREE = { nie:"Nie", ustnie:"Ustnie", pisemnie:"Na piśmie" };
+
+// ===== Stan i zapis =====
+const KEY = "teren.v1";
+let canStore = true;
+const blank = () => ({ v:1, caretaker:{ name:"", phone:"" }, shops:[], offices:[] });
+let S = blank();
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(blank(), JSON.parse(raw)); localStorage.setItem(KEY + ".probe", "1"); localStorage.removeItem(KEY + ".probe"); }
+catch (e) { canStore = false; }
+document.getElementById("storeWarn").hidden = canStore;
+let saveT = null;
+function save(){ clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { canStore = false; document.getElementById("storeWarn").hidden = false; } }, 150); }
+
+const uid = () => Math.random().toString(36).slice(2, 9);
+const today = () => new Date().toISOString().slice(0, 10);
+const fmtD = d => d ? d.split("-").reverse().join(".") : "—";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const shopById = id => S.shops.find(s => s.id === id);
+const offById = id => S.offices.find(o => o.id === id);
+
+function newShop(name, place, segment){
+  const fields = {}; FIELDS.forEach(f => fields[f.k] = { st:"unk", google:"", real:"", src:"", hard:false, hq:false });
+  return { id:uid(), name, place, segment, created:today(), checkedAt:"", fields,
+    visit:{ date:"", shown:false, decision:"", paid:false, amount:"", accMin:"", accSteps:"", stuck:false, stuckWhere:"", qBook:"", qOrd1:"", qOrd2:"", qOrdPick:"", notes:"" } };
+}
+const issues = s => FIELDS.filter(f => s.fields[f.k].st === "bad").map(f => ({ ...f, ...s.fields[f.k] }));
+const fixable = s => issues(s).filter(i => !i.hq);
+const hqIssues = s => issues(s).filter(i => i.hq);
+
+// ===== Widoki =====
+const app = document.getElementById("app");
+document.getElementById("brandName").textContent = CONFIG.brand;
+
+function route(){
+  const [view, id] = (location.hash.slice(1) || "sklepy").split("/");
+  document.querySelectorAll("nav a").forEach(a => a.toggleAttribute("aria-current", a.dataset.nav === view || (view === "sklep" || view === "karta") && a.dataset.nav === "sklepy" || view === "biuro" && a.dataset.nav === "biura"));
+  if (view === "sklep" && shopById(id)) app.innerHTML = vShop(shopById(id));
+  else if (view === "karta" && shopById(id)) app.innerHTML = vCard(shopById(id));
+  else if (view === "biura") app.innerHTML = vOffices();
+  else if (view === "biuro" && offById(id)) app.innerHTML = vOffice(offById(id));
+  else if (view === "zestawienie") app.innerHTML = vSummary();
+  else if (view === "ustawienia") app.innerHTML = vSettings();
+  else app.innerHTML = vShops();
+  if (document.activeElement === document.body) window.scrollTo(0, 0);
+}
+
+function shopStatus(s){
+  if (!s.checkedAt) return '<span class="pill">do sprawdzenia</span>';
+  const n = fixable(s).length, h = hqIssues(s).length;
+  if (n) return `<span class="pill bad">${n} do naprawy</span>`;
+  if (h) return `<span class="pill warn">tylko centrala (${h})</span>`;
+  return '<span class="pill good">wszystko się zgadza</span>';
+}
+
+function vShops(){
+  const done = S.shops.filter(s => s.checkedAt).length;
+  return `<section class="card">
+    <h1>Sklepy</h1>
+    <p class="muted small">Sprawdzono <b class="mono">${done}</b> z ${CONFIG.target}. Sprawdzamy tylko dane publiczne, ręcznie. Nie zapisujemy NIP-u ani danych osobowych właściciela.</p>
+    <form class="grid" data-form="addShop">
+      <label>Nazwa sklepu<input type="text" name="name" required autocomplete="off"></label>
+      <label>Miejscowość i ulica<input type="text" name="place" required autocomplete="off"></label>
+      <label>Rodzaj<select name="segment">${Object.entries(SEGMENTS).map(([k,v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>
+      <div class="row" style="align-self:end"><button class="btn primary" type="submit">Dodaj sklep</button></div>
+    </form>
+  </section>
+  <section class="list" aria-label="Lista sklepów">
+    ${S.shops.length ? S.shops.map(s => `<a class="item" href="#sklep/${s.id}"><span><b>${esc(s.name)}</b><br><span class="muted small">${esc(s.place)} · ${SEGMENTS[s.segment]}</span></span>${shopStatus(s)}</a>`).join("") : '<p class="muted">Nie ma jeszcze sklepów. Dodaj pierwszy powyżej.</p>'}
+  </section>`;
+}
+
+function vField(s, f){
+  const d = s.fields[f.k], n = `f-${f.k}`;
+  const opt = (v, t) => `<label><input type="radio" name="${n}" value="${v}" data-fst="${f.k}" ${d.st === v ? "checked" : ""}>${t}</label>`;
+  return `<div class="field">
+    <h3>${esc(f.t)}</h3>${f.h ? `<p class="muted small">${esc(f.h)}</p>` : ""}
+    <div class="seg" role="radiogroup" aria-label="${esc(f.t)}">${opt("ok","Zgadza się")}${opt("bad","Rozbieżność")}${opt("unk","Nie sprawdzono")}</div>
+    ${d.st === "bad" ? `<div class="grid">
+      <label>Co pokazuje Google / Facebook<input type="text" data-ff="${f.k}.google" value="${esc(d.google)}"></label>
+      <label>Jak jest naprawdę<input type="text" data-ff="${f.k}.real" value="${esc(d.real)}"></label>
+      <label>Skąd wiemy<select data-ff="${f.k}.src"><option value="">—</option>${SOURCES.map(x => `<option ${d.src === x ? "selected" : ""}>${x}</option>`).join("")}</select></label>
+    </div>
+    <div class="row">
+      <label class="inline"><input type="checkbox" data-ff="${f.k}.hard" ${d.hard ? "checked" : ""}>Trudna sprawa (duplikat, przejęty profil, brak dostępu)</label>
+      ${s.segment === "siec" ? `<label class="inline"><input type="checkbox" data-ff="${f.k}.hq" ${d.hq ? "checked" : ""}>Ustala centrala sieci (nie ruszamy)</label>` : ""}
+    </div>` : ""}
+  </div>`;
+}
+
+function vShop(s){
+  const v = s.visit, unk = FIELDS.filter(f => s.fields[f.k].st === "unk").length;
+  const t = (k, label, attrs = "") => `<label>${label}<input type="text" data-fv="${k}" value="${esc(v[k])}" ${attrs}></label>`;
+  return `<p class="noprint"><a href="#sklepy">← Wszystkie sklepy</a></p>
+  <section class="card">
+    <div class="row" style="justify-content:space-between"><h1>${esc(s.name)}</h1>${shopStatus(s)}</div>
+    <p class="muted small">${esc(s.place)} · ${SEGMENTS[s.segment]} · dodano ${fmtD(s.created)}</p>
+  </section>
+  <section class="card">
+    <h2>1. Sprawdzenie (12 pól)</h2>
+    ${FIELDS.map(f => vField(s, f)).join("")}
+    <div class="row">
+      <button class="btn primary" data-act="finish" data-id="${s.id}">${s.checkedAt ? "Zaktualizuj datę sprawdzenia" : "Zakończ sprawdzenie"}</button>
+      ${s.checkedAt ? `<a class="btn" href="#karta/${s.id}">Pokaż kartę wyniku</a>` : ""}
+      <span class="muted small">${s.checkedAt ? "Sprawdzono " + fmtD(s.checkedAt) : unk ? `Niesprawdzone pola: ${unk}` : ""}</span>
+    </div>
+  </section>
+  <section class="card">
+    <h2>2. Wizyta</h2>
+    <div class="grid">
+      <label>Data wizyty<input type="date" data-fv="date" value="${esc(v.date)}"></label>
+      <label>Decyzja<select data-fv="decision">${Object.entries(DECISIONS).map(([k,t]) => `<option value="${k}" ${v.decision === k ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+      <label>Zapłacono (zł)<input type="number" min="0" step="1" data-fv="amount" value="${esc(v.amount)}"></label>
+    </div>
+    <div class="row">
+      <label class="inline"><input type="checkbox" data-fv="shown" ${v.shown ? "checked" : ""}>Karta wyniku pokazana właścicielowi</label>
+      <label class="inline"><input type="checkbox" data-fv="paid" ${v.paid ? "checked" : ""}>Zlecenie opłacone</label>
+    </div>
+    <h3>Przekazanie dostępu do profilu</h3>
+    <div class="grid">
+      <label>Ile minut<input type="number" min="0" data-fv="accMin" value="${esc(v.accMin)}"></label>
+      <label>Ile kroków<input type="number" min="0" data-fv="accSteps" value="${esc(v.accSteps)}"></label>
+    </div>
+    <label class="inline"><input type="checkbox" data-fv="stuck" ${v.stuck ? "checked" : ""}>Właściciel utknął</label>
+    ${t("stuckWhere", "Gdzie utknął (np. nie pamięta hasła, profil założył ktoś inny)")}
+  </section>
+  <section class="card">
+    <h2>3. Pytania na koniec wizyty</h2>
+    <p class="muted small">Zapisuj słowa właściciela, nie swoją interpretację.</p>
+    <label>Co jest najbardziej uciążliwe w kontaktach z księgową?<textarea data-fv="qBook">${esc(v.qBook)}</textarea></label>
+    <label>Jak dziś zamawiasz towar i ile czasu zajmuje to w tygodniu?<textarea data-fv="qOrd1">${esc(v.qOrd1)}</textarea></label>
+    <label>Co najczęściej idzie nie tak: brak towaru, zapomniane pozycje, ceny?<textarea data-fv="qOrd2">${esc(v.qOrd2)}</textarea></label>
+    <label>Z czego skorzystałbyś od jutra?<select data-fv="qOrdPick">${Object.entries(ORDER_PICK).map(([k,t]) => `<option value="${k}" ${v.qOrdPick === k ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+    <label>Notatki<textarea data-fv="notes">${esc(v.notes)}</textarea></label>
+  </section>
+  <section class="row noprint"><button class="btn danger" data-act="delShop" data-id="${s.id}">Usuń sklep</button></section>`;
+}
+
+function vCard(s){
+  const fx = fixable(s), hq = hqIssues(s), hard = fx.some(i => i.hard), c = S.caretaker;
+  const missing = !c.name || !c.phone;
+  const li = i => `<li><b>${esc(i.t)}</b><br>W internecie: ${esc(i.google || "—")}<br>Naprawdę: ${esc(i.real || "—")}<br><span style="color:#56646d">Źródło: ${esc(i.src || "—")}, ${fmtD(s.checkedAt)}</span></li>`;
+  let body;
+  if (!fx.length && !hq.length) body = `<h2>Wszystko się zgadza</h2><p>Sprawdziliśmy 12 rzeczy, które klienci widzą o Państwa sklepie w Google${s.fields.fb.st === "ok" ? " i na Facebooku" : ""}. Nie znaleźliśmy błędów. Nic nie sprzedajemy.</p>`;
+  else body = `<h2>Znaleźliśmy ${fx.length + hq.length} ${fx.length + hq.length === 1 ? "rzecz" : "rzeczy"} do poprawy</h2>
+    ${fx.length ? `<ul>${fx.map(li).join("")}</ul>
+    <p>Możemy to poprawić za Państwa: <span class="price">${CONFIG.price} zł</span> brutto, jednorazowo, płatne po wykonaniu.${hard ? " Część to trudna sprawa: jej stałą cenę podamy przed rozpoczęciem pracy." : ""}</p>
+    <p><b>Gwarancja:</b> jeśli się nie uda, nie płacą Państwo nic.</p>
+    <p>Mogą Państwo też poprawić to sami. Chętnie pokażemy jak, bez opłat.</p>` : ""}
+    ${hq.length ? `<p><b>Ustala centrala sieci:</b></p><ul>${hq.map(li).join("")}</ul><p>Tych danych nie zmieniamy. Pomożemy przygotować zgłoszenie do centrali.</p>` : ""}`;
+  return `<p class="noprint"><a href="#sklep/${s.id}">← Wróć do sklepu</a></p>
+  ${missing ? `<div class="card warn noprint"><p>Uzupełnij imię, nazwisko i telefon opiekuna w <a href="#ustawienia">Ustawieniach</a>. Bez tego karty nie można pokazać właścicielowi.</p></div>` : ""}
+  <article class="result" id="card" ${missing ? 'aria-disabled="true" style="opacity:.55"' : ""}>
+    <div class="r-head"><span>${esc(CONFIG.brand)}</span><span>Sprawdzenie z ${fmtD(s.checkedAt)}</span></div>
+    <div><b>${esc(s.name)}</b><br><span style="color:#56646d">${esc(s.place)}</span></div>
+    ${body}
+    <div class="foot">Opiekun: ${esc(c.name || "—")}, tel. ${esc(c.phone || "—")}<br>Sprawdziliśmy tylko dane publiczne. Nie obiecujemy wzrostu sprzedaży ani pozycji w Google.</div>
+  </article>
+  <div class="row noprint"><button class="btn primary" data-act="print" ${missing ? "disabled" : ""}>Drukuj kartę</button><button class="btn" data-act="markShown" data-id="${s.id}" ${missing ? "disabled" : ""}>${s.visit.shown ? "Pokazana ✓" : "Oznacz jako pokazaną"}</button></div>`;
+}
+
+function vOffices(){
+  return `<section class="card">
+    <h1>Biura rachunkowe i hurtownie</h1>
+    <p class="muted small">Test C: co najmniej 1 partner, który zgodzi się na piśmie pokazywać wyniki swoim klientom.</p>
+    <form class="grid" data-form="addOffice">
+      <label>Nazwa<input type="text" name="name" required autocomplete="off"></label>
+      <label>Rodzaj<select name="kind"><option value="biuro">Biuro rachunkowe</option><option value="hurtownia">Hurtownia</option></select></label>
+      <div class="row" style="align-self:end"><button class="btn primary" type="submit">Dodaj</button></div>
+    </form>
+  </section>
+  <section class="list">${S.offices.length ? S.offices.map(o => `<a class="item" href="#biuro/${o.id}"><span><b>${esc(o.name)}</b><br><span class="muted small">${o.kind === "biuro" ? "Biuro rachunkowe" : "Hurtownia"}${o.date ? " · " + fmtD(o.date) : ""}</span></span><span class="pill ${o.agree === "pisemnie" ? "good" : o.agree === "ustnie" ? "warn" : ""}">zgoda: ${AGREE[o.agree].toLowerCase()}</span></a>`).join("") : '<p class="muted">Nie ma jeszcze rozmów.</p>'}</section>`;
+}
+
+function vOffice(o){
+  const t = (k, label) => `<label>${label}<textarea data-fo="${k}">${esc(o[k])}</textarea></label>`;
+  return `<p><a href="#biura">← Wszystkie</a></p>
+  <section class="card">
+    <h1>${esc(o.name)}</h1>
+    <div class="grid">
+      <label>Data rozmowy<input type="date" data-fo="date" value="${esc(o.date)}"></label>
+      <label>Zgoda na pokazywanie wyników klientom<select data-fo="agree">${Object.entries(AGREE).map(([k,v]) => `<option value="${k}" ${o.agree === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+    </div>
+    ${t("interest", "Co partner z tego ma (prowizja, usługa dla klientów, wyłączność)?")}
+  </section>
+  <section class="card">
+    <h2>Komunikacja z klientami</h2>
+    ${t("q1", "Ile czasu w miesiącu tracicie na gonienie klientów o dokumenty i odpowiedzi?")}
+    ${t("q2", "Czego używacie do kontaktu z klientami i co w tym nie działa?")}
+    <label>Ile zapłacilibyście miesięcznie za narzędzie, które to skraca? (zł)<input type="number" min="0" data-fo="amount" value="${esc(o.amount)}"></label>
+    <div class="row">
+      <label class="inline"><input type="checkbox" data-fo="pain" ${o.pain ? "checked" : ""}>Sami wskazali komunikację jako duży koszt czasu</label>
+      <label class="inline"><input type="checkbox" data-fo="loi" ${o.loi ? "checked" : ""}>Podpisany list intencyjny</label>
+    </div>
+    ${t("notes", "Notatki")}
+  </section>
+  <section class="row"><button class="btn danger" data-act="delOffice" data-id="${o.id}">Usuń</button></section>`;
+}
+
+function metrics(){
+  const checked = S.shops.filter(s => s.checkedAt);
+  const withIssue = checked.filter(s => fixable(s).length).length;
+  const a = checked.length ? withIssue / checked.length : 0;
+  return {
+    checked: checked.length, withIssue, a,
+    hard: checked.filter(s => fixable(s).some(i => i.hard)).length,
+    hqOnly: checked.filter(s => !fixable(s).length && hqIssues(s).length).length,
+    shown: S.shops.filter(s => s.visit.shown).length,
+    paid: S.shops.filter(s => s.visit.paid).length,
+    revenue: S.shops.reduce((t, s) => t + (s.visit.paid ? Number(s.visit.amount) || 0 : 0), 0),
+    accTested: S.shops.filter(s => s.visit.accMin !== "").length,
+    stuck: S.shops.filter(s => s.visit.stuck).length,
+    partners: S.offices.filter(o => o.agree === "pisemnie").length,
+    pain: S.offices.filter(o => o.pain).length,
+    priced: S.offices.filter(o => Number(o.amount) > 0).length,
+    offices: S.offices.length,
+  };
+}
+
+function verdict(m){
+  if (m.checked < CONFIG.target) return { cls:"warn", t:`Test w toku: sprawdzono ${m.checked} z ${CONFIG.target} sklepów. Werdykt dopiero po komplecie.` };
+  if (m.a < 0.15) return { cls:"bad", t:"Poniżej 15% sklepów z błędem: darmowe sprawdzenie nie ma czego sprzedać. Brak startu, powrót do oferty." };
+  if (m.a >= 0.30 && m.paid >= 3 && m.shown >= 10) return { cls:"good", t:"Warunki A i B spełnione: start 18.01.2027" + (m.partners ? "." : ", ale brakuje partnera na piśmie (warunek zarządu).") };
+  if (m.a >= 0.30 && m.paid < 1) return { cls:"bad", t:"Błędy są, ale nikt nie zapłacił: problem leży w zaufaniu albo ofercie, nie w potrzebie." };
+  return { cls:"warn", t:"Wynik pośredni: decyzja CEO na podstawie liczb poniżej." };
+}
+
+function vSummary(){
+  const m = metrics(), v = verdict(m), pct = x => Math.round(x * 100) + "%";
+  const stat = (n, t, goal) => `<div class="stat"><b>${n}</b><span class="small">${t}</span>${goal ? `<br><span class="muted small">cel: ${goal}</span>` : ""}</div>`;
+  const picks = Object.keys(ORDER_PICK).filter(k => k).map(k => `${ORDER_PICK[k]}: <b class="mono">${S.shops.filter(s => s.visit.qOrdPick === k).length}</b>`).join(" · ");
+  return `<section class="card ${v.cls}"><h1>Zestawienie</h1><p>${esc(v.t)}</p><p class="muted small">Reguły spisane przed testem w docs/founder/launch.md i warunki zarządu z docs/founder/board.md. Prawdziwe wyniki mają pierwszeństwo przed panelami.</p></section>
+  <section class="card"><h2>A. Trafność sprawdzenia</h2><div class="stats">
+    ${stat(m.checked, "sprawdzonych sklepów", CONFIG.target)}
+    ${stat(pct(m.a), `z błędem do naprawy (${m.withIssue})`, "≥ 30%")}
+    ${stat(m.hard, "z trudną sprawą", "≥ 3")}
+    ${stat(m.hqOnly, "z błędem tylko w polach centrali")}
+  </div></section>
+  <section class="card"><h2>B. Płatne zlecenia</h2><div class="stats">
+    ${stat(m.shown, "pokazanych kart", "≥ 10")}
+    ${stat(m.paid, "opłaconych zleceń", "≥ 3")}
+    ${stat(m.revenue + " zł", "przychodu")}
+    ${stat(m.accTested ? `${m.stuck} z ${m.accTested}` : "—", "utknęło przy dostępie", "przetestować ≥ 5")}
+  </div></section>
+  <section class="card"><h2>C. Partnerzy i nowe kierunki</h2><div class="stats">
+    ${stat(m.partners, "partnerów na piśmie", "≥ 1")}
+    ${stat(`${m.pain} z ${m.offices}`, "biur wskazało komunikację jako koszt", "≥ 2 z 5")}
+    ${stat(m.priced, "biur podało kwotę", "≥ 1")}
+  </div><p class="small">Zamówienia, co wybraliby właściciele: ${picks}</p></section>
+  <section class="row"><button class="btn primary" data-act="csvShops">Eksport sklepów (CSV)</button><button class="btn" data-act="csvOffices">Eksport biur (CSV)</button></section>`;
+}
+
+function vSettings(){
+  const c = S.caretaker;
+  return `<section class="card">
+    <h1>Opiekun</h1>
+    <p class="muted small">Te dane widzi właściciel na karcie wyniku.</p>
+    <div class="grid">
+      <label>Imię i nazwisko<input type="text" data-fc="name" value="${esc(c.name)}" autocomplete="name"></label>
+      <label>Telefon<input type="tel" data-fc="phone" value="${esc(c.phone)}" autocomplete="tel"></label>
+    </div>
+  </section>
+  <section class="card">
+    <h2>Kopia zapasowa</h2>
+    <p class="muted small">Dane są tylko w tej przeglądarce. Po każdym dniu wizyt pobierz kopię, a na innym urządzeniu ją wczytaj.</p>
+    <div class="row"><button class="btn primary" data-act="backup">Pobierz kopię</button><label class="btn">Wczytaj kopię<input type="file" accept="application/json,.json" data-act="restore" hidden></label></div>
+    <p class="small" id="restoreMsg" role="status"></p>
+  </section>
+  <section class="card"><h2>Usuń wszystko</h2><p class="muted small">Po teście usuń dane z telefonu.</p><div><button class="btn danger" data-act="wipe">Usuń wszystkie dane</button></div></section>`;
+}
+
+// ===== Eksport =====
+function download(name, text, type){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+const csvCell = x => { const s = String(x ?? ""); return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+const toCsv = rows => "﻿" + rows.map(r => r.map(csvCell).join(";")).join("\r\n");
+function csvShops(){
+  const head = ["Sklep","Miejsce","Rodzaj","Sprawdzono","Błędy do naprawy","Błędy centrali","Trudna sprawa","Pola z błędem","Karta pokazana","Decyzja","Opłacone","Kwota","Dostęp min","Dostęp kroki","Utknął","Gdzie utknął","Księgowa","Zamawianie","Co nie działa","Wybór","Notatki"];
+  const rows = S.shops.map(s => { const v = s.visit; return [s.name, s.place, SEGMENTS[s.segment], s.checkedAt, fixable(s).length, hqIssues(s).length, fixable(s).some(i => i.hard) ? "tak" : "nie", issues(s).map(i => i.t).join(", "), v.shown ? "tak" : "nie", DECISIONS[v.decision], v.paid ? "tak" : "nie", v.amount, v.accMin, v.accSteps, v.stuck ? "tak" : "nie", v.stuckWhere, v.qBook, v.qOrd1, v.qOrd2, ORDER_PICK[v.qOrdPick], v.notes]; });
+  download(`sklepy-${today()}.csv`, toCsv([head, ...rows]), "text/csv;charset=utf-8");
+}
+function csvOffices(){
+  const head = ["Nazwa","Rodzaj","Data","Zgoda","Co z tego ma","Czas na gonienie klientów","Narzędzia","Kwota zł/mies.","Komunikacja to koszt","List intencyjny","Notatki"];
+  const rows = S.offices.map(o => [o.name, o.kind, o.date, AGREE[o.agree], o.interest, o.q1, o.q2, o.amount, o.pain ? "tak" : "nie", o.loi ? "tak" : "nie", o.notes]);
+  download(`biura-${today()}.csv`, toCsv([head, ...rows]), "text/csv;charset=utf-8");
+}
+
+// ===== Zdarzenia =====
+function setPath(obj, path, val){ const p = path.split("."); let o = obj; while (p.length > 1) o = o[p.shift()]; o[p[0]] = val; }
+const valOf = el => el.type === "checkbox" ? el.checked : el.value;
+const curId = () => location.hash.split("/")[1];
+
+app.addEventListener("submit", e => {
+  e.preventDefault();
+  const f = e.target, d = Object.fromEntries(new FormData(f));
+  if (f.dataset.form === "addShop") { const s = newShop(d.name.trim(), d.place.trim(), d.segment); S.shops.push(s); save(); location.hash = "sklep/" + s.id; }
+  if (f.dataset.form === "addOffice") { const o = { id:uid(), name:d.name.trim(), kind:d.kind, date:"", agree:"nie", interest:"", q1:"", q2:"", amount:"", pain:false, loi:false, notes:"" }; S.offices.push(o); save(); location.hash = "biuro/" + o.id; }
+});
+
+function onInput(e){
+  const el = e.target, s = shopById(curId()), o = offById(curId());
+  if (el.dataset.fst && s) { s.fields[el.dataset.fst].st = el.value; save(); const y = window.scrollY; route(); window.scrollTo(0, y); return; }
+  if (el.dataset.ff && s) { setPath(s.fields, el.dataset.ff, valOf(el)); save(); return; }
+  if (el.dataset.fv && s) { s.visit[el.dataset.fv] = valOf(el); if (el.dataset.fv === "paid" && el.checked && !s.visit.amount) { s.visit.amount = String(CONFIG.price); const a = app.querySelector('[data-fv="amount"]'); if (a) a.value = s.visit.amount; } save(); return; }
+  if (el.dataset.fo && o) { o[el.dataset.fo] = valOf(el); save(); return; }
+  if (el.dataset.fc) { S.caretaker[el.dataset.fc] = el.value; save(); }
+}
+app.addEventListener("input", e => { if (e.target.type !== "radio" && e.target.type !== "checkbox" && e.target.tagName !== "SELECT") onInput(e); });
+app.addEventListener("change", e => {
+  if (e.target.dataset.act === "restore") return restore(e.target);
+  if (e.target.type === "radio" || e.target.type === "checkbox" || e.target.tagName === "SELECT") onInput(e);
+});
+
+app.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b || b.tagName === "INPUT") return;
+  const act = b.dataset.act, s = shopById(b.dataset.id);
+  if (act === "finish" && s) { s.checkedAt = today(); save(); route(); }
+  if (act === "markShown" && s) { s.visit.shown = true; if (!s.visit.date) s.visit.date = today(); save(); route(); }
+  if (act === "print") window.print();
+  if (act === "delShop" && s && confirm(`Usunąć sklep „${s.name}” razem z notatkami?`)) { S.shops = S.shops.filter(x => x !== s); save(); location.hash = "sklepy"; }
+  if (act === "delOffice") { const o = offById(b.dataset.id); if (o && confirm(`Usunąć „${o.name}”?`)) { S.offices = S.offices.filter(x => x !== o); save(); location.hash = "biura"; } }
+  if (act === "csvShops") csvShops();
+  if (act === "csvOffices") csvOffices();
+  if (act === "backup") download(`kopia-teren-${today()}.json`, JSON.stringify(S, null, 1), "application/json");
+  if (act === "wipe" && confirm("Usunąć wszystkie sklepy, rozmowy i ustawienia z tej przeglądarki?")) { S = blank(); save(); route(); }
+});
+
+function restore(input){
+  const file = input.files[0], msg = document.getElementById("restoreMsg"); if (!file) return;
+  file.text().then(t => {
+    const d = JSON.parse(t);
+    if (!d || d.v !== 1 || !Array.isArray(d.shops) || !Array.isArray(d.offices)) throw new Error("format");
+    if (!confirm(`Zastąpić obecne dane kopią (${d.shops.length} sklepów, ${d.offices.length} rozmów)?`)) return;
+    S = Object.assign(blank(), d); save(); msg.textContent = "Wczytano kopię.";
+  }).catch(() => { msg.textContent = "To nie jest kopia z tego narzędzia."; });
+}
+
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
