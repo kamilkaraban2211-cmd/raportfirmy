@@ -9,6 +9,7 @@ const url = pathToFileURL(path.join(root, "teren", "index.html")).href;
 let pass = 0, fail = 0;
 const ok = (cond, name) => { if (cond) pass++; else { fail++; console.log("FAIL:", name); } };
 
+const TODAY = new Date().toISOString().slice(0, 10), CONF = `PZ/${TODAY.slice(0, 4)}/001`;
 const browser = await chromium.launch();
 for (const width of [390, 1100]) {
   const ctx = await browser.newContext({ viewport: { width, height: 800 }, acceptDownloads: true });
@@ -64,11 +65,14 @@ for (const width of [390, 1100]) {
   await page.check('[data-ff="dup.hard"]');
   await tap('[data-act="finish"]');
   ok((await text()).includes("2 do naprawy"), "status: 2 do naprawy");
-  await page.check('[data-fv="paid"]');
+  await page.check('[data-fv="paid"]'); await tick();
   ok(await page.inputValue('[data-fv="amount"]') === "149", "opłacone: kwota domyślna 149");
+  ok(await page.inputValue('[data-fv="payDate"]') === TODAY, "opłacone: data zapłaty dzisiaj");
+  await page.selectOption('[data-fv="payMethod"]', "blik");
+  ok((await text()).includes(`Drukuj potwierdzenie ${CONF}`), "opłacone: numer potwierdzenia");
   await page.fill('[data-fv="accMin"]', "12");
   await page.check('[data-fv="stuck"]');
-  await page.fill('[data-fv="qBook"]', "Ciągle dzwoni o faktury; „pilne”");
+  await page.fill('[data-fv="qBook"]', 'Ciągle dzwoni o faktury, "pilne"');
   await page.selectOption('[data-fv="qOrdPick"]', "braki");
   await tap('a[href^="#karta/"]');
   const card2 = await page.locator("#card").innerText();
@@ -108,9 +112,40 @@ for (const width of [390, 1100]) {
   ok(sum.includes("Wspólna lista braków: 1"), "zestawienie: wybór zamówień");
   await noHScroll("zestawienie");
 
-  const [dl] = await Promise.all([page.waitForEvent("download"), page.click('[data-act="csvShops"]')]);
-  const csv = fs.readFileSync(await dl.path(), "utf8");
-  ok(csv.startsWith("﻿Sklep;") && csv.includes("Delikatesy Róg") && csv.includes('"Ciągle dzwoni o faktury; „pilne”"'), "CSV: nagłówek, polskie znaki, cytowanie");
+  // Eksport CSV do systemu.
+  await go("#druk");
+  const grab = async act => { const [d] = await Promise.all([page.waitForEvent("download"), page.click(`[data-act="${act}"]`)]); return fs.readFileSync(await d.path(), "utf8"); };
+  const csv = await grab("csvShops");
+  ok(csv.startsWith("id,nazwa,miejsce,rodzaj,"), "CSV sklepy: bez BOM, nazwy kolumn, przecinek");
+  ok(csv.includes('"Ciągle dzwoni o faktury, ""pilne"""'), "CSV sklepy: cytowanie RFC 4180");
+  ok(csv.includes(`,1,149.00,${TODAY},blik,${CONF},`), "CSV sklepy: płatność w formacie systemowym");
+  ok(csv.includes("closed|dup") || csv.includes("dup|closed"), "CSV sklepy: kody pól");
+  ok(csv.endsWith("\r\n") && csv.split("\r\n").length === 5, "CSV sklepy: CRLF, 3 wiersze danych");
+  const pay = await grab("csvPayments");
+  ok(pay === `nr_potwierdzenia,data_platnosci,sklep_id,sklep,miejsce,kwota,metoda\r\n${CONF},${TODAY},` + pay.split("\r\n")[1].split(",")[2] + `,Delikatesy Róg,"Kolno, ul. Rynek 3",149.00,blik\r\n`, "CSV płatności");
+  const off = await grab("csvOffices");
+  ok(off.includes(",pisemnie,") && off.includes(",200.00,1,0,"), "CSV biura");
+
+  // Potwierdzenia zapłaty.
+  await tap('a[href="#potw/wszystkie"]');
+  ok((await text()).includes("Uzupełnij dane przyjmującego zapłatę"), "potwierdzenie: brak danych sprzedawcy");
+  ok(await page.locator('[data-act="print"]').isDisabled(), "potwierdzenie: druk zablokowany");
+  await go("#ustawienia");
+  await page.fill('[data-fs="name"]', "Jan Testowy Usługi");
+  await page.fill('[data-fs="address"]', "ul. Próbna 1, 00-001 Kolno");
+  await go("#potw/wszystkie");
+  const doc = await page.locator(".doc").innerText();
+  ok(await page.locator(".doc").count() === 1, "potwierdzenie: jedno opłacone zlecenie");
+  ok(doc.includes(CONF) && doc.includes("Delikatesy Róg") && doc.includes("Jan Testowy Usługi"), "potwierdzenie: numer i strony");
+  ok(doc.includes("149,00 zł") && doc.includes("sto czterdzieści dziewięć złotych 00/100") && doc.includes("BLIK"), "potwierdzenie: kwota słownie i forma");
+  ok(doc.includes("Nie jest fakturą"), "potwierdzenie: nie jest fakturą");
+  ok(!(await page.locator('[data-act="print"]').isDisabled()), "potwierdzenie: druk odblokowany");
+  await noHScroll("potwierdzenie");
+  await page.emulateMedia({ media: "print" });
+  ok(!(await page.locator("header").isVisible()) && !(await page.locator('[data-act="print"]').isVisible()) && await page.locator(".doc").isVisible(), "druk potwierdzenia: tylko dokument");
+  await page.emulateMedia({ media: "screen" });
+  const words = await page.evaluate(() => [0, 1, 2, 5, 12, 22, 149, 1000, 2149.5, 12345].map(plWords));
+  ok(JSON.stringify(words) === JSON.stringify(["zero złotych 00/100","jeden złoty 00/100","dwa złote 00/100","pięć złotych 00/100","dwanaście złotych 00/100","dwadzieścia dwa złote 00/100","sto czterdzieści dziewięć złotych 00/100","tysiąc złotych 00/100","dwa tysiące sto czterdzieści dziewięć złotych 50/100","dwanaście tysięcy trzysta czterdzieści pięć złotych 00/100"]), "kwota słownie: " + words.join(" | "));
 
   // Trwałość po przeładowaniu i kopia zapasowa.
   await page.reload(); await tick();

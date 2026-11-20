@@ -75,11 +75,23 @@ td,th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertic
 .result ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
 .result .price{white-space:nowrap;font-family:var(--mono);font-size:1.3rem;font-weight:500}
 .result .foot{border-top:1px solid #d6dedd;padding-top:10px;font-size:.85rem;color:#56646d}
+/* Potwierdzenie zapłaty: czarno-białe, jedno na kartkę, czytelne z drukarki biurowej i termicznej. */
+.doc{background:#fff;color:#000;border:1px solid #000;padding:20px;max-width:560px;display:flex;flex-direction:column;gap:10px;font-size:.95rem}
+.doc h2{font-size:1.2rem;font-family:var(--body);font-weight:600}
+.doc table td{border-bottom:1px solid #000;padding:5px 4px}
+.doc table td:first-child{width:38%;color:#000}
+.doc .sign{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px;font-size:.8rem;text-align:center}
+.doc .sign div{border-top:1px solid #000;padding-top:4px}
+.doc .note{font-size:.78rem}
 @media print{
+  @page{margin:12mm}
   header,nav,.banner,.noprint{display:none!important}
-  html,body{background:#fff}
-  main{padding:0}
+  html,body{background:#fff;color:#000}
+  main{padding:0;gap:0}
   .result{border-width:1px}
+  .doc{border:0;max-width:none;padding:0;break-after:page}
+  .doc:last-child{break-after:auto}
+  .card{border:0;padding:0 0 10px}
 }
 </style>
 </head>
@@ -91,6 +103,7 @@ td,th{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertic
     <a href="#sklepy" data-nav="sklepy">Sklepy</a>
     <a href="#biura" data-nav="biura">Biura i hurtownie</a>
     <a href="#zestawienie" data-nav="zestawienie">Zestawienie</a>
+    <a href="#druk" data-nav="druk">Druk i eksport</a>
     <a href="#ustawienia" data-nav="ustawienia">Ustawienia</a>
   </nav>
 </header>
@@ -102,6 +115,8 @@ const CONFIG = {
   brand: "raportfirmy.pl",            // nazwa robocza, do zmiany po decyzji o nazwie
   price: 149,                         // naprawa danych, zł brutto, płatna po wykonaniu
   target: 30,                         // liczba sklepów w teście A
+  csvSep: ",",                        // separator CSV dla systemu (RFC 4180); zmień na ";" jeśli system tego wymaga
+  docPrefix: "PZ",                    // numeracja potwierdzeń zapłaty: PZ/2026/001
   // Kalendarz grudnia 2026: niedziele handlowe i dni zamknięte.
   tradingSundays: "6, 13 i 20 grudnia",
   closedDays: "24–27 grudnia (Wigilia, święta, niedziela niehandlowa)",
@@ -131,9 +146,10 @@ const AGREE = { nie:"Nie", ustnie:"Ustnie", pisemnie:"Na piśmie" };
 // ===== Stan i zapis =====
 const KEY = "teren.v1";
 let canStore = true;
-const blank = () => ({ v:1, caretaker:{ name:"", phone:"" }, shops:[], offices:[] });
+const blank = () => ({ v:1, caretaker:{ name:"", phone:"" }, seller:{ name:"", address:"", nip:"" }, confSeq:{}, shops:[], offices:[] });
+const load = d => { const b = blank(), x = Object.assign(b, d); x.seller = Object.assign(blank().seller, d.seller); x.confSeq = d.confSeq || {}; return x; };
 let S = blank();
-try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(blank(), JSON.parse(raw)); localStorage.setItem(KEY + ".probe", "1"); localStorage.removeItem(KEY + ".probe"); }
+try { const raw = localStorage.getItem(KEY); if (raw) S = load(JSON.parse(raw)); localStorage.setItem(KEY + ".probe", "1"); localStorage.removeItem(KEY + ".probe"); }
 catch (e) { canStore = false; }
 document.getElementById("storeWarn").hidden = canStore;
 let saveT = null;
@@ -149,11 +165,39 @@ const offById = id => S.offices.find(o => o.id === id);
 function newShop(name, place, segment){
   const fields = {}; FIELDS.forEach(f => fields[f.k] = { st:"unk", google:"", real:"", src:"", hard:false, hq:false });
   return { id:uid(), name, place, segment, created:today(), checkedAt:"", fields,
-    visit:{ date:"", shown:false, decision:"", paid:false, amount:"", accMin:"", accSteps:"", stuck:false, stuckWhere:"", qBook:"", qOrd1:"", qOrd2:"", qOrdPick:"", notes:"" } };
+    visit:{ date:"", shown:false, decision:"", paid:false, amount:"", payDate:"", payMethod:"", confNo:"", accMin:"", accSteps:"", stuck:false, stuckWhere:"", qBook:"", qOrd1:"", qOrd2:"", qOrdPick:"", notes:"" } };
 }
 const issues = s => FIELDS.filter(f => s.fields[f.k].st === "bad").map(f => ({ ...f, ...s.fields[f.k] }));
 const fixable = s => issues(s).filter(i => !i.hq);
 const hqIssues = s => issues(s).filter(i => i.hq);
+const PAY_METHODS = { "":"—", gotowka:"Gotówka", blik:"BLIK", przelew:"Przelew" };
+const amountOf = s => Number(String(s.visit.amount || "").replace(",", ".")) || 0;
+const paidShops = () => S.shops.filter(s => s.visit.paid && s.visit.confNo);
+// Kolejny numer potwierdzenia w danym roku. Numer raz nadany zostaje przy sklepie, nawet po odznaczeniu płatności.
+function nextConfNo(date){
+  const y = (date || today()).slice(0, 4); S.confSeq[y] = (S.confSeq[y] || 0) + 1;
+  return `${CONFIG.docPrefix}/${y}/${String(S.confSeq[y]).padStart(3, "0")}`;
+}
+
+// Kwota słownie po polsku (do 999 999 zł).
+function plForm(n, one, few, many){ const t = n % 100, u = n % 10; return n === 1 ? one : (u >= 2 && u <= 4 && (t < 12 || t > 14)) ? few : many; }
+function under1000(n){
+  const U = ["","jeden","dwa","trzy","cztery","pięć","sześć","siedem","osiem","dziewięć"];
+  const T1 = ["dziesięć","jedenaście","dwanaście","trzynaście","czternaście","piętnaście","szesnaście","siedemnaście","osiemnaście","dziewiętnaście"];
+  const T = ["","","dwadzieścia","trzydzieści","czterdzieści","pięćdziesiąt","sześćdziesiąt","siedemdziesiąt","osiemdziesiąt","dziewięćdziesiąt"];
+  const H = ["","sto","dwieście","trzysta","czterysta","pięćset","sześćset","siedemset","osiemset","dziewięćset"];
+  const h = Math.floor(n / 100), r = n % 100, out = [H[h]];
+  if (r >= 10 && r < 20) out.push(T1[r - 10]); else out.push(T[Math.floor(r / 10)], U[r % 10]);
+  return out.filter(Boolean).join(" ");
+}
+function plWords(amount){
+  const zl = Math.floor(amount + 1e-9), gr = Math.round((amount - zl) * 100);
+  const th = Math.floor(zl / 1000), rest = zl % 1000, parts = [];
+  if (th) parts.push(th === 1 ? "tysiąc" : `${under1000(th)} ${plForm(th, "tysiąc", "tysiące", "tysięcy")}`);
+  if (rest || !zl) parts.push(rest ? under1000(rest) : "zero");
+  return `${parts.join(" ")} ${plForm(zl, "złoty", "złote", "złotych")} ${String(gr).padStart(2, "0")}/100`;
+}
+const fmtZl = n => n.toFixed(2).replace(".", ",") + " zł";
 
 // ===== Widoki =====
 const app = document.getElementById("app");
@@ -161,8 +205,11 @@ document.getElementById("brandName").textContent = CONFIG.brand;
 
 function route(){
   const [view, id] = (location.hash.slice(1) || "sklepy").split("/");
-  document.querySelectorAll("nav a").forEach(a => a.toggleAttribute("aria-current", a.dataset.nav === view || (view === "sklep" || view === "karta") && a.dataset.nav === "sklepy" || view === "biuro" && a.dataset.nav === "biura"));
+  const navOf = { sklep:"sklepy", karta:"sklepy", biuro:"biura", potw:"druk" }[view] || view;
+  document.querySelectorAll("nav a").forEach(a => a.toggleAttribute("aria-current", a.dataset.nav === navOf));
   if (view === "sklep" && shopById(id)) app.innerHTML = vShop(shopById(id));
+  else if (view === "potw" && (id === "wszystkie" || shopById(id))) app.innerHTML = vConfirms(id === "wszystkie" ? paidShops() : [shopById(id)]);
+  else if (view === "druk") app.innerHTML = vPrint();
   else if (view === "karta" && shopById(id)) app.innerHTML = vCard(shopById(id));
   else if (view === "biura") app.innerHTML = vOffices();
   else if (view === "biuro" && offById(id)) app.innerHTML = vOffice(offById(id));
@@ -243,6 +290,11 @@ function vShop(s){
       <label class="inline"><input type="checkbox" data-fv="shown" ${v.shown ? "checked" : ""}>Karta wyniku pokazana właścicielowi</label>
       <label class="inline"><input type="checkbox" data-fv="paid" ${v.paid ? "checked" : ""}>Zlecenie opłacone</label>
     </div>
+    ${v.paid ? `<div class="grid">
+      <label>Data zapłaty<input type="date" data-fv="payDate" value="${esc(v.payDate)}"></label>
+      <label>Forma zapłaty<select data-fv="payMethod">${Object.entries(PAY_METHODS).map(([k,t]) => `<option value="${k}" ${v.payMethod === k ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+    </div>
+    <div class="row"><a class="btn primary" href="#potw/${s.id}">Drukuj potwierdzenie ${esc(v.confNo)}</a></div>` : ""}
     <h3>Przekazanie dostępu do profilu</h3>
     <div class="grid">
       <label>Ile minut<input type="number" min="0" data-fv="accMin" value="${esc(v.accMin)}"></label>
@@ -374,7 +426,56 @@ function vSummary(){
     ${stat(`${m.pain} z ${m.offices}`, "biur wskazało komunikację jako koszt", "≥ 2 z 5")}
     ${stat(m.priced, "biur podało kwotę", "≥ 1")}
   </div><p class="small">Zamówienia, co wybraliby właściciele: ${picks}</p></section>
-  <section class="row"><button class="btn primary" data-act="csvShops">Eksport sklepów (CSV)</button><button class="btn" data-act="csvOffices">Eksport biur (CSV)</button></section>`;
+  <section class="row noprint"><button class="btn" data-act="print">Drukuj zestawienie</button><a class="btn" href="#druk">Eksport CSV</a></section>`;
+}
+
+function sellerMissing(){ const x = S.seller; return !x.name || !x.address; }
+
+function vConfirm(s){
+  const v = s.visit, x = S.seller, amt = amountOf(s);
+  return `<article class="doc">
+    <div class="row" style="justify-content:space-between"><h2>Potwierdzenie zapłaty</h2><span class="mono">${esc(v.confNo)}</span></div>
+    <table><tbody>
+      <tr><td>Data zapłaty</td><td>${fmtD(v.payDate)}</td></tr>
+      <tr><td>Przyjmujący zapłatę</td><td>${esc(x.name)}<br>${esc(x.address)}${x.nip ? `<br>NIP ${esc(x.nip)}` : ""}</td></tr>
+      <tr><td>Wpłacający</td><td>${esc(s.name)}<br>${esc(s.place)}</td></tr>
+      <tr><td>Za</td><td>Naprawa danych sklepu w Google${s.fields.fb.st === "bad" ? " i na Facebooku" : ""} według karty wyniku z ${fmtD(s.checkedAt)}</td></tr>
+      <tr><td>Kwota</td><td><b class="mono">${fmtZl(amt)}</b><br>słownie: ${plWords(amt)}</td></tr>
+      <tr><td>Forma zapłaty</td><td>${PAY_METHODS[v.payMethod] || "—"}</td></tr>
+    </tbody></table>
+    <div class="sign"><div>Wpłacił</div><div>Przyjął</div></div>
+    <p class="note">Dokument potwierdza przyjęcie zapłaty. Nie jest fakturą ani paragonem fiskalnym. Fakturę wystawiamy na życzenie.</p>
+  </article>`;
+}
+
+function vConfirms(list){
+  const ready = list.filter(s => s && s.visit.paid && s.visit.confNo);
+  const incomplete = ready.filter(s => !s.visit.payDate || !s.visit.payMethod || !amountOf(s));
+  const back = list.length === 1 && list[0] ? `#sklep/${list[0].id}` : "#druk";
+  const block = sellerMissing() || incomplete.length || !ready.length;
+  return `<p class="noprint"><a href="${back}">← Wróć</a></p>
+  ${sellerMissing() ? `<div class="card warn noprint"><p>Uzupełnij dane przyjmującego zapłatę (nazwa i adres) w <a href="#ustawienia">Ustawieniach</a>.</p></div>` : ""}
+  ${incomplete.length ? `<div class="card warn noprint"><p>Brakuje daty, formy zapłaty albo kwoty: ${incomplete.map(s => `<a href="#sklep/${s.id}">${esc(s.name)}</a>`).join(", ")}.</p></div>` : ""}
+  ${ready.length ? ready.map(vConfirm).join("") : '<p class="muted">Nie ma opłaconych zleceń.</p>'}
+  <div class="row noprint"><button class="btn primary" data-act="print" ${block ? "disabled" : ""}>Drukuj ${ready.length > 1 ? `(${ready.length} kartki)` : ""}</button></div>`;
+}
+
+function vPrint(){
+  const n = paidShops().length;
+  const files = [["csvShops","sklepy.csv", `${S.shops.length} sklepów`],["csvOffices","biura.csv", `${S.offices.length} rozmów`],["csvPayments","platnosci.csv", `${n} płatności`]];
+  return `<section class="card">
+    <h1>Druk</h1>
+    <div class="list">
+      <a class="item" href="#potw/wszystkie"><span><b>Potwierdzenia zapłaty</b><br><span class="muted small">Wszystkie opłacone zlecenia, każde na osobnej kartce</span></span><span class="pill">${n}</span></a>
+      <a class="item" href="#zestawienie"><span><b>Zestawienie testu</b><br><span class="muted small">Otwórz i wybierz „Drukuj zestawienie”</span></span></a>
+      <a class="item" href="#sklepy"><span><b>Karta wyniku sklepu</b><br><span class="muted small">Ze sklepu: „Pokaż kartę wyniku”</span></span></a>
+    </div>
+  </section>
+  <section class="card">
+    <h2>Eksport CSV do systemu</h2>
+    <p class="muted small">UTF-8 bez BOM, separator „${esc(CONFIG.csvSep)}”, pierwsza linia to nazwy kolumn. Daty RRRR-MM-DD, kwoty z kropką, tak/nie jako 1/0.</p>
+    <div class="list">${files.map(([act, name, info]) => `<button class="item btn" data-act="${act}" style="width:100%"><span><b class="mono">${name}</b></span><span class="muted small">${info}</span></button>`).join("")}</div>
+  </section>`;
 }
 
 function vSettings(){
@@ -385,6 +486,15 @@ function vSettings(){
     <div class="grid">
       <label>Imię i nazwisko<input type="text" data-fc="name" value="${esc(c.name)}" autocomplete="name"></label>
       <label>Telefon<input type="tel" data-fc="phone" value="${esc(c.phone)}" autocomplete="tel"></label>
+    </div>
+  </section>
+  <section class="card">
+    <h2>Przyjmujący zapłatę</h2>
+    <p class="muted small">Te dane są na potwierdzeniach zapłaty. NIP tylko Twojej firmy, nigdy klienta.</p>
+    <div class="grid">
+      <label>Nazwa firmy albo imię i nazwisko<input type="text" data-fs="name" value="${esc(S.seller.name)}"></label>
+      <label>Adres<input type="text" data-fs="address" value="${esc(S.seller.address)}"></label>
+      <label>NIP (jeśli masz firmę)<input type="text" data-fs="nip" value="${esc(S.seller.nip)}" inputmode="numeric"></label>
     </div>
   </section>
   <section class="card">
@@ -403,17 +513,23 @@ function download(name, text, type){
   a.download = name; document.body.appendChild(a); a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
 }
-const csvCell = x => { const s = String(x ?? ""); return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
-const toCsv = rows => "﻿" + rows.map(r => r.map(csvCell).join(";")).join("\r\n");
+// CSV do systemu (RFC 4180): UTF-8 bez BOM, stałe nazwy kolumn, kody zamiast opisów, daty ISO, kwoty z kropką, 1/0.
+const csvCell = x => { const s = String(x ?? ""); return (s.includes(CONFIG.csvSep) || /["\n\r]/.test(s)) ? `"${s.replace(/"/g, '""')}"` : s; };
+const toCsv = rows => rows.map(r => r.map(csvCell).join(CONFIG.csvSep)).join("\r\n") + "\r\n";
+const b01 = x => x ? 1 : 0;
+const num = x => { const n = Number(String(x ?? "").replace(",", ".")); return String(x ?? "") === "" || isNaN(n) ? "" : n.toFixed(2); };
+const csvOut = (name, head, rows) => download(`${name}-${today()}.csv`, toCsv([head, ...rows]), "text/csv;charset=utf-8");
 function csvShops(){
-  const head = ["Sklep","Miejsce","Rodzaj","Sprawdzono","Błędy do naprawy","Błędy centrali","Trudna sprawa","Pola z błędem","Karta pokazana","Decyzja","Opłacone","Kwota","Dostęp min","Dostęp kroki","Utknął","Gdzie utknął","Księgowa","Zamawianie","Co nie działa","Wybór","Notatki"];
-  const rows = S.shops.map(s => { const v = s.visit; return [s.name, s.place, SEGMENTS[s.segment], s.checkedAt, fixable(s).length, hqIssues(s).length, fixable(s).some(i => i.hard) ? "tak" : "nie", issues(s).map(i => i.t).join(", "), v.shown ? "tak" : "nie", DECISIONS[v.decision], v.paid ? "tak" : "nie", v.amount, v.accMin, v.accSteps, v.stuck ? "tak" : "nie", v.stuckWhere, v.qBook, v.qOrd1, v.qOrd2, ORDER_PICK[v.qOrdPick], v.notes]; });
-  download(`sklepy-${today()}.csv`, toCsv([head, ...rows]), "text/csv;charset=utf-8");
+  csvOut("sklepy", ["id","nazwa","miejsce","rodzaj","data_sprawdzenia","bledy_do_naprawy","bledy_centrali","trudna_sprawa","pola_z_bledem","karta_pokazana","data_wizyty","decyzja","oplacone","kwota","data_platnosci","metoda_platnosci","nr_potwierdzenia","dostep_min","dostep_kroki","utknal","gdzie_utknal","ksiegowa","zamawianie","co_nie_dziala","wybor_zamowien","notatki"],
+    S.shops.map(s => { const v = s.visit; return [s.id, s.name, s.place, s.segment, s.checkedAt, fixable(s).length, hqIssues(s).length, b01(fixable(s).some(i => i.hard)), issues(s).map(i => i.k).join("|"), b01(v.shown), v.date, v.decision, b01(v.paid), v.paid ? num(v.amount) : "", v.paid ? v.payDate : "", v.paid ? v.payMethod : "", v.paid ? v.confNo : "", v.accMin, v.accSteps, b01(v.stuck), v.stuckWhere, v.qBook, v.qOrd1, v.qOrd2, v.qOrdPick, v.notes]; }));
 }
 function csvOffices(){
-  const head = ["Nazwa","Rodzaj","Data","Zgoda","Co z tego ma","Czas na gonienie klientów","Narzędzia","Kwota zł/mies.","Komunikacja to koszt","List intencyjny","Notatki"];
-  const rows = S.offices.map(o => [o.name, o.kind, o.date, AGREE[o.agree], o.interest, o.q1, o.q2, o.amount, o.pain ? "tak" : "nie", o.loi ? "tak" : "nie", o.notes]);
-  download(`biura-${today()}.csv`, toCsv([head, ...rows]), "text/csv;charset=utf-8");
+  csvOut("biura", ["id","nazwa","rodzaj","data","zgoda","korzysc","czas_gonienia","narzedzia","kwota_mies","komunikacja_koszt","list_intencyjny","notatki"],
+    S.offices.map(o => [o.id, o.name, o.kind, o.date, o.agree, o.interest, o.q1, o.q2, num(o.amount), b01(o.pain), b01(o.loi), o.notes]));
+}
+function csvPayments(){
+  csvOut("platnosci", ["nr_potwierdzenia","data_platnosci","sklep_id","sklep","miejsce","kwota","metoda"],
+    paidShops().map(s => [s.visit.confNo, s.visit.payDate, s.id, s.name, s.place, num(s.visit.amount), s.visit.payMethod]));
 }
 
 // ===== Zdarzenia =====
@@ -432,8 +548,16 @@ function onInput(e){
   const el = e.target, s = shopById(curId()), o = offById(curId());
   if (el.dataset.fst && s) { s.fields[el.dataset.fst].st = el.value; save(); const y = window.scrollY; route(); window.scrollTo(0, y); return; }
   if (el.dataset.ff && s) { setPath(s.fields, el.dataset.ff, valOf(el)); save(); return; }
-  if (el.dataset.fv && s) { s.visit[el.dataset.fv] = valOf(el); if (el.dataset.fv === "paid" && el.checked && !s.visit.amount) { s.visit.amount = String(CONFIG.price); const a = app.querySelector('[data-fv="amount"]'); if (a) a.value = s.visit.amount; } save(); return; }
+  if (el.dataset.fv && s) {
+    const v = s.visit; v[el.dataset.fv] = valOf(el);
+    if (el.dataset.fv === "paid") {
+      if (el.checked) { if (!v.amount) v.amount = String(CONFIG.price); if (!v.payDate) v.payDate = today(); if (!v.confNo) v.confNo = nextConfNo(v.payDate); }
+      save(); const y = window.scrollY; route(); window.scrollTo(0, y); return;
+    }
+    save(); return;
+  }
   if (el.dataset.fo && o) { o[el.dataset.fo] = valOf(el); save(); return; }
+  if (el.dataset.fs) { S.seller[el.dataset.fs] = el.value; save(); return; }
   if (el.dataset.fc) { S.caretaker[el.dataset.fc] = el.value; save(); }
 }
 app.addEventListener("input", e => { if (e.target.type !== "radio" && e.target.type !== "checkbox" && e.target.tagName !== "SELECT") onInput(e); });
@@ -452,6 +576,7 @@ app.addEventListener("click", e => {
   if (act === "delOffice") { const o = offById(b.dataset.id); if (o && confirm(`Usunąć „${o.name}”?`)) { S.offices = S.offices.filter(x => x !== o); save(); location.hash = "biura"; } }
   if (act === "csvShops") csvShops();
   if (act === "csvOffices") csvOffices();
+  if (act === "csvPayments") csvPayments();
   if (act === "backup") download(`kopia-teren-${today()}.json`, JSON.stringify(S, null, 1), "application/json");
   if (act === "wipe" && confirm("Usunąć wszystkie sklepy, rozmowy i ustawienia z tej przeglądarki?")) { S = blank(); save(); route(); }
 });
@@ -462,7 +587,7 @@ function restore(input){
     const d = JSON.parse(t);
     if (!d || d.v !== 1 || !Array.isArray(d.shops) || !Array.isArray(d.offices)) throw new Error("format");
     if (!confirm(`Zastąpić obecne dane kopią (${d.shops.length} sklepów, ${d.offices.length} rozmów)?`)) return;
-    S = Object.assign(blank(), d); save(); msg.textContent = "Wczytano kopię.";
+    S = load(d); save(); msg.textContent = "Wczytano kopię.";
   }).catch(() => { msg.textContent = "To nie jest kopia z tego narzędzia."; });
 }
 
