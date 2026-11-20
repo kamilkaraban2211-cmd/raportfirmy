@@ -216,7 +216,40 @@ function vStart(){
       <div class="card"><h3>Jeśli wszystko się zgadza</h3><p>Mówimy to wprost i niczego nie sprzedajemy.</p></div>
       <div class="card"><h3>Jeśli coś jest nie tak</h3><p>Możesz poprawić to sam według naszej instrukcji albo zlecić nam. Płacisz dopiero po wykonaniu.</p></div>
     </section>
+    ${vIntro()}
   </section>`;
+}
+/* Ścieżki wejścia: treść statyczna, bez stanu. Dane opiekuna i firmy wstawiane z CARETAKER; brakujące = [UZUPEŁNIJ]. */
+const ENTITY = { firm:"[UZUPEŁNIJ: nazwa podmiotu, forma prawna]", nip:"[UZUPEŁNIJ: NIP w stopce]", addr:"[UZUPEŁNIJ: adres do korespondencji]", privacy:"[POLITYKA PRYWATNOŚCI — do uzupełnienia]" };
+function vIntro(){
+  return `<section class="card" id="kto"><h2>Kto za tym stoi</h2>
+    <p>${LIVE ? `Opiekun: ${esc(CARETAKER.name)}, tel. ${esc(CARETAKER.phone)}.` : "[UZUPEŁNIJ: imię, nazwisko i telefon opiekuna]"} Ta osoba dzwoni w sprawie Twojego zlecenia i przeprowadza Cię przez zmiany.</p>
+    <p class="small muted">${ENTITY.firm} · ${ENTITY.nip} · ${ENTITY.addr}</p></section>
+  <section class="card" id="cena"><h2>Co płacisz i kiedy</h2>
+    <ul class="stack"><li>Sprawdzenie: za darmo, bez NIP-u i bez konta.</li>
+    <li>Poprawka danych w Google i na Facebooku: <b>149 zł brutto</b>, jednorazowo.</li>
+    <li>Trudne sprawy (duplikat, przejęty profil, odzyskanie dostępu): stała cena podana przed startem.</li>
+    <li>Płacisz dopiero po wykonaniu. Nie udało się, nie płacisz.</li>
+    <li>W pierwszym kontakcie nie ma żadnych opłat cyklicznych.</li></ul></section>
+  <section class="card" id="faq"><h2>Najczęstsze pytania</h2>
+    <details><summary>Dlaczego sprawdzamy za darmo?</summary><p>Sprawdzenie to narzędzie, które pokazuje konkretne rozbieżności w Twoim sklepie. Płacisz tylko za poprawkę.</p></details>
+    <details><summary>Czy to może nic nie znaleźć?</summary><p>Tak. Jeśli wszystko się zgadza, mówimy to wprost i nic nie sprzedajemy.</p></details>
+    <details><summary>Czy podaję NIP albo hasło?</summary><p>NIP podajesz dopiero przy zleceniu. Nie prosimy o hasła do Google ani Facebooka.</p></details>
+    <details><summary>Czy mogę zrobić to sam?</summary><p>Tak. Dostajesz bezpłatną instrukcję krok po kroku. Każda zmiana jest opisana w wyniku sprawdzenia.</p></details>
+    <details><summary>Czy to robi człowiek czy AI?</summary><p>Pisze asystent AI raportfirmy.pl. Zlecenie prowadzi opiekun-człowiek, z którym możesz porozmawiać w każdej chwili.</p></details>
+    <details><summary>Czy sieć albo centrala mogą mieć inne zdanie?</summary><p>Pola ustalane przez centralę sieci nie zmieniamy. Przygotowujemy zgłoszenie do centrali.</p></details>
+    <details><summary>Czy będę płacić co miesiąc?</summary><p>Nie w pierwszym kontakcie. Dodatkową opiekę proponujemy dopiero po odbiorze zlecenia i tylko wtedy, gdy jest konkretny powód.</p></details></section>
+  <section class="card"><h3>Jesteś księgową albo prowadzisz hurtownię?</h3><p class="small muted">Możesz polecić sprawdzenie swoim klientom. <a href="#biuro">Zobacz, jak to wygląda dla biura</a>.</p></section>`;
+}
+function vBiuro(){
+  return `<section class="stack"><h1>Dla biur rachunkowych i hurtowni</h1>
+    <p class="lead">Polecasz sklep, który już Ci ufa. Sprawdzamy jego godziny, telefon i adres w Google, na Facebooku i na stronie, a wynik pokazujemy właścicielowi, zanim cokolwiek zmienimy.</p>
+    <section class="card"><h2>Jak to wygląda</h2><ol class="stack">
+      <li>Wskazujesz klienta, który chce sprawdzenia (bez NIP-u w tym kroku).</li>
+      <li>Sprawdzamy dane publiczne i pokazujemy wynik z datą i źródłem.</li>
+      <li>Właściciel decyduje, czy zleca poprawkę (149 zł brutto, płatność po wykonaniu).</li></ol></section>
+    <section class="card warn"><h2>Co musisz wiedzieć</h2><p>To wersja testowa. Nie wysyłamy zgłoszeń do nikogo i nie pobieramy danych z Google ani Facebooka. Zasady współpracy są do uzupełnienia przed startem: [UZUPEŁNIJ: umowa partnerska, warunki polecenia].</p></section>
+    <p><a class="btn" href="#start">← Wróć do sprawdzenia</a></p></section>`;
 }
 function sources(f){ return f.values.map(v => `<div class="src"><span>${esc(v.src)}${v.locked ? ' <span class="pill">ustala centrala</span>' : ""}</span><b>${esc(v.val)}</b><span class="when">sprawdzone ${fmtD(v.seen)} · dane testowe</span></div>`).join(""); }
 function pickForm(f){
@@ -342,7 +375,7 @@ function vOperator(){
 }
 
 /* ---------- Render i zdarzenia ---------- */
-const VIEWS = { start:vStart, wynik:vWynik, zlecenie:vZlecenie, operator:vOperator };
+const VIEWS = { start:vStart, biuro:vBiuro, wynik:vWynik, zlecenie:vZlecenie, operator:vOperator };
 let lastView = null;
 function render(){
   if (S.mode === "operator") S.view = "operator"; else if (S.view === "operator") S.view = "start";
