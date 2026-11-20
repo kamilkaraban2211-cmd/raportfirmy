@@ -55,7 +55,7 @@ Właściciele zadań: **CEO** (Ty) i **Claude** (przygotowanie materiałów, lic
 | Zadanie | Kto | Termin |
 |---|---|---|
 | ⚑ Wizyty w sklepach z rozbieżnością, karta wyniku, propozycja zlecenia | CEO | 29.11 |
-| Rozmowy z 3–5 biurami rachunkowymi i hurtownią (scenariusz rozmowy) | Claude przygotowuje, CEO prowadzi | 29.11 |
+| ✓ Rozmowy z 3–5 biurami rachunkowymi i hurtownią: notatka do zostawienia i pytania w `notatka-dla-biura.md` | Claude przygotowuje, CEO prowadzi | 29.11 |
 | Rejestr spraw: typ błędu, źródło, metoda, czas | CEO na bieżąco | stale |
 
 ### Tydzień 3: 30.11–6.12 — realizacja przed pierwszą niedzielą handlową

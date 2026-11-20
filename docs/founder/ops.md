@@ -36,6 +36,11 @@ Kolejność jest dobrana tak, żeby jedno otwarcie aplikacji dawało kilka pól 
 
 Zasady: telefonu nie dzwonimy przy sprawdzeniu, bo to zabiera 2–3 minuty. Numer weryfikujemy przy wizycie albo porównując z kartką na drzwiach. Każdy wynik ma źródło i datę (zasada 2 z `ZARYS-APLIKACJI.md`).
 
+### A2. Test telefonu (ok. 1 min na sklep, seriami)
+Dzwonimy pod numer z Google, a jeśli jest inny, także pod numer z Facebooka, **w godzinach otwarcia podanych w Google**. W aplikacji zapisujemy tylko to, co usłyszał dzwoniący: odebrał sklep, nikt nie odbiera (30 s), poczta głosowa, zajęte, abonent niedostępny, numer nie istnieje, inna firma albo osoba prywatna. Zły wynik sam dopisuje się do rozbieżności i trafia na kartę wyniku („dzwoniący usłyszał komunikat, że numer nie istnieje”).
+
+**Maksimum prywatności:** nie nagrywamy rozmów, nie zapisujemy ich treści, tego, kto odebrał, ani samego numeru. Jeśli ktoś odbierze: „Dzień dobry, sprawdzam, czy numer z Google działa. Działa, dziękuję, do widzenia.” Nie udajemy klienta i nie składamy oferty, bo to nie jest kontakt handlowy (art. 398 PKE). **Nie analizujemy głosu ani emocji** (zasada 9 z `ZARYS-APLIKACJI.md`, AI Act art. 50 ust. 3; głos to dane biometryczne, RODO art. 9).
+
 ### B. Wizyta z kartą wyniku
 1. Wydruk karty z aplikacji („Karta wyniku dla sklepu”). Cena na karcie zmienia się sama (149, 179, 149, 199 zł) na potrzeby testu cen.
 2. Przy ladzie, gdy nie ma klientów: „Dzień dobry, sprawdzam, co klienci widzą o sklepach na tej ulicy w Google. U Pana/Pani wyszło jedno: [zdanie z karty]. Zostawiam kartkę.”

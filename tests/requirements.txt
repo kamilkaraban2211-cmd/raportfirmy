@@ -1,0 +1,2 @@
+# Test skanera: pip install -r tests/requirements.txt && python3 -m playwright install chromium
+playwright==1.63.0

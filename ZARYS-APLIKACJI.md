@@ -50,7 +50,7 @@ Wersja ostateczna z 16.11.2026. Zbiera decyzje i wnioski z prac od 6 do 16.11.20
 
 | Etap | Moduł | Co robi | Stan w repo |
 |---|---|---|---|
-| **1. Start (18.01.2027)** | Sprawdzenie / portret | Ręczne sprawdzenie przez opiekuna wspierane formularzem i listą kontrolną; później półautomatyczne | `index.html`: makieta na 4 sklepach testowych; panel opiekuna → „Test 30 sklepów”: lista 12 pól, stoper, karta wyniku do druku, CSV |
+| **1. Start (18.01.2027)** | Sprawdzenie / portret | Ręczne sprawdzenie przez opiekuna wspierane formularzem i listą kontrolną; później półautomatyczne | `index.html`: makieta na 4 sklepach testowych; panel opiekuna → „Test 30 sklepów”: szybki start, lista 12 pól, stoper, test telefonu (bez nagrań i analizy głosu), karta wyniku do druku, CSV |
 | | Zlecenia | Kolejka, wycena trudnych spraw, limit w miesiącu, lista oczekujących | `index.html`: panel opiekuna (makieta) |
 | | Status i teczka | Link z SMS-a, 3 stany, akceptacja, potwierdzenia zmian | `index.html`: makieta |
 | | Rejestr metod | Typ błędu, źródło, metoda, czas. Zasób, którego konkurencja nie skopiuje | `index.html`: makieta |

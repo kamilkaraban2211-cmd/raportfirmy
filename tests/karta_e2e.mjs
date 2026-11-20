@@ -81,11 +81,38 @@ for (const width of [390, 1100]) {
   await page.click('[data-form="check"] button[type=submit]');
   ok((await text()).includes("Cena na karcie: 179 zł"), W("druga karta z rozbieżnością dostaje 179 zł"));
 
+  // 3b. test telefonu: walidacja, połączenie bez problemu, potem martwy numer w sklepie bez rozbieżności
+  const rog = () => page.locator("details", { hasText: "Księgarnia Róg" });
+  const openRog = async () => { if (!(await rog().evaluate(d => d.open))) await rog().locator("summary").click(); };
+  await openRog();
+  await rog().locator('[data-form="call"] button[type=submit]').click();
+  await openRog();
+  ok((await rog().innerText()).includes("Wybierz, co usłyszał dzwoniący"), W("telefon: walidacja wyniku"));
+  await rog().locator('select[name="res"]').selectOption("busy");
+  await rog().locator('[data-form="call"] button[type=submit]').click();
+  ok((await text()).includes("Połączenie zapisane: zajęte."), W("telefon: zajęte zapisane"));
+  ok((await text()).includes("wszystko się zgadza"), W("telefon: zajęte nie jest rozbieżnością"));
+  await openRog();
+  await rog().locator('select[name="src"]').selectOption("Facebook");
+  await rog().locator('select[name="res"]').selectOption("dead");
+  await rog().locator('[data-form="call"] button[type=submit]').click();
+  ok((await text()).includes("Dopisane do rozbieżności sklepu"), W("telefon: martwy numer to rozbieżność"));
+  ok((await rog().innerText()).includes("1 do poprawy"), W("telefon: sklep ma 1 rozbieżność"));
+  ok((await text()).includes("1/1"), W("telefon: KPI 1 z 1 numerów"));
+  ok(!/nagran|nagrywa(?!my)/i.test(await rog().innerText()), W("telefon: brak pól nagrania"));
+  await openRog();
+  await rog().locator('[data-act="check-card"]').click();
+  const rogCard = await text();
+  ok(rogCard.includes("dzwoniący usłyszał komunikat, że numer nie istnieje"), W("karta: co usłyszał dzwoniący"));
+  ok(rogCard.includes("149 zł brutto"), W("karta: cena przydzielona po teście telefonu"));
+  ok(rogCard.includes("nie nagrywamy rozmów"), W("karta: informacja o braku nagrań"));
+  await page.click('a[href="#test"]');
+
   // 4. wizyta: walidacja opłaty, potem zapis opłaconego zlecenia
   const lipa = page.locator("details", { hasText: "Sklep Pod Lipą" });
   await lipa.locator("summary").click();
   await lipa.locator('input[name="paid"]').check();
-  await lipa.locator('button[type=submit]').click();
+  await lipa.locator('[data-form="visit"] button[type=submit]').click();
   ok((await text()).includes("Opłacone zlecenie wymaga"), W("opłata wymaga pełnej ścieżki"));
   const lipa2 = page.locator("details", { hasText: "Sklep Pod Lipą" });
   if (!(await lipa2.evaluate(d => d.open))) await lipa2.locator("summary").click();
@@ -94,7 +121,7 @@ for (const width of [390, 1100]) {
   await lipa2.locator('select[name="manager"]').selectOption("yes");
   await lipa2.locator('input[name="repairMin"]').fill("40");
   await lipa2.locator('input[name="paid"]').check();
-  await lipa2.locator('button[type=submit]').click();
+  await lipa2.locator('[data-form="visit"] button[type=submit]').click();
   ok((await text()).includes("Wizyta zapisana"), W("zapis wizyty"));
   ok((await text()).includes("1/1"), W("opłacone / pokazane 1/1"));
   ok(/Minuty na opłacone zlecenie\n[\d,]+ min/.test(await text()), W("minuty na opłacone zlecenie policzone"));
@@ -129,6 +156,8 @@ for (const width of [390, 1100]) {
   ok(csv.startsWith("﻿\"id\""), W("CSV z BOM i nagłówkiem"));
   ok(csv.split("\r\n").length === 4, W("CSV: nagłówek + 3 wiersze"));
   ok(csv.includes('"Sklep Pod Lipą"') && csv.includes('"tak"'), W("CSV: dane wizyty"));
+  ok(csv.split("\r\n")[0].includes('"polaczenia_z_problemem"'), W("CSV: kolumny połączeń"));
+  ok(!/\d{3}[ -]?\d{3}[ -]?\d{3}/.test(csv.replace(/\d{4}-\d{2}-\d{2}/g, "")), W("CSV bez numerów telefonów"));
   ok(!/nip/i.test(csv), W("CSV bez NIP"));
 
   // 7. „Wyczyść dane testowe” nie usuwa sprawdzeń; widok klienta nie pokazuje testu

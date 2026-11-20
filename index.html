@@ -394,6 +394,19 @@ const r1 = n => Math.round(n * 10) / 10;
 const pct = (a, b) => b ? Math.round(a * 100 / b) : 0;
 const num = n => String(r1(n)).replace(".", ",");
 const fmtMin = n => n == null ? "—" : num(n) + " min";
+/* Test telefonu: dzwonimy pod numer z Google lub Facebooka i zapisujemy wyłącznie kategorię tego, co usłyszał dzwoniący.
+   Nie nagrywamy, nie zapisujemy treści rozmowy, kto odebrał ani samego numeru. Gdy ktoś odbierze: przedstawiamy się, bez oferty, koniec w 10 s. */
+const CALL_RES = {
+  ok:    ["odebrał sklep", "good", "sklep"],
+  noans: ["nikt nie odbiera (30 s)", "warn", "długi sygnał, nikt nie odebrał"],
+  vm:    ["poczta głosowa", "warn", "pocztę głosową"],
+  busy:  ["zajęte", "", "sygnał zajętości"],
+  off:   ["abonent niedostępny / wyłączony", "bad", "komunikat, że abonent jest niedostępny"],
+  dead:  ["numer nie istnieje / nieaktywny", "bad", "komunikat, że numer nie istnieje"],
+  other: ["inna firma albo osoba prywatna", "bad", "inną firmę albo osobę prywatną"]
+};
+const callBad = k => ["off", "dead", "other"].includes(k.res) || (k.inHours && ["noans", "vm"].includes(k.res));
+const fmtDT = iso => { const d = new Date(iso); return d.toLocaleDateString("pl-PL") + " " + d.toLocaleTimeString("pl-PL", { hour:"2-digit", minute:"2-digit" }); };
 const fmtClock = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
 const checkById = id => S.checks.find(c => c.id === id);
 
@@ -406,7 +419,8 @@ function testStats(){
   const perPaid = paid.length ? (checkMin + repairMin) / paid.length : null;
   return { n:C.length, withF:F.length, rate:pct(F.length, C.length), hard:C.filter(c => countRes(c, "hard")).length, chain:C.filter(c => countRes(c, "chain")).length,
     medCheck:median(C.map(c => c.minutes)), shown:shown.length, paid:paid.length, granted:shown.filter(c => c.manager === "yes").length,
-    perPaid, avgPrice, byPrice, repairMed:median(paid.map(c => c.repairMin || 0)) };
+    perPaid, avgPrice, byPrice, repairMed:median(paid.map(c => c.repairMin || 0)),
+    calledShops:C.filter(c => (c.calls || []).length).length, badPhoneShops:C.filter(c => (c.calls || []).some(callBad)).length };
 }
 function testVerdict(t){
   if (t.n < TARGET.checks) return [`Test w toku: ${t.n} z ${TARGET.checks} sprawdzeń. Werdykt 21.12.2026.`, "info"];
@@ -437,6 +451,19 @@ function checkForm(){
       ${errFor("ck")}
       <div class="row"><button class="btn primary" type="submit">Zapisz sprawdzenie</button><button class="btn" type="button" data-act="check-cancel">Przerwij</button></div>
     </form></section>`;
+}
+function callBlock(c){
+  const calls = c.calls || [];
+  const rows = calls.map(k => `<div class="src"><span>${esc(k.src)} · ${fmtDT(k.at)}${k.inHours ? " · w godzinach otwarcia" : ""}</span><span class="pill ${CALL_RES[k.res][1]}">${esc(CALL_RES[k.res][0])}</span></div>`).join("");
+  return `<div class="stack"><h3>Test telefonu</h3>${rows}
+    <form class="stack" data-form="call" data-id="${c.id}" novalidate>
+      <div class="grid2"><div class="field"><label for="cs-${c.id}">Numer z</label><select id="cs-${c.id}" name="src"><option>Google</option><option>Facebook</option></select></div>
+        <div class="field"><label for="cr-${c.id}">Co usłyszał dzwoniący</label><select id="cr-${c.id}" name="res"><option value="">wybierz</option>${Object.entries(CALL_RES).map(([k, [l]]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></div></div>
+      <label class="check"><input type="checkbox" name="inHours" checked> W godzinach otwarcia podanych w Google</label>
+      ${UI.err["c-" + c.id] ? `<p class="err">${esc(UI.err["c-" + c.id])}</p>` : ""}
+      <div><button class="btn sm" type="submit">Zapisz połączenie</button></div>
+      <p class="small muted">Nie nagrywamy i nie zapisujemy treści, kto odebrał ani numeru. Gdy ktoś odbierze: „Dzień dobry, sprawdzam, czy numer z Google działa. Działa, dziękuję.” Bez oferty.</p>
+    </form></div>`;
 }
 function visitForm(c){
   const opt = (name, map, cur) => `<select name="${name}" id="${name}-${c.id}">${Object.entries(map).map(([k, l]) => `<option value="${k}" ${cur === k ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>`;
@@ -474,7 +501,7 @@ function vTest(){
     const st = c.paid ? '<span class="pill good">opłacone</span>' : c.decision ? `<span class="pill info">${esc(DECISIONS[c.decision])}</span>` : c.shown ? '<span class="pill">pokazany</span>' : "";
     const finds = CHECK_FIELDS.filter(([k]) => ["diff", "hard", "chain"].includes(c.res[k])).map(([k, label]) => `<div class="src"><span>${esc(label)} <span class="pill ${RES[c.res[k]][1]}">${RES[c.res[k]][0]}</span></span><span class="when">${esc(c.notes[k] || "")}</span></div>`).join("");
     return `<details class="card" ${UI.openCheck === c.id ? "open" : ""}><summary><span><b>${esc(c.shop)}</b> <span class="small muted">${esc(c.town)} · ${fmtD(c.at)} · ${fmtMin(c.minutes)}</span></span><span class="row">${nF ? `<span class="pill warn">${nF} do poprawy</span>` : '<span class="pill good">wszystko się zgadza</span>'}${st}</span></summary>
-      ${finds || '<p class="small muted">Wszystkie pola się zgadzają albo nie dotyczą sklepu.</p>'}${visitForm(c)}</details>`;
+      ${finds || '<p class="small muted">Wszystkie pola się zgadzają albo nie dotyczą sklepu.</p>'}${callBlock(c)}${visitForm(c)}</details>`;
   }).join("");
   return `${opNav("test")}${onboarding()}<h1>Test 30 sklepów</h1>
     <p class="muted">Ręczne sprawdzenie prawdziwych sklepów do 20.12.2026. Zapisujemy tylko dane publiczne sklepu. Nie zapisujemy NIP-u ani danych właściciela. Dane zostają w tej przeglądarce, więc po każdym dniu pobierz CSV.</p>
@@ -486,6 +513,7 @@ function vTest(){
       ${kpi("Opłacone / pokazane", `${t.paid}/${t.shown}`, t.shown ? "cel: ≥ 3 z ≥ 10" : "", t.paid >= TARGET.paid && t.shown >= TARGET.shown ? "good" : "warn")}
       ${kpi("Dostęp menedżera", t.shown ? pct(t.granted, t.shown) + "%" : "—", t.shown ? (pct(t.granted, t.shown) >= TARGET.manager ? "≥ 50%: cel zarządu" : "cel zarządu: ≥ 50%") : "", pct(t.granted, t.shown) >= TARGET.manager ? "good" : "warn")}
       ${kpi("Minuty na opłacone zlecenie", fmtMin(t.perPaid), t.perPaid == null ? "" : t.perPaid <= TARGET.perPaid ? "≤ 120: cel zarządu" : "cel zarządu: ≤ 120", t.perPaid != null && t.perPaid <= TARGET.perPaid ? "good" : "bad")}
+      ${kpi("Telefon nie prowadzi do sklepu", t.calledShops ? `${t.badPhoneShops}/${t.calledShops}` : "—", t.calledShops ? pct(t.badPhoneShops, t.calledShops) + "% sprawdzonych numerów" : "", t.badPhoneShops ? "warn" : "good")}
       ${kpi("Trudne sprawy", t.hard)}${kpi("Pola centrali", t.chain)}
     </div>${vat}${prices}
     <p class="small muted">Minuty na opłacone zlecenie = czas wszystkich sprawdzeń + czas napraw, podzielone przez liczbę opłaconych zleceń.</p></section>
@@ -510,12 +538,12 @@ function vKarta(){
         <p>Wolisz poprawić to sam? Powiemy Ci jak, za darmo.</p></section>`;
   return `<div class="row noprint"><a class="btn" href="#test">← Wróć do testu</a><button class="btn primary" data-act="print">Drukuj kartę</button></div>
     <article class="stack"><p class="small muted">RaportFirmy.pl · Sklep w porządku</p><h1>Wynik sprawdzenia: ${esc(c.shop)}</h1><p class="muted">${esc(c.town)} · sprawdzone ${date} w Google i na Facebooku, tak jak widzi to klient.</p>
-      ${body}<section class="card"><h3>Kto to robi</h3>${who}<p class="small muted">Nie dzwonimy z ofertami i nie przekazujemy danych dalej. Nie obiecujemy wzrostu sprzedaży ani pozycji w Google.</p></section></article>`;
+      ${body}<section class="card"><h3>Kto to robi</h3>${who}<p class="small muted">Nie dzwonimy z ofertami, nie nagrywamy rozmów i nie przekazujemy danych dalej. Nie obiecujemy wzrostu sprzedaży ani pozycji w Google.</p></section></article>`;
 }
 function csvOf(){
   const q = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
-  const head = ["id","data","sklep","miejscowosc","rodzaj","skad","min_sprawdzenia","rozbieznosci","trudne","centrala","cena_na_karcie","wynik_pokazany","decyzja","menedzer","oplacone","min_naprawy"].concat(CHECK_FIELDS.map(([k]) => "pole_" + k), CHECK_FIELDS.map(([k]) => "uwaga_" + k));
-  const rows = S.checks.slice().reverse().map(c => [c.id, c.at.slice(0, 10), c.shop, c.town, c.segment, c.origin, String(c.minutes).replace(".", ","), countRes(c, "diff"), countRes(c, "hard"), countRes(c, "chain"), c.price || "", c.shown ? "tak" : "nie", DECISIONS[c.decision] || "", c.manager === "yes" ? "tak" : c.manager === "no" ? "nie" : "", c.paid ? "tak" : "nie", c.repairMin || ""]
+  const head = ["id","data","sklep","miejscowosc","rodzaj","skad","min_sprawdzenia","rozbieznosci","trudne","centrala","cena_na_karcie","wynik_pokazany","decyzja","menedzer","oplacone","min_naprawy","polaczenia","polaczenia_z_problemem"].concat(CHECK_FIELDS.map(([k]) => "pole_" + k), CHECK_FIELDS.map(([k]) => "uwaga_" + k));
+  const rows = S.checks.slice().reverse().map(c => [c.id, c.at.slice(0, 10), c.shop, c.town, c.segment, c.origin, String(c.minutes).replace(".", ","), countRes(c, "diff"), countRes(c, "hard"), countRes(c, "chain"), c.price || "", c.shown ? "tak" : "nie", DECISIONS[c.decision] || "", c.manager === "yes" ? "tak" : c.manager === "no" ? "nie" : "", c.paid ? "tak" : "nie", c.repairMin || "", (c.calls || []).length, (c.calls || []).filter(callBad).length]
     .concat(CHECK_FIELDS.map(([k]) => RES[c.res[k]][0]), CHECK_FIELDS.map(([k]) => c.notes[k] || "")));
   return "﻿" + [head].concat(rows).map(r => r.map(q).join(";")).join("\r\n");
 }
@@ -625,6 +653,22 @@ const FORM = {
     const name = String(fd.get("name") || "").trim(), phone = String(fd.get("phone") || "").replace(/[\s-]/g, "").replace(/^\+?48/, "");
     if (name.length < 3 || !/^\d{9}$/.test(phone)){ S.caretaker = { name, phone:String(fd.get("phone") || "") }; UI.err.ct = "Podaj imię i nazwisko oraz 9 cyfr telefonu."; return render(); }
     delete UI.err.ct; S.caretaker = { name, phone:phone.replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3") }; UI.flash = ["Zapisane. Twoje dane będą na karcie wyniku.", "good"]; render();
+  },
+  call(fd, form){
+    const c = checkById(form.dataset.id); if (!c) return render();
+    UI.openCheck = c.id;
+    const res = String(fd.get("res") || ""), src = String(fd.get("src") || "Google") === "Facebook" ? "Facebook" : "Google", inHours = !!fd.get("inHours");
+    if (!CALL_RES[res]){ UI.err["c-" + c.id] = "Wybierz, co usłyszał dzwoniący."; return render(); }
+    delete UI.err["c-" + c.id];
+    const k = { at:TODAY(), src, res, inHours }, hadFinding = hasFinding(c);
+    c.calls = (c.calls || []).concat(k);
+    if (callBad(k) && !["diff", "hard"].includes(c.res.phone)){
+      c.res.phone = "diff";
+      c.notes.phone = `Telefon z ${src}, ${fmtDT(k.at)}${inHours ? " (w godzinach otwarcia)" : ""}: dzwoniący usłyszał ${CALL_RES[res][2]}.`;
+      if (!hadFinding) c.price = TEST_PRICES[S.checks.filter(x => x !== c && hasFinding(x)).length % TEST_PRICES.length];
+    }
+    UI.flash = [callBad(k) ? `Połączenie zapisane: ${CALL_RES[res][0]}. Dopisane do rozbieżności sklepu.` : `Połączenie zapisane: ${CALL_RES[res][0]}.`, callBad(k) ? "" : "good"];
+    render();
   },
   visit(fd, form){
     const c = checkById(form.dataset.id); if (!c) return render();

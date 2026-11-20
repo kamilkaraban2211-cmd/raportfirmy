@@ -1,0 +1,21 @@
+{
+  "name": "raportfirmy",
+  "version": "0.3.0",
+  "private": true,
+  "description": "RaportFirmy.pl: Sklep w porządku (statyczna aplikacja) i testy przeglądarkowe",
+  "type": "module",
+  "scripts": {
+    "setup": "npm install && npx playwright install chromium",
+    "test": "node tests/e2e.mjs && node tests/karta_e2e.mjs",
+    "test:sciezka": "node tests/e2e.mjs",
+    "test:karta": "node tests/karta_e2e.mjs",
+    "test:skaner": "python3 tests/skaner_e2e.py",
+    "start": "python3 -m http.server 8080"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
